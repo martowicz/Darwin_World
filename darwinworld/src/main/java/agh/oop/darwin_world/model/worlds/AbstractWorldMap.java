@@ -70,11 +70,11 @@ public abstract class AbstractWorldMap implements WorldMap
     public void move(Animal animal, MapDirection direction)
     {
         Vector2d oldCoordinates = animal.getPosition();
-        animal.move(direction,this);
+        animal.rotate(); //rotacja
+        animal.move(this);
         animals.remove(oldCoordinates);
         Vector2d newCoordinates = animal.getPosition();
         animals.put(newCoordinates, animal);
-
         notifyObservers("move from " + oldCoordinates + " to " + newCoordinates);
 
     }
