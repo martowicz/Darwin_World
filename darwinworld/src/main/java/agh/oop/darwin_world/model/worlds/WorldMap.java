@@ -15,7 +15,7 @@ public interface WorldMap{
 
     void place(Animal animal);// throws IncorrectPositionException;
 
-    void move(Animal animal, MapDirection direction);
+    void move(Animal animal);
 
     boolean isOccupied(Vector2d position);
 

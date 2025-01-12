@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Random;
 
 public abstract class AbstractMutation {
-    int min;
-    int max;
+    protected final int min;
+    protected final int max;
 
 
     public AbstractMutation(int minMutation,int maxMutation) {

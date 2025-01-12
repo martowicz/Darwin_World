@@ -4,53 +4,69 @@ import agh.oop.darwin_world.model.enums.MapDirection;
 
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.world_elements.Animal;
-import agh.oop.darwin_world.model.worlds.WorldMap;
+import agh.oop.darwin_world.model.worlds.AbstractWorldMap;
+import agh.oop.darwin_world.model.worlds.Boundary;
+import agh.oop.darwin_world.presenter.ConsoleMapDisplay;
+import agh.oop.darwin_world.presenter.UserConfiguration;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class Simulation {
 
-    private int numberOfAnimals = 0;
+    private int numberOfAnimals;
     private int movesCount = 0;
-
-    private final List<MapDirection> moves;
-    private final List<Animal> animals;
-    private final WorldMap worldMap;
-    private int animalStartingEnergy=100;
-    private static final int DEFAULT_GENOME_SIZE = 7;
+    private int animalsEnergyAtStart;
+    private int genomLength;
+    private List<Animal> animals = new ArrayList<>();
+    private AbstractWorldMap worldMap;
 
 
-    public Simulation(List<Vector2d> initialPositions, List<MapDirection> moves, WorldMap worldMap)
+    public Simulation(UserConfiguration config)
     {
+        this.numberOfAnimals=config.getAnimalsCountAtStart();
+        Boundary boundary = config.getMapBoundary();
+        this.worldMap = config.getMapType().enumToMap(boundary);
 
-        this.movesCount = moves.size();
-        this.numberOfAnimals = initialPositions.size();
-        this.moves =  moves;
-        this.worldMap = worldMap;
-        this.animals = new ArrayList<>();
-        for(Vector2d position : initialPositions) {
-            //Animal animal = new Animal(position,animalStartingEnergy,DEFAULT_GENOME_SIZE);
-            //this.animals.add(animal);
-            //.worldMap.place(animal);
-        }
+        this.worldMap.addObserver(new ConsoleMapDisplay()); //obserwator w terminalu
 
+        placeAnimalsOnTheMap(config);
 
     }
+
+    public void Run() throws InterruptedException {
+        for (int i = 0; i < 999; i++)
+        {
+            Animal animal =  animals.get(i%numberOfAnimals);
+            worldMap.move(animal);
+            TimeUnit.MILLISECONDS.sleep(1000);
+        }
+    }
+
     public List<Animal> getAnimals() {
         return animals;
     }
 
-    public void Run()
-    {
-        for (int i = 0; i < movesCount; i++)
-        {
-            Animal animal =  animals.get(i%numberOfAnimals);
-            MapDirection move = moves.get(i);
-            worldMap.move(animal, move);
+    private void placeAnimalsOnTheMap(UserConfiguration config) {
+        Random r = new Random();
+        int i=0;
+        while (i<numberOfAnimals) {
+
+            int xCoordinate = r.nextInt(config.getMapBoundary().upperRight().getX());
+            int yCoordinate = r.nextInt(config.getMapBoundary().upperRight().getY());
+            Vector2d moveCandidate = new Vector2d(xCoordinate, yCoordinate);
+            if(this.worldMap.canMoveTo(moveCandidate))
+            {
+                Animal animal = new Animal(config,moveCandidate);
+                this.animals.add(animal);
+                this.worldMap.place(animal);
+                i++;
+            }
         }
-
-
-
     }
+
+
 }

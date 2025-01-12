@@ -2,8 +2,12 @@ package agh.oop.darwin_world.model.enums;
 
 import agh.oop.darwin_world.model.utils.Vector2d;
 
+import java.util.Random;
+
 public enum MapDirection {
     N, NE, E, SE, S, SW, W, NW;
+
+
 
     private final static MapDirection[] values = values();
 
@@ -53,9 +57,9 @@ public enum MapDirection {
     }
 
 
-//    public MapDirection createRandom(){
-//        return values[new Random().nextInt(8)]; //będzie potrzebne przy tworzeniu nowego zwierzaka ale z przekazaniem arguemtu
-//
-//    }
+    public static MapDirection getRandomPosition(){
+        return values[new Random().nextInt(8)];
+
+    }
 
 }

@@ -15,16 +15,15 @@ public abstract class AbstractWorldMap implements WorldMap
 {
     protected final Map<Vector2d, Animal> animals;
     protected final MapVisualizer visualizer;
-    protected Vector2d lowerLeft = new Vector2d(0, 0);
-    protected Vector2d upperRight = new Vector2d(8, 8);
-    protected final Boundary boundary;//użyć teog potem
+
+    protected final Boundary boundary;
     protected final UUID id;
     protected final List<MapChangeListener> observers = new ArrayList<>();
 
-    protected AbstractWorldMap() {
+    protected AbstractWorldMap(Boundary boundary) {
         this.animals = new HashMap<>();
         this.visualizer = new MapVisualizer(this);
-        this.boundary = new Boundary(lowerLeft, upperRight);
+        this.boundary = boundary;
         this.id = UUID.randomUUID();
     }
 
@@ -38,7 +37,7 @@ public abstract class AbstractWorldMap implements WorldMap
     @Override
     public boolean canMoveTo(Vector2d position)
     {
-        return position.follows(lowerLeft) && position.precedes(upperRight) && !isOccupiedByAnimal(position);
+        return position.follows(boundary.lowerLeft()) && position.precedes(boundary.upperRight());
     }
 
 
@@ -67,10 +66,12 @@ public abstract class AbstractWorldMap implements WorldMap
     }
 
     @Override
-    public void move(Animal animal, MapDirection direction)
+    public void move(Animal animal)
     {
         Vector2d oldCoordinates = animal.getPosition();
         animal.rotate(); //rotacja
+        notifyObservers("rotated");
+
         animal.move(this);
         animals.remove(oldCoordinates);
         Vector2d newCoordinates = animal.getPosition();
@@ -107,7 +108,7 @@ public abstract class AbstractWorldMap implements WorldMap
 
     @Override
     public String toString() {
-        return visualizer.draw(lowerLeft, upperRight);
+        return visualizer.draw(boundary.lowerLeft(),boundary.upperRight());
 
     }
     public void addObserver(MapChangeListener observer) {
