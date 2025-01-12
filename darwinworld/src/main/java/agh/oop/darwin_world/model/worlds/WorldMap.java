@@ -23,6 +23,5 @@ public interface WorldMap{
 
     LinkedList<WorldElement> getElements();
 
-
     String getId();
 }

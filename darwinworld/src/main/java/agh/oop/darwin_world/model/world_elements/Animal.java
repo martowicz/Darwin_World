@@ -71,6 +71,14 @@ public class Animal implements WorldElement {
 //
 //    }
 
+    public void setAnimalPosition(Vector2d position){
+        this.animalPosition = position;
+    }
+
+    public void setAnimalOrientation(MapDirection orientation){
+        this.animalOrientation = orientation;
+    }
+
     @Override
     public String toString() {
         return animalOrientation.toString();
@@ -85,17 +93,6 @@ public class Animal implements WorldElement {
         iterator++;
         int rotation = genes.get(iterator%genomLength);
         animalOrientation = animalOrientation.rotate(rotation);
-    }
-
-    public void move(WorldMap worldMap) {
-
-        Vector2d movecandidate =  new Vector2d(animalPosition.getX(), animalPosition.getY());
-        movecandidate =movecandidate.add(animalOrientation.toUnitVector());
-        if (worldMap.canMoveTo(movecandidate))
-                {
-                    animalPosition = movecandidate;
-                }
-
     }
 
     public List<Integer> getListOfGenes(){

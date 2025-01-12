@@ -18,7 +18,7 @@ public class World {
         config.setMutationType(AnimalMutationType.RANDOM_MUTATION);
         config.setMinimalMutations(0);
         config.setMaximalMutations(5); //zapytać czy ograniczyć do genom length i czy można wylosowac ten sam gen do mutacji
-        config.setMapType(WorldMapType.RECTANGULAR_WORLD);
+        config.setMapType(WorldMapType.WATER_WORLD);
         config.setMapBoundary(8,8);
 
 

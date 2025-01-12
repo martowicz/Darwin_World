@@ -13,8 +13,8 @@ public enum WorldMapType {
     public AbstractWorldMap enumToMap(Boundary boundary)
     {
         return switch (this){
-            case ROUND_WORLD -> null;
-            case WATER_WORLD -> null;
+            case ROUND_WORLD -> new Earth(boundary);
+            case WATER_WORLD -> new FlowsAndDrains(boundary);
             case RECTANGULAR_WORLD -> new RectangularMap(boundary);
         };
     }
