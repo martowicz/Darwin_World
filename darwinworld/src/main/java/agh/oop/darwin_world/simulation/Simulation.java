@@ -1,8 +1,7 @@
 package agh.oop.darwin_world.simulation;
 
 import agh.oop.darwin_world.model.enums.MapDirection;
-import agh.oop.darwin_world.model.genoms.Genome;
-import agh.oop.darwin_world.model.genoms.Genome;
+
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.world_elements.Animal;
 import agh.oop.darwin_world.model.worlds.WorldMap;
@@ -31,8 +30,9 @@ public class Simulation {
         this.worldMap = worldMap;
         this.animals = new ArrayList<>();
         for(Vector2d position : initialPositions) {
-            this.animals.add(new Animal(position, animalStartingEnergy, new Genome(DEFAULT_GENOME_SIZE)));
-            this.worldMap.place(new Animal(position, animalStartingEnergy, new Genome(DEFAULT_GENOME_SIZE)));
+            //Animal animal = new Animal(position,animalStartingEnergy,DEFAULT_GENOME_SIZE);
+            //this.animals.add(animal);
+            //.worldMap.place(animal);
         }
 
 
