@@ -121,8 +121,13 @@ public class Animal implements WorldElement, Comparable<Animal> {
 //    public void addKid(Animal kid){
 //        kids.add(kid);
 //    }
+    public void eat(int energyToRemove){
+        this.energy -= energyToRemove;
+    }
 
-
+    public int getEnergy(){
+        return energy;
+    }
 
     public MapDirection getAnimalOrientation()
     {

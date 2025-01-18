@@ -24,6 +24,8 @@ public abstract class AbstractWorldMap implements WorldMap
     protected final Boundary boundary;
     protected final int equatorYmin;
     protected final int equatorYmax;
+    protected final int energyFromOnePlant;
+    protected final int startingPlantsCount;
 
     protected final UUID id;
     protected final List<MapChangeListener> observers = new ArrayList<>();
@@ -34,7 +36,9 @@ public abstract class AbstractWorldMap implements WorldMap
         this.id = UUID.randomUUID();
         this.equatorYmin = (int) (0.4*(boundary.upperRight().getY()-boundary.lowerLeft().getY()));
         this.equatorYmax = (int) (0.6*(boundary.upperRight().getY()-boundary.lowerLeft().getY()));
-        generateGrass(20);
+        this.energyFromOnePlant = config.energyFromPlant();
+        this.startingPlantsCount = config.startingPlantNumber();
+        generatePlants(startingPlantsCount);
 
     }
 
@@ -127,20 +131,45 @@ public abstract class AbstractWorldMap implements WorldMap
 
     public void displayLinkedLists() {
         for (Vector2d position : animal_test.keySet()) {
-            SortedLinkedList<Animal> animalsy = animal_test.get(position);
+            SortedLinkedList<Animal> animalsInPosition = animal_test.get(position);
 
             System.out.println("Pozycja: " + position);
-            if (animalsy.isEmpty()) {
+            if (animalsInPosition.isEmpty()) {
                 System.out.println("  Brak zwierząt");
             } else {
-                animalsy.display();
+                animalsInPosition.display();
             }
         }
     }
 
 
 
-    public void generateGrass(int startingGrassCount){
+    public List<Animal> getAnimalsToList(){
+        List<Animal> animalsList = new ArrayList<>();
+        for(Vector2d position : animal_test.keySet()){
+            SortedLinkedList<Animal> animalsInPosition = animal_test.get(position);
+            for(Animal animal : animalsInPosition){
+                animalsList.add(animal);
+            }
+        }
+        return animalsList;
+    }
+
+    public void animalsEatPlants(){
+        for(Vector2d position : animal_test.keySet()){
+            if(plants.containsKey(position)){
+                SortedLinkedList<Animal> animalsInPosition = animal_test.get(position);
+                Animal animal = animalsInPosition.getHead();
+                animal.eat(energyFromOnePlant);
+                notifyObservers("Plant eaten");
+            }
+        }
+    }
+
+
+
+
+    public void generatePlants(int startingGrassCount){
         SecureRandom rand = new SecureRandom();
         Random xx = new Random();
         Random yy= new Random();

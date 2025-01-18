@@ -20,6 +20,7 @@ public class Simulation {
     private int genomLength;
     private List<Animal> animals = new ArrayList<>();
     private AbstractWorldMap worldMap;
+    private final int plantsGrowingEveryDay;
 
 
     public Simulation(UserConfigurationRecord config)
@@ -27,26 +28,32 @@ public class Simulation {
         this.numberOfAnimals=config.animalsCountAtStart();
         Boundary boundary = config.mapBoundary();
         this.worldMap = config.mapType().enumToMap(config);
-
-        this.worldMap.addObserver(new ConsoleMapDisplay()); //obserwator w terminalu
-
+        this.worldMap.addObserver(new ConsoleMapDisplay());
+        this.plantsGrowingEveryDay = config.plantsGrowingDaily(); //obserwator w terminalu
         placeAnimalsOnTheMap(config);
+
 
     }
 
     public void Run() throws InterruptedException {
-        for (int i = 0; i < 3; i++)
-        {
-            Animal animal =  animals.get(i%numberOfAnimals);
-            worldMap.move(animal);
-            TimeUnit.MILLISECONDS.sleep(1000);
-            //worldMap.displayLinkedLists();
+        for(int i=0;i<10;i++) {
+            removeDeadAnimals();
+            animals = worldMap.getAnimalsToList();
+            for(Animal animal : animals) {
+                System.out.println(animal.getEnergy());
+            }
+            moveAllAnimals();
+            worldMap.animalsEatPlants();
+
+            //reproduction();
+
+            worldMap.generatePlants(plantsGrowingEveryDay);
+
         }
+
+
     }
 
-    public List<Animal> getAnimals() {
-        return animals;
-    }
 
     private void placeAnimalsOnTheMap(UserConfigurationRecord config) {
         Random r = new Random();
@@ -62,6 +69,21 @@ public class Simulation {
                 this.animals.add(animal);
                 this.worldMap.place(animal);
                 i++;
+            }
+        }
+    }
+
+    private void moveAllAnimals() {
+        for(Animal animal : animals){
+            worldMap.move(animal);
+        }
+    }
+
+    private void removeDeadAnimals(){
+        for(Animal animal : animals){
+            if(animal.getEnergy()<=0){
+                Vector2d position = animal.getPosition();
+                worldMap.removeAnimal(position,animal);
             }
         }
     }

@@ -1,8 +1,10 @@
 package agh.oop.darwin_world.model.utils;
 
-public class SortedLinkedList<T extends Comparable<T>> {
-    Node<T> head;
+import java.util.Iterator;
+import java.util.function.Consumer;
 
+public class SortedLinkedList<T extends Comparable<T>> implements Iterable<T> {
+    Node<T> head;
 
     public void add(T newObject) {
         Node<T> newNode = new Node<>(newObject);
@@ -24,7 +26,6 @@ public class SortedLinkedList<T extends Comparable<T>> {
         newNode.next = current.next;
         current.next = newNode;
     }
-
 
     public boolean isEmpty() {
         return head == null;
@@ -63,9 +64,29 @@ public class SortedLinkedList<T extends Comparable<T>> {
         System.out.println("null");
     }
 
-    public T getHead(){
+    public T getHead() {
         return head.object;
     }
 
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            private Node<T> current = head;
 
+            @Override
+            public boolean hasNext() {
+                return current != null;
+            }
+
+            @Override
+            public T next() {
+                if (hasNext()) {
+                    T value = current.object;
+                    current = current.next;
+                    return value;
+                }
+                throw new IllegalStateException("No more elements in the list.");
+            }
+        };
+    }
 }
