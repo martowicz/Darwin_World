@@ -2,18 +2,20 @@ package agh.oop.darwin_world.model.world_elements;
 
 import agh.oop.darwin_world.model.enums.MapDirection;
 
-import agh.oop.darwin_world.model.enums.WorldMapType;
 import agh.oop.darwin_world.model.mutation.AbstractMutation;
+import agh.oop.darwin_world.model.utils.SortedLinkedList;
 import agh.oop.darwin_world.model.utils.Vector2d;
-import agh.oop.darwin_world.model.worlds.WorldMap;
-import agh.oop.darwin_world.presenter.UserConfiguration;
+import agh.oop.darwin_world.presenter.UserConfigurationRecord;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Stream;
 
-public class Animal implements WorldElement {
+public class Animal implements WorldElement, Comparable<Animal> {
+    @Override
+    public int compareTo(Animal o) {
+        return Integer.compare(o.energy, this.energy);
+    }
 
     private MapDirection animalOrientation;
     private Vector2d animalPosition;
@@ -33,25 +35,27 @@ public class Animal implements WorldElement {
 
 
     // First constructor - animal without parents
-    public Animal (UserConfiguration config,Vector2d position)
+    public Animal (UserConfigurationRecord config, Vector2d position)
     {
         //New animals have random orientation and position(at the start of simulation)
         this.animalOrientation= MapDirection.getRandomPosition();
 
         this.animalPosition = position;
 
-        this.genomLength = config.getGenomLength();
-        this.energy = config.getAnimalsEnergyAtStart();
+        this.genomLength = config.genomLength();
+        this.energy = config.animalsEnergyAtStart();
 
         Random r = new Random();
         for(int i = 0; i< this.genomLength; i++ ){
             int n = r.nextInt(8);
             this.genes.add(n);
         }
-        this.mutation = config.getMutation();
+        this.mutation = config.mutationType().enumToMutation(config.minMutations(), config.maxMutations());
         this.iterator = r.nextInt(this.genomLength);
 
     }
+
+
 
     //poprawić potem
     //Second constructor - animal from parents

@@ -3,6 +3,8 @@ package agh.oop.darwin_world.model.enums;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.worlds.AbstractWorldMap;
 import agh.oop.darwin_world.model.worlds.*;
+import agh.oop.darwin_world.presenter.UserConfigurationRecord;
+
 public enum WorldMapType {
     ROUND_WORLD,
     WATER_WORLD,
@@ -10,12 +12,12 @@ public enum WorldMapType {
 
 
     //czy private
-    public AbstractWorldMap enumToMap(Boundary boundary)
+    public AbstractWorldMap enumToMap(UserConfigurationRecord config)
     {
         return switch (this){
-            case ROUND_WORLD -> new Earth(boundary);
-            case WATER_WORLD -> new FlowsAndDrains(boundary);
-            case RECTANGULAR_WORLD -> new RectangularMap(boundary);
+            case ROUND_WORLD -> new Earth(config);
+            case WATER_WORLD -> new FlowsAndDrains(config);
+            case RECTANGULAR_WORLD -> new RectangularMap(config);
         };
     }
 

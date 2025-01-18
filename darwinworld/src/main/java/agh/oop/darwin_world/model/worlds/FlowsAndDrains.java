@@ -4,6 +4,7 @@ package agh.oop.darwin_world.model.worlds;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.world_elements.Water;
 import agh.oop.darwin_world.model.world_elements.WorldElement;
+import agh.oop.darwin_world.presenter.UserConfigurationRecord;
 
 import java.security.SecureRandom;
 import java.util.HashMap;
@@ -13,8 +14,8 @@ public class FlowsAndDrains extends AbstractWorldMap {
 
     Map<Vector2d, WorldElement> waterPlaces = new HashMap<Vector2d, WorldElement>();
 
-    public FlowsAndDrains(Boundary boundary) {
-        super(boundary);
+    public FlowsAndDrains(UserConfigurationRecord config) {
+        super(config);
         generateRandomWaterPosition();
 
 

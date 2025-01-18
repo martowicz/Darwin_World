@@ -1,13 +1,14 @@
 package agh.oop.darwin_world.model.worlds;
 
 import agh.oop.darwin_world.model.utils.Vector2d;
+import agh.oop.darwin_world.presenter.UserConfigurationRecord;
 
 public class RectangularMap extends AbstractWorldMap
 {
     private static final String MAP_NAME="RectangularMap";
 
-    public RectangularMap(Boundary boundary) {
-        super(boundary);
+    public RectangularMap(UserConfigurationRecord config) {
+        super(config);
     }
 
     @Override

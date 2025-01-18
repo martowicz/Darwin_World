@@ -3,19 +3,21 @@ package agh.oop.darwin_world.model.worlds;
 
 import agh.oop.darwin_world.model.enums.MapDirection;
 import agh.oop.darwin_world.model.utils.IncorrectPositionException;
+import agh.oop.darwin_world.model.utils.SortedLinkedList;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.utils.MapVisualizer;
 import agh.oop.darwin_world.model.world_elements.Animal;
 import agh.oop.darwin_world.model.world_elements.Plant;
 import agh.oop.darwin_world.model.world_elements.WorldElement;
 import agh.oop.darwin_world.presenter.MapChangeListener;
+import agh.oop.darwin_world.presenter.UserConfigurationRecord;
 
 import java.security.SecureRandom;
 import java.util.*;
 
 public abstract class AbstractWorldMap implements WorldMap
 {
-    protected Map<Vector2d, WorldElement> animals = new HashMap<>();
+    protected Map<Vector2d, SortedLinkedList<Animal>> animal_test = new HashMap<>();
     protected Map<Vector2d, WorldElement> plants = new HashMap<>();
     protected final MapVisualizer visualizer;
 
@@ -26,9 +28,9 @@ public abstract class AbstractWorldMap implements WorldMap
     protected final UUID id;
     protected final List<MapChangeListener> observers = new ArrayList<>();
 
-    protected AbstractWorldMap(Boundary boundary) {
+    protected AbstractWorldMap(UserConfigurationRecord config) {
         this.visualizer = new MapVisualizer(this);
-        this.boundary = boundary;
+        this.boundary = config.mapBoundary();
         this.id = UUID.randomUUID();
         this.equatorYmin = (int) (0.4*(boundary.upperRight().getY()-boundary.lowerLeft().getY()));
         this.equatorYmax = (int) (0.6*(boundary.upperRight().getY()-boundary.lowerLeft().getY()));
@@ -55,26 +57,88 @@ public abstract class AbstractWorldMap implements WorldMap
     {
         Vector2d position = animal.getPosition();
         if (canMoveTo(animal.getPosition())) {
-            animals.put(position, animal);
+            addAnimal(position, animal);
             notifyObservers("placed at " + position);
         } else {// throw new IncorrectPositionException(position);}
         }
     }
+
+    public void addAnimal(Vector2d position, Animal animal) {
+        // Pobierz listę zwierząt na danej pozycji lub utwórz nową, jeśli nie istnieje
+        SortedLinkedList<Animal> animalsAtPosition = animal_test.computeIfAbsent(position, k -> new SortedLinkedList<>());
+
+        // Dodaj zwierzę do posortowanej listy
+        animalsAtPosition.add(animal);
+    }
+    public void removeAnimal(Vector2d position, Animal animal) {
+        // Pobierz listę zwierząt na danej pozycji
+        SortedLinkedList<Animal> animalsAtPosition = animal_test.get(position);
+
+        if (animalsAtPosition != null) {
+            // Usuń zwierzę z listy
+            animalsAtPosition.remove(animal);
+
+            // Jeśli lista jest pusta po usunięciu, usuń klucz z mapy
+            if (animalsAtPosition.isEmpty()) {
+                animal_test.remove(position);
+            }
+        }
+    }
+
+
 
     @Override
     public void move(Animal animal)
     {
         Vector2d oldCoordinates = animal.getPosition();
         animal.rotate(); //rotacja
-        notifyObservers("rotated");
+
         Vector2d potential_move = animal.getAnimalOrientation().toUnitVector();
         Vector2d newCoordinates = oldCoordinates.add(potential_move);
         if(canMoveTo(newCoordinates)) {
-            animals.remove(oldCoordinates);
-            animals.put(newCoordinates, animal);
+            removeAnimal(oldCoordinates, animal);
+            addAnimal(newCoordinates, animal);
             animal.setAnimalPosition(newCoordinates);
+            notifyObservers("Move from " + oldCoordinates + " to " + newCoordinates);
+        }
+        else if(newCoordinates.getY()>boundary.upperRight().getY() || newCoordinates.getY()<boundary.lowerLeft().getY()) {
+            MapDirection currentOrientation = animal.getAnimalOrientation();
+            animal.setAnimalOrientation(currentOrientation.reverse());
+            notifyObservers("Reversed");
+
+        }
+        else if(newCoordinates.getX()<boundary.lowerLeft().getX()) {
+            Vector2d newPosition = new Vector2d(boundary.upperRight().getX(), newCoordinates.getY());
+            animal.setAnimalPosition(newPosition);
+            removeAnimal(newCoordinates, animal);
+            addAnimal(newPosition, animal);
+            notifyObservers("Move from " + oldCoordinates + " to " + newPosition);
+
+        }
+        else{
+            Vector2d newPosition = new Vector2d(boundary.lowerLeft().getX(), newCoordinates.getY());
+            animal.setAnimalPosition(newPosition);
+            removeAnimal(newCoordinates, animal);
+            addAnimal(newPosition, animal);
+            notifyObservers("Move from " + oldCoordinates + " to " + newPosition);
+
         }
     }
+
+    public void displayLinkedLists() {
+        for (Vector2d position : animal_test.keySet()) {
+            SortedLinkedList<Animal> animalsy = animal_test.get(position);
+
+            System.out.println("Pozycja: " + position);
+            if (animalsy.isEmpty()) {
+                System.out.println("  Brak zwierząt");
+            } else {
+                animalsy.display();
+            }
+        }
+    }
+
+
 
     public void generateGrass(int startingGrassCount){
         SecureRandom rand = new SecureRandom();
@@ -114,22 +178,33 @@ public abstract class AbstractWorldMap implements WorldMap
         return objectAt(position) != null;
     }
 
+
     @Override
     public WorldElement objectAt(Vector2d position) {
+        // Sprawdzenie, czy na pozycji znajdują się zwierzęta
+        if (animal_test.containsKey(position)) {
+            SortedLinkedList<Animal> animalsAtPosition = animal_test.get(position);
 
-        if (animals.containsKey(position)) {
-            return animals.get(position);
+            // Jeśli lista nie jest pusta, zwracamy zwierzę o najwyższej energii (głowa listy)
+            if (!animalsAtPosition.isEmpty()) {
+                return animalsAtPosition.getHead(); // Zakładamy, że metoda getHead zwraca pierwszego elementa
+            }
         }
+
+        // Sprawdzenie, czy na pozycji znajdują się rośliny
         if (plants.containsKey(position)) {
-            return plants.get(position);
+            return plants.get(position); // Zwracamy roślinę
         }
+
+        // Jeśli na pozycji nic nie ma, zwracamy null
         return null;
     }
+
 
     @Override
     public LinkedList<WorldElement> getElements()
     {
-        return new LinkedList<>(animals.values());
+        return new LinkedList<>(); //dopisze sie to
     }
 
     @Override
