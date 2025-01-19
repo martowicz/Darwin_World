@@ -103,6 +103,15 @@ public class Animal implements WorldElement, Comparable<Animal> {
         return genes;
     }
 
+    public void dayPasses(){
+        this.age++;
+        this.energy--;
+    }
+
+    public void dies(int dayOfDeath){
+        this.dayOfDeath = dayOfDeath;
+    }
+
 //
 //    public int getKids(){
 //        return kids.size();
@@ -114,15 +123,13 @@ public class Animal implements WorldElement, Comparable<Animal> {
 //                .sum();
 //    }
 //
-//    public int getEnergy(){
-//        return energy;
-//    }
 //
 //    public void addKid(Animal kid){
 //        kids.add(kid);
 //    }
-    public void eat(int energyToRemove){
-        this.energy -= energyToRemove;
+    public void eat(int energyToAdd){
+        this.energy += energyToAdd;
+        this.plantsEaten++;
     }
 
     public int getEnergy(){

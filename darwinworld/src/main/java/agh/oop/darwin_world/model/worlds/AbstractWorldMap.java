@@ -95,7 +95,6 @@ public abstract class AbstractWorldMap implements WorldMap
     public void move(Animal animal)
     {
         Vector2d oldCoordinates = animal.getPosition();
-        animal.rotate(); //rotacja
 
         Vector2d potential_move = animal.getAnimalOrientation().toUnitVector();
         Vector2d newCoordinates = oldCoordinates.add(potential_move);
@@ -114,7 +113,7 @@ public abstract class AbstractWorldMap implements WorldMap
         else if(newCoordinates.getX()<boundary.lowerLeft().getX()) {
             Vector2d newPosition = new Vector2d(boundary.upperRight().getX(), newCoordinates.getY());
             animal.setAnimalPosition(newPosition);
-            removeAnimal(newCoordinates, animal);
+            removeAnimal(oldCoordinates, animal);
             addAnimal(newPosition, animal);
             notifyObservers("Move from " + oldCoordinates + " to " + newPosition);
 
@@ -122,11 +121,12 @@ public abstract class AbstractWorldMap implements WorldMap
         else{
             Vector2d newPosition = new Vector2d(boundary.lowerLeft().getX(), newCoordinates.getY());
             animal.setAnimalPosition(newPosition);
-            removeAnimal(newCoordinates, animal);
+            removeAnimal(oldCoordinates, animal);
             addAnimal(newPosition, animal);
             notifyObservers("Move from " + oldCoordinates + " to " + newPosition);
 
         }
+        animal.rotate(); //rotacja po ruchu?
     }
 
     public void displayLinkedLists() {
@@ -161,7 +161,17 @@ public abstract class AbstractWorldMap implements WorldMap
                 SortedLinkedList<Animal> animalsInPosition = animal_test.get(position);
                 Animal animal = animalsInPosition.getHead();
                 animal.eat(energyFromOnePlant);
-                notifyObservers("Plant eaten");
+                notifyObservers("Plant eaten on " + position);
+                plants.remove(position);
+            }
+        }
+    }
+
+    public void dayPasses(){
+        for(Vector2d position : animal_test.keySet()){
+            SortedLinkedList<Animal> animalsInPosition = animal_test.get(position);
+            for(Animal animal : animalsInPosition){
+                animal.dayPasses();
             }
         }
     }

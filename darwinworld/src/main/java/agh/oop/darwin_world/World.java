@@ -14,11 +14,11 @@ public class World {
 
         UserConfigurationRecord config = new UserConfigurationRecord(
                 new Boundary(new Vector2d(0,0),new Vector2d(8,8)),
-                WorldMapType.WATER_WORLD,
-                6,
+                WorldMapType.ROUND_WORLD,
+                10,
+                1,
                 5,
-                2,
-                20,
+                3,
                 12,
                 0,
                 5,

@@ -36,18 +36,24 @@ public class Simulation {
     }
 
     public void Run() throws InterruptedException {
-        for(int i=0;i<10;i++) {
-            removeDeadAnimals();
+        for(int i=0;i<100;i++) {
+            removeDeadAnimals(i);
             animals = worldMap.getAnimalsToList();
-            for(Animal animal : animals) {
-                System.out.println(animal.getEnergy());
-            }
+
             moveAllAnimals();
+
             worldMap.animalsEatPlants();
 
             //reproduction();
 
             worldMap.generatePlants(plantsGrowingEveryDay);
+
+            worldMap.dayPasses();
+            for(Animal animal : animals) {
+                System.out.println(animal.getEnergy());
+            }
+
+
 
         }
 
@@ -79,10 +85,11 @@ public class Simulation {
         }
     }
 
-    private void removeDeadAnimals(){
+    private void removeDeadAnimals(int day){
         for(Animal animal : animals){
             if(animal.getEnergy()<=0){
                 Vector2d position = animal.getPosition();
+                animal.dies(day);
                 worldMap.removeAnimal(position,animal);
             }
         }
