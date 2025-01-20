@@ -13,13 +13,15 @@ public class World {
         System.out.println("system wystartował");
 
         UserConfigurationRecord config = new UserConfigurationRecord(
-                new Boundary(new Vector2d(0,0),new Vector2d(8,8)),
-                WorldMapType.ROUND_WORLD,
+                new Boundary(new Vector2d(0,0),new Vector2d(20,20)),
+                WorldMapType.WATER_WORLD,
                 10,
                 1,
                 5,
-                3,
-                12,
+                30,
+                190,
+                10,
+                20,
                 0,
                 5,
                 7,

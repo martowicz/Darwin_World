@@ -4,7 +4,7 @@ import agh.oop.darwin_world.model.utils.Vector2d;
 
 public class Water implements WorldElement{
     Vector2d waterPosition;
-    private static final String waterRepresentation = "+";
+    private static final String waterRepresentation = "8";
 
     public Water(Vector2d position) {
         this.waterPosition = position;

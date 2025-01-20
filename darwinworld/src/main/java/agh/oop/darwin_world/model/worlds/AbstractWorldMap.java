@@ -2,7 +2,6 @@ package agh.oop.darwin_world.model.worlds;
 
 
 import agh.oop.darwin_world.model.enums.MapDirection;
-import agh.oop.darwin_world.model.utils.IncorrectPositionException;
 import agh.oop.darwin_world.model.utils.SortedLinkedList;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.utils.MapVisualizer;
@@ -12,12 +11,13 @@ import agh.oop.darwin_world.model.world_elements.WorldElement;
 import agh.oop.darwin_world.presenter.MapChangeListener;
 import agh.oop.darwin_world.presenter.UserConfigurationRecord;
 
+import java.lang.module.Configuration;
 import java.security.SecureRandom;
 import java.util.*;
 
 public abstract class AbstractWorldMap implements WorldMap
 {
-    protected Map<Vector2d, SortedLinkedList<Animal>> animal_test = new HashMap<>();
+    protected Map<Vector2d, SortedLinkedList<Animal>> animalsAtPositions = new HashMap<>();
     protected Map<Vector2d, WorldElement> plants = new HashMap<>();
     protected final MapVisualizer visualizer;
 
@@ -26,13 +26,15 @@ public abstract class AbstractWorldMap implements WorldMap
     protected final int equatorYmax;
     protected final int energyFromOnePlant;
     protected final int startingPlantsCount;
-
+    protected final UserConfigurationRecord config;
     protected final UUID id;
     protected final List<MapChangeListener> observers = new ArrayList<>();
+
 
     protected AbstractWorldMap(UserConfigurationRecord config) {
         this.visualizer = new MapVisualizer(this);
         this.boundary = config.mapBoundary();
+        this.config = config;
         this.id = UUID.randomUUID();
         this.equatorYmin = (int) (0.4*(boundary.upperRight().getY()-boundary.lowerLeft().getY()));
         this.equatorYmax = (int) (0.6*(boundary.upperRight().getY()-boundary.lowerLeft().getY()));
@@ -43,17 +45,37 @@ public abstract class AbstractWorldMap implements WorldMap
     }
 
     @Override
-    public boolean canMoveTo(Vector2d position)
-    {
-        return position.follows(boundary.lowerLeft()) && position.precedes(boundary.upperRight());
+    public void reproduce() {
+
+        for (Vector2d position : animalsAtPositions.keySet()) {
+
+            SortedLinkedList<Animal> animalsInPosition = animalsAtPositions.get(position);
+            if(!animalsInPosition.canIntercourse())
+                return;
+
+            Animal firstAnimal = animalsInPosition.getHead();
+            Animal secondAnimal = animalsInPosition.getSecondElement();
+
+            if (secondAnimal.getEnergy()<config.animalsEnergyToCopulate())
+                return;
+
+
+            Animal kidos = new Animal(firstAnimal,secondAnimal,config);
+            addAnimal(firstAnimal.getPosition(),kidos);
+
+            System.out.println("can mate" +firstAnimal+secondAnimal);
+
+        }
+
+
     }
 
 
-    protected void notifyObservers(String message)
+    //sprawdza jedynie czy zwierze nie wychodzi poza mapę
+    @Override
+    public boolean canMoveTo(Vector2d position)
     {
-        for (MapChangeListener observer : observers) {
-            observer.mapChanged(this,message);
-        }
+        return position.follows(boundary.lowerLeft()) && position.precedes(boundary.upperRight());
     }
 
     @Override
@@ -69,14 +91,14 @@ public abstract class AbstractWorldMap implements WorldMap
 
     public void addAnimal(Vector2d position, Animal animal) {
         // Pobierz listę zwierząt na danej pozycji lub utwórz nową, jeśli nie istnieje
-        SortedLinkedList<Animal> animalsAtPosition = animal_test.computeIfAbsent(position, k -> new SortedLinkedList<>());
+        SortedLinkedList<Animal> animalsAtPosition = animalsAtPositions.computeIfAbsent(position, k -> new SortedLinkedList<>());
 
         // Dodaj zwierzę do posortowanej listy
         animalsAtPosition.add(animal);
     }
     public void removeAnimal(Vector2d position, Animal animal) {
         // Pobierz listę zwierząt na danej pozycji
-        SortedLinkedList<Animal> animalsAtPosition = animal_test.get(position);
+        SortedLinkedList<Animal> animalsAtPosition = animalsAtPositions.get(position);
 
         if (animalsAtPosition != null) {
             // Usuń zwierzę z listy
@@ -84,20 +106,24 @@ public abstract class AbstractWorldMap implements WorldMap
 
             // Jeśli lista jest pusta po usunięciu, usuń klucz z mapy
             if (animalsAtPosition.isEmpty()) {
-                animal_test.remove(position);
+                animalsAtPositions.remove(position);
             }
         }
     }
 
 
-
+    @Override
+    public void rotate(Animal animal)
+    {
+        animal.rotate();
+    }
     @Override
     public void move(Animal animal)
     {
         Vector2d oldCoordinates = animal.getPosition();
-
         Vector2d potential_move = animal.getAnimalOrientation().toUnitVector();
         Vector2d newCoordinates = oldCoordinates.add(potential_move);
+
         if(canMoveTo(newCoordinates)) {
             removeAnimal(oldCoordinates, animal);
             addAnimal(newCoordinates, animal);
@@ -126,12 +152,11 @@ public abstract class AbstractWorldMap implements WorldMap
             notifyObservers("Move from " + oldCoordinates + " to " + newPosition);
 
         }
-        animal.rotate(); //rotacja po ruchu?
     }
 
     public void displayLinkedLists() {
-        for (Vector2d position : animal_test.keySet()) {
-            SortedLinkedList<Animal> animalsInPosition = animal_test.get(position);
+        for (Vector2d position : animalsAtPositions.keySet()) {
+            SortedLinkedList<Animal> animalsInPosition = animalsAtPositions.get(position);
 
             System.out.println("Pozycja: " + position);
             if (animalsInPosition.isEmpty()) {
@@ -146,8 +171,8 @@ public abstract class AbstractWorldMap implements WorldMap
 
     public List<Animal> getAnimalsToList(){
         List<Animal> animalsList = new ArrayList<>();
-        for(Vector2d position : animal_test.keySet()){
-            SortedLinkedList<Animal> animalsInPosition = animal_test.get(position);
+        for(Vector2d position : animalsAtPositions.keySet()){
+            SortedLinkedList<Animal> animalsInPosition = animalsAtPositions.get(position);
             for(Animal animal : animalsInPosition){
                 animalsList.add(animal);
             }
@@ -156,9 +181,9 @@ public abstract class AbstractWorldMap implements WorldMap
     }
 
     public void animalsEatPlants(){
-        for(Vector2d position : animal_test.keySet()){
+        for(Vector2d position : animalsAtPositions.keySet()){
             if(plants.containsKey(position)){
-                SortedLinkedList<Animal> animalsInPosition = animal_test.get(position);
+                SortedLinkedList<Animal> animalsInPosition = animalsAtPositions.get(position);
                 Animal animal = animalsInPosition.getHead();
                 animal.eat(energyFromOnePlant);
                 notifyObservers("Plant eaten on " + position);
@@ -168,8 +193,8 @@ public abstract class AbstractWorldMap implements WorldMap
     }
 
     public void dayPasses(){
-        for(Vector2d position : animal_test.keySet()){
-            SortedLinkedList<Animal> animalsInPosition = animal_test.get(position);
+        for(Vector2d position : animalsAtPositions.keySet()){
+            SortedLinkedList<Animal> animalsInPosition = animalsAtPositions.get(position);
             for(Animal animal : animalsInPosition){
                 animal.dayPasses();
             }
@@ -183,6 +208,10 @@ public abstract class AbstractWorldMap implements WorldMap
         SecureRandom rand = new SecureRandom();
         Random xx = new Random();
         Random yy= new Random();
+
+        //zmienić tak że jeśli na pozycji już coś jest to losuje jeszcze raz i jeśli wszyskie miejsca są zajęte to nei losuje
+
+
         for(int i = 0; i < startingGrassCount; i++) {
             int yCoordinate;
             double v = rand.nextDouble();
@@ -211,18 +240,15 @@ public abstract class AbstractWorldMap implements WorldMap
 
 
 
-    @Override
-    public boolean isOccupied(Vector2d position)
-    {
-        return objectAt(position) != null;
-    }
 
 
+
+    //sprawdza czy na danej pozycji jest cokolwiek (nadpisać w flowsanddrains) i to zwraca
     @Override
-    public WorldElement objectAt(Vector2d position) {
+    public WorldElement returnObjectAt(Vector2d position) {
         // Sprawdzenie, czy na pozycji znajdują się zwierzęta
-        if (animal_test.containsKey(position)) {
-            SortedLinkedList<Animal> animalsAtPosition = animal_test.get(position);
+        if (animalsAtPositions.containsKey(position)) {
+            SortedLinkedList<Animal> animalsAtPosition = animalsAtPositions.get(position);
 
             // Jeśli lista nie jest pusta, zwracamy zwierzę o najwyższej energii (głowa listy)
             if (!animalsAtPosition.isEmpty()) {
@@ -238,32 +264,48 @@ public abstract class AbstractWorldMap implements WorldMap
         // Jeśli na pozycji nic nie ma, zwracamy null
         return null;
     }
+    @Override
+    public boolean isOccupied(Vector2d position)
+    {
+        return returnObjectAt(position) != null;
+    }
 
 
+    //TODO
     @Override
     public LinkedList<WorldElement> getElements()
     {
-        return new LinkedList<>(); //dopisze sie to
+        return new LinkedList<>(); //dopisze sie to do visualizera w javafx i pewnie metodę reprezentation
     }
+
+
+
 
     @Override
-    public String getId() {
+    public String getIdString() {
         return id.toString();
     }
-
-
     @Override
     public String toString() {
         return visualizer.draw(boundary.lowerLeft(),boundary.upperRight());
 
     }
+
+
+    //Używane aby komunikować się z ux np w teminalu bądź javafx
     public void addObserver(MapChangeListener observer) {
         observers.add(observer);
     }
-
     public void removeObserver(MapChangeListener observer) {
         observers.remove(observer);
     }
+    protected void notifyObservers(String message)
+    {
+        for (MapChangeListener observer : observers) {
+            observer.mapChanged(this,message);
+        }
+    }
+
     public Boundary getCurrentBounds() {
         return boundary;
     }

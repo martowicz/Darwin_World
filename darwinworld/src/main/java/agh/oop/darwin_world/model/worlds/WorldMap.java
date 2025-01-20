@@ -1,6 +1,4 @@
 package agh.oop.darwin_world.model.worlds;
-import agh.oop.darwin_world.model.enums.MapDirection;
-import agh.oop.darwin_world.model.utils.IncorrectPositionException;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.world_elements.Animal;
 import agh.oop.darwin_world.model.world_elements.WorldElement;
@@ -19,9 +17,13 @@ public interface WorldMap{
 
     boolean isOccupied(Vector2d position);
 
-    WorldElement objectAt(Vector2d position);
+    WorldElement returnObjectAt(Vector2d position);
 
     LinkedList<WorldElement> getElements();
 
-    String getId();
-}
+    String getIdString();
+
+    void reproduce();
+
+    void rotate(Animal animal);
+    }

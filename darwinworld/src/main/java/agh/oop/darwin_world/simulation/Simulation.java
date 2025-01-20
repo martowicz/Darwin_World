@@ -1,12 +1,10 @@
 package agh.oop.darwin_world.simulation;
-
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.world_elements.Animal;
 import agh.oop.darwin_world.model.worlds.AbstractWorldMap;
 import agh.oop.darwin_world.model.worlds.Boundary;
 import agh.oop.darwin_world.presenter.ConsoleMapDisplay;
 import agh.oop.darwin_world.presenter.UserConfigurationRecord;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -17,40 +15,60 @@ public class Simulation {
     private int numberOfAnimals;
     private int movesCount = 0;
     private int animalsEnergyAtStart;
-    private int genomLength;
     private List<Animal> animals = new ArrayList<>();
     private AbstractWorldMap worldMap;
     private final int plantsGrowingEveryDay;
-
+    private int days = 0;
 
     public Simulation(UserConfigurationRecord config)
     {
         this.numberOfAnimals=config.animalsCountAtStart();
-        Boundary boundary = config.mapBoundary();
         this.worldMap = config.mapType().enumToMap(config);
         this.worldMap.addObserver(new ConsoleMapDisplay());
         this.plantsGrowingEveryDay = config.plantsGrowingDaily(); //obserwator w terminalu
         placeAnimalsOnTheMap(config);
-
-
     }
 
     public void Run() throws InterruptedException {
-        for(int i=0;i<100;i++) {
-            removeDeadAnimals(i);
+        for(int i=0;i<100000;i++) {
+            days +=1;
+
+            TimeUnit.SECONDS.sleep(1);
+
+            //1-Usunięcie martwych zwierzaków z mapy.
+            //***
+            removeDeadAnimals(days);
+            //***
+
+
+            //2-Skręt i przemieszczenie każdego zwierzaka.
+            //***
             animals = worldMap.getAnimalsToList();
-
+            rotateAllAnimals();
             moveAllAnimals();
+            //***
 
+            //3-Konsumpcja roślin, na których pola weszły zwierzaki.
+            //***
             worldMap.animalsEatPlants();
+            //***
 
-            //reproduction();
 
+            //4-Rozmnażanie się najedzonych zwierzaków znajdujących się na tym samym polu.
+            //***
+            worldMap.reproduce();
+            //***
+
+
+            //5-Wzrastanie nowych roślin na wybranych polach mapy.
+            //***
             worldMap.generatePlants(plantsGrowingEveryDay);
+            //***
 
+            //6-Koniec dnia(zwierzęta tracą energie)
             worldMap.dayPasses();
             for(Animal animal : animals) {
-                System.out.println(animal.getEnergy());
+                System.out.println("energia zwierzęcia"+ animal.getEnergy());
             }
 
 
@@ -72,7 +90,6 @@ public class Simulation {
             if(this.worldMap.canMoveTo(moveCandidate))
             {
                 Animal animal = new Animal(config,moveCandidate);
-                this.animals.add(animal);
                 this.worldMap.place(animal);
                 i++;
             }
@@ -85,7 +102,16 @@ public class Simulation {
         }
     }
 
+    private void rotateAllAnimals() {
+
+
+        for(Animal animal : animals){
+            worldMap.rotate(animal);
+        }
+    }
+
     private void removeDeadAnimals(int day){
+
         for(Animal animal : animals){
             if(animal.getEnergy()<=0){
                 Vector2d position = animal.getPosition();
@@ -93,6 +119,7 @@ public class Simulation {
                 worldMap.removeAnimal(position,animal);
             }
         }
+
     }
 
 

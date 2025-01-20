@@ -27,17 +27,19 @@ public class FlowsAndDrains extends AbstractWorldMap {
     }
 
     @Override
-    public WorldElement objectAt(Vector2d position) { //ważne do wyświetlania elementów mapy
+    public WorldElement returnObjectAt(Vector2d position) { //ważne do wyświetlania elementów mapy
         if (waterPlaces.containsKey(position)) {
             return waterPlaces.get(position);
         }
-        return super.objectAt(position);
+        return super.returnObjectAt(position);
     }
 
     public void generateRandomWaterPosition() {
         SecureRandom random = new SecureRandom();
-        int x = random.nextInt(boundary.upperRight().getX());
-        int y = random.nextInt(boundary.upperRight().getY());
+        int lenx =boundary.upperRight().getX();
+        int leny =boundary.upperRight().getY();
+        int x = (int) (random.nextInt((int) (lenx*0.6))+0.2*lenx);
+        int y = (int) (random.nextInt((int) (leny*0.6))+0.2*leny);
         Vector2d position = new Vector2d(x, y);
         Water water = new Water(position);
         waterPlaces.put(position, water);

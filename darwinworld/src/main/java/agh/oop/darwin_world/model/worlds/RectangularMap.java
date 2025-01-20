@@ -12,10 +12,11 @@ public class RectangularMap extends AbstractWorldMap
     }
 
     @Override
-    public String getId(){
+    public String getIdString(){
         return String.format("%s %s",MAP_NAME,id.toString());
 
     }
+
 
 
 

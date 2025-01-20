@@ -16,19 +16,13 @@ import java.util.Map;
 public class Earth extends AbstractWorldMap{
 
     private static final String MAP_NAME = "Earth";
-    protected Map<Vector2d, WorldElement> waters = new HashMap<>();
 
 
     public Earth(UserConfigurationRecord config) {
         super(config);
     }
-
-
-
-
-
     @Override
-    public String getId(){
+    public String getIdString(){
         return String.format("%s %s",MAP_NAME,id.toString());
 
     }

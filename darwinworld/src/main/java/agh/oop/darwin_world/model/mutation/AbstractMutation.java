@@ -13,7 +13,7 @@ public abstract class AbstractMutation {
         min=minMutation;
     }
 
-    public List<Integer> mutateGenes(List<Integer> genes){
+    public void mutateGenes(List<Integer> genes){
         int range = Math.min(genes.size(),max);
         Random r = new Random();
         int number_of_genes_to_change = r.nextInt(range);
@@ -22,7 +22,6 @@ public abstract class AbstractMutation {
             int geneValue = genes.get(gene_to_change);
             genes.set(gene_to_change,changeGene(geneValue));
         }
-        return genes;
     }
 
     abstract int changeGene(int geneValue);

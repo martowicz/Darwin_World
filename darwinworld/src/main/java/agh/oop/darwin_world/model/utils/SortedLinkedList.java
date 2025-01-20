@@ -31,6 +31,10 @@ public class SortedLinkedList<T extends Comparable<T>> implements Iterable<T> {
         return head == null;
     }
 
+    public boolean canIntercourse()
+    {
+        return head !=null && head.next != null;
+    }
     public boolean remove(T value) {
         if (head == null) {
             return false; // Lista jest pusta
@@ -66,6 +70,14 @@ public class SortedLinkedList<T extends Comparable<T>> implements Iterable<T> {
 
     public T getHead() {
         return head.object;
+    }
+
+
+    public T getSecondElement()
+    {
+        if(head.next != null)
+            return head.next.object;
+        return null;
     }
 
     @Override
