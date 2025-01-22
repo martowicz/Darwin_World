@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-public class Simulation {
+public class Simulation implements Runnable {
 
     private int numberOfAnimals;
     private int movesCount = 0;
@@ -27,57 +27,31 @@ public class Simulation {
         this.worldMap.addObserver(new ConsoleMapDisplay());
         this.plantsGrowingEveryDay = config.plantsGrowingDaily(); //obserwator w terminalu
         placeAnimalsOnTheMap(config);
+        worldMap.generatePlants(plantsGrowingEveryDay);
     }
-
-    public void Run() throws InterruptedException {
+    @Override
+    public void run(){
         for(int i=0;i<100000;i++) {
             days +=1;
-
-            TimeUnit.SECONDS.sleep(1);
-
             //1-Usunięcie martwych zwierzaków z mapy.
-            //***
             removeDeadAnimals(days);
-            //***
-
-
             //2-Skręt i przemieszczenie każdego zwierzaka.
-            //***
             animals = worldMap.getAnimalsToList();
             rotateAllAnimals();
             moveAllAnimals();
-            //***
-
             //3-Konsumpcja roślin, na których pola weszły zwierzaki.
-            //***
             worldMap.animalsEatPlants();
-            //***
-
-
             //4-Rozmnażanie się najedzonych zwierzaków znajdujących się na tym samym polu.
-            //***
             worldMap.reproduce();
-            //***
-
-
             //5-Wzrastanie nowych roślin na wybranych polach mapy.
-            //***
             worldMap.generatePlants(plantsGrowingEveryDay);
-            //***
-
             //6-Koniec dnia(zwierzęta tracą energie)
             worldMap.dayPasses();
             for(Animal animal : animals) {
-                System.out.println("energia zwierzęcia"+ animal.getEnergy());
+                System.out.println("energia zwierzecia "+ animal.getEnergy());
             }
-
-
-
         }
-
-
     }
-
 
     private void placeAnimalsOnTheMap(UserConfigurationRecord config) {
         Random r = new Random();

@@ -111,7 +111,6 @@ public abstract class AbstractWorldMap implements WorldMap
         }
     }
 
-
     @Override
     public void rotate(Animal animal)
     {
