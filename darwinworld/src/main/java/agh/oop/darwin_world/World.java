@@ -1,12 +1,4 @@
 package agh.oop.darwin_world;
-import agh.oop.darwin_world.model.enums.AnimalMutationType;
-import agh.oop.darwin_world.model.enums.WorldMapType;
-import agh.oop.darwin_world.model.utils.Vector2d;
-import agh.oop.darwin_world.model.worlds.AbstractWorldMap;
-import agh.oop.darwin_world.model.worlds.Boundary;
-import agh.oop.darwin_world.model.worlds.Earth;
-import agh.oop.darwin_world.presenter.UserConfigurationRecord;
-import agh.oop.darwin_world.simulation.Simulation;
 import agh.oop.darwin_world.simulation.SimulationApp;
 import javafx.application.Application;
 

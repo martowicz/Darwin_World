@@ -24,32 +24,74 @@ public class Simulation implements Runnable {
     {
         this.numberOfAnimals=config.animalsCountAtStart();
         this.worldMap = config.mapType().enumToMap(config);
-        this.worldMap.addObserver(new ConsoleMapDisplay());
+
         this.plantsGrowingEveryDay = config.plantsGrowingDaily(); //obserwator w terminalu
         placeAnimalsOnTheMap(config);
         worldMap.generatePlants(plantsGrowingEveryDay);
+        this.animals = this.worldMap.getAnimalsToList();
+
     }
+
+    public AbstractWorldMap getWorldMap() {
+        return worldMap;
+    }
+
     @Override
     public void run(){
-        for(int i=0;i<100000;i++) {
+
+
+        for (int i=0;i<100;i++)
+        {
+            animals = worldMap.getAnimalsToList();
             days +=1;
             //1-Usunięcie martwych zwierzaków z mapy.
+            //--
             removeDeadAnimals(days);
+            //--
+
+
             //2-Skręt i przemieszczenie każdego zwierzaka.
-            animals = worldMap.getAnimalsToList();
+            //--
             rotateAllAnimals();
             moveAllAnimals();
+            //--
+
+
             //3-Konsumpcja roślin, na których pola weszły zwierzaki.
+            //--
             worldMap.animalsEatPlants();
+            //--
+
+
             //4-Rozmnażanie się najedzonych zwierzaków znajdujących się na tym samym polu.
+            //--
             worldMap.reproduce();
+            //--
+
+
             //5-Wzrastanie nowych roślin na wybranych polach mapy.
+            //--
             worldMap.generatePlants(plantsGrowingEveryDay);
+            //--
+
             //6-Koniec dnia(zwierzęta tracą energie)
+            //--
             worldMap.dayPasses();
-            for(Animal animal : animals) {
-                System.out.println("energia zwierzecia "+ animal.getEnergy());
-            }
+            //--
+
+
+            sleep();
+
+
+
+
+        }
+    }
+    private void sleep() {
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
