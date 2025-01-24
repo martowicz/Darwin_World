@@ -112,7 +112,7 @@ public class StartingWindowPresenter {
             String selectedConfig = csvCombo.getValue();
             WorldMapType selectedMapType = mapType.getValue();
             AnimalMutationType selectedMutationType = mutationType.getValue();
-
+            //fgh
             mapWidth = widthSpinner.getValue();
             mapHeight = heightSpinner.getValue();
             animalCount = animalCountSpinner.getValue();
