@@ -1,111 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.collections.FXCollections?>
+<?import java.lang.*?>
+<?import javafx.collections.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import java.lang.String?>
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="agh.oop.darwin_world.presenter.StartingWindowPresenter"
-            minHeight="400.0" minWidth="600.0"
-            style="-fx-padding: 25;">
+
+<BorderPane minHeight="400.0" minWidth="600.0" style="-fx-padding: 25;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.oop.darwin_world.presenter.StartingWindowPresenter">
 
    <center>
       <VBox spacing="6">
-         <HBox spacing="5" alignment="BASELINE_LEFT">
-            <Label text="Choose configuration or set a new one: " textAlignment="CENTER"/>
-            <ComboBox fx:id="csvCombo" layoutX="200.0" layoutY="33.0" prefWidth="200.0"/>
+         <HBox alignment="BASELINE_LEFT" prefHeight="26.0" prefWidth="601.0" spacing="5">
+            <Label text="Choose configuration or set a new one: " textAlignment="CENTER" />
+            <ComboBox fx:id="csvCombo" layoutX="200.0" layoutY="33.0" prefWidth="200.0" />
          </HBox>
 
-         <Label text="Set parameters" textAlignment="CENTER"/>
+
+         <Label text="Set parameters" textAlignment="CENTER" />
          <HBox spacing="5">
             <VBox>
-               <Label text="Map" textAlignment="CENTER"/>
+               <Label text="Map" textAlignment="CENTER" />
                <VBox>
-                  <Label text="MapType" textAlignment="CENTER"/>
-                  <ComboBox fx:id="mapCombo" layoutX="200.0" layoutY="33.0" prefWidth="150.0"/>
+                  <Label text="MapType" textAlignment="CENTER" />
+                  <ComboBox fx:id="mapCombo" layoutX="200.0" layoutY="33.0" prefWidth="150.0" />
                </VBox>
                <VBox>
-                  <Label text="Map width" textAlignment="CENTER"/>
-                  <Spinner fx:id="widthSpinner" max="30" initialValue="10" editable="true" prefWidth="150.0"/>
+                  <Label text="Map width" textAlignment="CENTER" />
+                  <Spinner fx:id="widthSpinner" editable="true" initialValue="10" max="30" prefWidth="150.0" />
                </VBox>
                <VBox>
-                  <Label text="Map height" textAlignment="CENTER"/>
-                  <Spinner fx:id="heightSpinner" max="30" initialValue="10" editable="true" prefWidth="150.0"/>
-               </VBox>
-            </VBox>
-            <VBox>
-               <Label text="General"/>
-               <VBox>
-                  <Label text="Genome" textAlignment="CENTER"/>
-                  <ComboBox fx:id="genomeCombo" layoutX="200.0" layoutY="33.0" prefWidth="150.0"/>
-               </VBox>
-               <VBox>
-                  <Label text="Genome length" textAlignment="CENTER"/>
-                  <Spinner fx:id="genomeLengthSpinner" max="10" initialValue="5" editable="true"
-                           prefWidth="150.0"/>
-               </VBox>
-               <VBox>
-                  <Label text="Vegetation" textAlignment="CENTER"/>
-                  <ComboBox fx:id="vegetationCombo" layoutX="200.0" layoutY="33.0" prefWidth="150.0"/>
-               </VBox>
-               <VBox>
-                  <Label text="Plants grown per day" textAlignment="CENTER"/>
-                  <Spinner fx:id="plantsCountSpinner" max="30" initialValue="4" editable="true"
-                           prefWidth="150.0"/>
-               </VBox>
-               <VBox>
-                  <Label text="Start animals count" textAlignment="CENTER"/>
-                  <Spinner fx:id="animalsCountSpinner" max="30" initialValue="10" editable="true"
-                           prefWidth="150.0"/>
+                  <Label text="Map height" textAlignment="CENTER" />
+                  <Spinner fx:id="heightSpinner" editable="true" initialValue="10" max="30" prefWidth="150.0" />
                </VBox>
             </VBox>
             <VBox>
-               <Label text="Energy"/>
+               <Label text="General" />
                <VBox>
-                  <Label text="Energy from one plant" textAlignment="CENTER"/>
-                  <Spinner fx:id="plantsEnergySpinner" max="20" initialValue="6" editable="true"
-                           prefWidth="150.0"/>
+                  <Label text="Genome" textAlignment="CENTER" />
+                  <ComboBox fx:id="genomeCombo" layoutX="200.0" layoutY="33.0" prefWidth="150.0" />
                </VBox>
                <VBox>
-                  <Label text="Initial animals' energy" textAlignment="CENTER"/>
-                  <Spinner fx:id="initialEnergySpinner" max="10" initialValue="8" editable="true"
-                           prefWidth="150.0"/>
+                  <Label text="Genome length" textAlignment="CENTER" />
+                  <Spinner fx:id="genomeLengthSpinner" editable="true" initialValue="5" max="10" prefWidth="150.0" />
                </VBox>
                <VBox>
-                  <Label text="Min breed energy" textAlignment="CENTER"/>
-                  <Spinner fx:id="minimumBreedSpinner" max="20" initialValue="10" editable="true"
-                           prefWidth="150.0"/>
+                  <Label text="Vegetation" textAlignment="CENTER" />
+                  <ComboBox fx:id="vegetationCombo" layoutX="200.0" layoutY="33.0" prefWidth="150.0" />
                </VBox>
                <VBox>
-                  <Label text="Energy for child" textAlignment="CENTER"/>
-                  <Spinner fx:id="childEnergySpinner" max="20" initialValue="8" editable="true"
-                           prefWidth="150.0"/>
+                  <Label text="Plants grown per day" textAlignment="CENTER" />
+                  <Spinner fx:id="plantsCountSpinner" editable="true" initialValue="4" max="30" prefWidth="150.0" />
+               </VBox>
+               <VBox>
+                  <Label text="Start animals count" textAlignment="CENTER" />
+                  <Spinner fx:id="animalsCountSpinner" editable="true" initialValue="10" max="30" prefWidth="150.0" />
+               </VBox>
+            </VBox>
+            <VBox>
+               <Label text="Energy" />
+               <VBox>
+                  <Label text="Energy from one plant" textAlignment="CENTER" />
+                  <Spinner fx:id="plantsEnergySpinner" editable="true" initialValue="6" max="20" prefWidth="150.0" />
+               </VBox>
+               <VBox>
+                  <Label text="Initial animals' energy" textAlignment="CENTER" />
+                  <Spinner fx:id="initialEnergySpinner" editable="true" initialValue="8" max="10" prefWidth="150.0" />
+               </VBox>
+               <VBox>
+                  <Label text="Min breed energy" textAlignment="CENTER" />
+                  <Spinner fx:id="minimumBreedSpinner" editable="true" initialValue="10" max="20" prefWidth="150.0" />
+               </VBox>
+               <VBox>
+                  <Label text="Energy for child" textAlignment="CENTER" />
+                  <Spinner fx:id="childEnergySpinner" editable="true" initialValue="8" max="20" prefWidth="150.0" />
                </VBox>
 
             </VBox>
             <VBox>
-               <Label text="Mutations"/>
+               <Label text="Mutations" />
                <VBox>
-                  <Label text="Mutation type" textAlignment="CENTER"/>
-                  <ComboBox fx:id="mutationTypeCombo" layoutX="200.0" layoutY="33.0" prefWidth="150.0"
-                            value="FullyRandom">
+                  <Label text="Mutation type" textAlignment="CENTER" />
+                  <ComboBox fx:id="mutationTypeCombo" layoutX="200.0" layoutY="33.0" prefWidth="150.0" value="FullyRandom">
                      <items>
                         <FXCollections fx:factory="observableArrayList">
-                           <String fx:value="FullyRandom"/>
+                           <String fx:value="FullyRandom" />
                         </FXCollections>
                      </items>
                   </ComboBox>
                </VBox>
                <VBox>
-                  <Label text="Min mutation number" textAlignment="CENTER"/>
-                  <Spinner fx:id="minMutationSpinner" max="20" initialValue="2" editable="true"
-                           prefWidth="150.0"/>
+                  <Label text="Min mutation number" textAlignment="CENTER" />
+                  <Spinner fx:id="minMutationSpinner" editable="true" initialValue="2" max="20" prefWidth="150.0" />
                </VBox>
                <VBox>
-                  <Label text="Max mutation number" textAlignment="CENTER"/>
-                  <Spinner fx:id="maxMutationSpinner" max="20" initialValue="2" editable="true"
-                           prefWidth="150.0"/>
+                  <Label text="Max mutation number" textAlignment="CENTER" />
+                  <Spinner fx:id="maxMutationSpinner" editable="true" initialValue="2" max="20" prefWidth="150.0" />
                </VBox>
             </VBox>
          </HBox>
@@ -115,17 +103,17 @@
    <bottom>
       <VBox spacing="20">
          <HBox>
-            <Label fx:id="errorLabel" textAlignment="CENTER" style="-fx-text-fill: #BB2222; -fx-font-weight: bold;"/>
+            <Label fx:id="errorLabel" style="-fx-text-fill: #BB2222; -fx-font-weight: bold;" textAlignment="CENTER" />
          </HBox>
          <BorderPane>
             <left>
-               <HBox spacing="20" alignment="BASELINE_CENTER">
-                  <Button onAction="#onSimulationStartClicked" text="Start"/>
-                  <CheckBox fx:id="saveLogCheck" text="save log"/>
+               <HBox alignment="BASELINE_CENTER" spacing="20">
+                  <Button onAction="#onSimulationStartClicked" text="Start" />
+                  <CheckBox fx:id="saveLogCheck" text="save log" />
                </HBox>
             </left>
             <right>
-               <Button onAction="#onSaveClicked" text="Save configuration"/>
+               <Button onAction="#onSaveClicked" text="Save configuration" />
             </right>
          </BorderPane>
       </VBox>
