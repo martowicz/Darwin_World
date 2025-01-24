@@ -2,13 +2,11 @@ package agh.oop.darwin_world.simulation;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.world_elements.Animal;
 import agh.oop.darwin_world.model.worlds.AbstractWorldMap;
-import agh.oop.darwin_world.model.worlds.Boundary;
 import agh.oop.darwin_world.presenter.ConsoleMapDisplay;
 import agh.oop.darwin_world.presenter.UserConfigurationRecord;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 public class Simulation implements Runnable {
 
@@ -18,7 +16,7 @@ public class Simulation implements Runnable {
     private List<Animal> animals = new ArrayList<>();
     private AbstractWorldMap worldMap;
     private final int plantsGrowingEveryDay;
-    private int days = 0;
+    private int day = 0;
 
     public Simulation(UserConfigurationRecord config)
     {
@@ -27,29 +25,36 @@ public class Simulation implements Runnable {
         this.worldMap.addObserver(new ConsoleMapDisplay());
         this.plantsGrowingEveryDay = config.plantsGrowingDaily(); //obserwator w terminalu
         placeAnimalsOnTheMap(config);
-        worldMap.generatePlants(plantsGrowingEveryDay);
+        worldMap.generateEnvironment(plantsGrowingEveryDay,0);
     }
     @Override
     public void run(){
         for(int i=0;i<100000;i++) {
-            days +=1;
-            //1-Usunięcie martwych zwierzaków z mapy.
-            removeDeadAnimals(days);
-            //2-Skręt i przemieszczenie każdego zwierzaka.
-            animals = worldMap.getAnimalsToList();
-            rotateAllAnimals();
-            moveAllAnimals();
-            //3-Konsumpcja roślin, na których pola weszły zwierzaki.
-            worldMap.animalsEatPlants();
-            //4-Rozmnażanie się najedzonych zwierzaków znajdujących się na tym samym polu.
-            worldMap.reproduce();
-            //5-Wzrastanie nowych roślin na wybranych polach mapy.
-            worldMap.generatePlants(plantsGrowingEveryDay);
-            //6-Koniec dnia(zwierzęta tracą energie)
-            worldMap.dayPasses();
-            for(Animal animal : animals) {
-                System.out.println("energia zwierzecia "+ animal.getEnergy());
+            try{
+                Thread.sleep(1000);
+                day +=1;
+                //1-Usunięcie martwych zwierzaków z mapy.
+                removeDeadAnimals(day);
+                //2-Skręt i przemieszczenie każdego zwierzaka.
+                animals = worldMap.getAnimalsToList();
+                rotateAllAnimals();
+                moveAllAnimals();
+                //3-Konsumpcja roślin, na których pola weszły zwierzaki.
+                worldMap.animalsEatPlants();
+                //4-Rozmnażanie się najedzonych zwierzaków znajdujących się na tym samym polu.
+                worldMap.reproduce();
+                //5-Wzrastanie nowych roślin na wybranych polach mapy.
+                worldMap.generateEnvironment(plantsGrowingEveryDay,day);
+                //6-Koniec dnia(zwierzęta tracą energie)
+                worldMap.dayPasses();
+                //for(Animal animal : animals) {
+                    //System.out.println("energia zwierzecia "+ animal.getEnergy());
+                //}
             }
+            catch(InterruptedException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 

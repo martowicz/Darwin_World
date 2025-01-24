@@ -14,7 +14,6 @@ public class LightCorrectionMutation extends AbstractMutation{
         Random rand = new Random();
         int version=rand.nextInt(2);
         if (version==0){
-            System.out.println("Zmiana z "+ geneValue+" na "+ (geneValue-1));
             return geneValue-1;
         }
         else{

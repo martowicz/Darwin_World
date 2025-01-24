@@ -11,7 +11,6 @@ import agh.oop.darwin_world.model.world_elements.WorldElement;
 import agh.oop.darwin_world.presenter.MapChangeListener;
 import agh.oop.darwin_world.presenter.UserConfigurationRecord;
 
-import java.lang.module.Configuration;
 import java.security.SecureRandom;
 import java.util.*;
 
@@ -40,7 +39,6 @@ public abstract class AbstractWorldMap implements WorldMap
         this.equatorYmax = (int) (0.6*(boundary.upperRight().getY()-boundary.lowerLeft().getY()));
         this.energyFromOnePlant = config.energyFromPlant();
         this.startingPlantsCount = config.startingPlantNumber();
-        generatePlants(startingPlantsCount);
 
     }
 
@@ -59,11 +57,9 @@ public abstract class AbstractWorldMap implements WorldMap
             if (secondAnimal.getEnergy()<config.animalsEnergyToCopulate())
                 return;
 
-
             Animal kidos = new Animal(firstAnimal,secondAnimal,config);
             addAnimal(firstAnimal.getPosition(),kidos);
 
-            System.out.println("can mate" +firstAnimal+secondAnimal);
 
         }
 
@@ -203,15 +199,13 @@ public abstract class AbstractWorldMap implements WorldMap
 
 
 
-    public void generatePlants(int startingGrassCount){
+    public void generateEnvironment(int grassCount, int day){
         SecureRandom rand = new SecureRandom();
         Random xx = new Random();
         Random yy= new Random();
-
         //zmienić tak że jeśli na pozycji już coś jest to losuje jeszcze raz i jeśli wszyskie miejsca są zajęte to nei losuje
 
-
-        for(int i = 0; i < startingGrassCount; i++) {
+        for(int i = 0; i < grassCount; i++) {
             int yCoordinate;
             double v = rand.nextDouble();
             if(v>0.8){

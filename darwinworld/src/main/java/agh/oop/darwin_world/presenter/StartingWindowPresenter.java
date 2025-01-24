@@ -16,52 +16,36 @@ import javafx.stage.Stage;
 public class StartingWindowPresenter{
     @FXML
     public ComboBox<String> csvCombo;
-
     @FXML
     public ComboBox<WorldMapType> mapType;
-
     @FXML
     public ComboBox<AnimalMutationType> mutationType;
-
     @FXML
     public Spinner<Integer> widthSpinner;
-
     @FXML
     public Spinner<Integer> heightSpinner;
-
     @FXML
     public Spinner<Integer> animalCountSpinner;
-
     @FXML
     public Spinner<Integer> startingEnergySpinner;
-
     @FXML
     public Spinner<Integer> reproductionEnergySpinner;
-
     @FXML
     public Spinner<Integer> childEnergySpinner;
-
     @FXML
     public Spinner<Integer> energyFromPlantSpinner;
-
     @FXML
     public Spinner<Integer> genomeLengthSpinner;
-
     @FXML
     public Spinner<Integer> minMutationsSpinner;
-
     @FXML
     public Spinner<Integer> maxMutationsSpinner;
-
     @FXML
     public Spinner<Integer> plantsAtStartSpinner;
-
     @FXML
     public Spinner<Integer> plantsPerDaySpinner;
-
     @FXML
     public Label errorLabel;
-
     @FXML
     public CheckBox saveLogCheck;
 
