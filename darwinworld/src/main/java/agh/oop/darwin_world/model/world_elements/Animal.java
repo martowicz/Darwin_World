@@ -77,39 +77,21 @@ public class Animal implements WorldElement, Comparable<Animal> {
         int side = rand.nextInt(2); //0 - lewa strona 1-prawa strona
         double percentageofparent1 = (double) (parent1energy) / (parent1energy + parent2energy);
         double percentageofparent2 = 1 - percentageofparent1;
-        System.out.println(side + " " + percentageofparent1 + " " + percentageofparent2);
-        System.out.println(parent1genes.toString() + " " + parent2genes.toString());
+
         if (side == 0) {
-
-
-            //TODO to chyba coś nie tak bo ten kod jest taki sam
-
-
-            //bierzemy silniejszego z lewej
             if (percentageofparent2 > percentageofparent1) {
                 int divider = (int) (percentageofparent2 * parent2genes.size());
-                System.out.println(divider);
-                for (int i = 0; i < divider; i++) {
-                    genes.add(parent2genes.get(i));
-                }
-                for (int i = divider; i < parent1genes.size(); i++) {
-                    genes.add(parent1genes.get(i));
-                }
+                for (int i = 0; i < divider; i++) {genes.add(parent2genes.get(i));}
+                for (int i = divider; i < parent1genes.size(); i++) {genes.add(parent1genes.get(i));}
             } else {
                 int divider = (int) (percentageofparent2 * parent1genes.size());
-                System.out.println(divider);
-                for (int i = 0; i < divider; i++) {
-                    genes.add(parent1genes.get(i));
-                }
-                for (int i = divider; i < parent1genes.size(); i++) {
-                    genes.add(parent2genes.get(i));
-                }
+                for (int i = 0; i < divider; i++) {genes.add(parent1genes.get(i));}
+                for (int i = divider; i < parent1genes.size(); i++) {genes.add(parent2genes.get(i));}
             }
         } else {
             //bierzemy silniejszego z prawej
             if (percentageofparent2 > percentageofparent1) {
                 int divider = (int) (percentageofparent2 * parent2genes.size());
-                System.out.println(divider);
                 for (int i = 0; i < divider; i++) {
                     genes.add(parent1genes.get(i));
                 }
@@ -118,7 +100,6 @@ public class Animal implements WorldElement, Comparable<Animal> {
                 }
             } else {
                 int divider = (int) (percentageofparent2 * parent1genes.size());
-                System.out.println(divider);
                 for (int i = 0; i < divider; i++) {
                     genes.add(parent2genes.get(i));
                 }
@@ -140,9 +121,13 @@ public class Animal implements WorldElement, Comparable<Animal> {
         this.animalOrientation = orientation;
     }
 
+    public void setEnergy(int energy){this.energy = energy;}
+
     @Override
     public String toString() {
-        return animalOrientation.toString();
+        String yellowText = "\u001B[33m";
+        String resetText = "\u001B[0m";
+        return yellowText+animalOrientation.toString()+resetText;
     }
 
     @Override
@@ -198,9 +183,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
         return animalOrientation;
     }
 
-    public String info(){
-        return genes.toString()+" "+animalOrientation.toString()+" "+animalPosition.toString()+" "+energy;
-    }
+
 
     @Override
     public int compareTo(Animal o)

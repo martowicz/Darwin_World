@@ -40,7 +40,7 @@ public abstract class AbstractWorldMap implements WorldMap
         this.equatorYmax = (int) (0.6*(boundary.upperRight().getY()-boundary.lowerLeft().getY()));
         this.energyFromOnePlant = config.energyFromPlant();
         this.startingPlantsCount = config.startingPlantNumber();
-        generatePlants(startingPlantsCount);
+        generateEnvironment(startingPlantsCount,0);
 
     }
 
@@ -203,15 +203,15 @@ public abstract class AbstractWorldMap implements WorldMap
 
 
 
-    public void generatePlants(int startingGrassCount){
+    public void generateEnvironment(int grassCount, int day){
         SecureRandom rand = new SecureRandom();
         Random xx = new Random();
         Random yy= new Random();
 
         //zmienić tak że jeśli na pozycji już coś jest to losuje jeszcze raz i jeśli wszyskie miejsca są zajęte to nei losuje
 
-
-        for(int i = 0; i < startingGrassCount; i++) {
+        int i=0;
+        while (i<grassCount){
             int yCoordinate;
             double v = rand.nextDouble();
             if(v>0.8){
@@ -232,8 +232,12 @@ public abstract class AbstractWorldMap implements WorldMap
             }
             int xCoordinate = xx.nextInt(boundary.upperRight().getY()-boundary.lowerLeft().getY()+1)+boundary.lowerLeft().getY();
             Vector2d newPosition = new Vector2d(xCoordinate, yCoordinate);
-            Plant plant = new Plant(newPosition);
-            plants.put(newPosition, plant);
+            if(!plants.containsKey(newPosition)){
+                Plant plant = new Plant(newPosition);
+                plants.put(newPosition, plant);
+                i++;
+            }
+
         }
     }
 

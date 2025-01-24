@@ -22,11 +22,10 @@ public class Simulation implements Runnable {
     {
         this.numberOfAnimals=config.animalsCountAtStart();
         this.worldMap = config.mapType().enumToMap(config);
-
+        this.worldMap.addObserver(new ConsoleMapDisplay());
         this.plantsGrowingEveryDay = config.plantsGrowingDaily(); //obserwator w terminalu
         placeAnimalsOnTheMap(config);
 
-        worldMap.generateEnvironment(plantsGrowingEveryDay,0);
 
         this.animals = this.worldMap.getAnimalsToList();
 
@@ -90,7 +89,7 @@ public class Simulation implements Runnable {
     }
     private void sleep() {
         try {
-            Thread.sleep(1);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
 
