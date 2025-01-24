@@ -10,7 +10,7 @@ public class SimulationApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getClassLoader().getResource("startingWindow.fxml"));
+        fxmlLoader.setLocation(getClass().getClassLoader().getResource("startingWindowNew.fxml"));
         BorderPane viewRoot = fxmlLoader.load();
 
         configureStage(stage, viewRoot);
