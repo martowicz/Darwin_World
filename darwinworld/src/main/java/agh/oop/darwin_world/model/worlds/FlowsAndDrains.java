@@ -1,77 +1,48 @@
 package agh.oop.darwin_world.model.worlds;
 
 
-import agh.oop.darwin_world.model.utils.SortedLinkedList;
 import agh.oop.darwin_world.model.utils.Vector2d;
-import agh.oop.darwin_world.model.world_elements.Animal;
-import agh.oop.darwin_world.model.world_elements.Lake;
+import agh.oop.darwin_world.model.world_elements.Water;
 import agh.oop.darwin_world.model.world_elements.WorldElement;
 import agh.oop.darwin_world.presenter.UserConfigurationRecord;
 
-import java.util.*;
+import java.security.SecureRandom;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FlowsAndDrains extends AbstractWorldMap {
 
-    List<Lake> lakes = new ArrayList<>();
+    Map<Vector2d, WorldElement> waterPlaces = new HashMap<Vector2d, WorldElement>();
 
     public FlowsAndDrains(UserConfigurationRecord config) {
         super(config);
-        Lake lake = new Lake(config);
-        lakes.add(lake);
-        generateEnvironment(config.startingPlantNumber(),0);
+        generateRandomWaterPosition();
+
 
     }
 
     @Override
     public boolean canMoveTo(Vector2d position) {
-        for (Lake lake : lakes) {
-            if(lake.isLake(position)) {return false;}
-        }
-        return super.canMoveTo(position);
+        return super.canMoveTo(position) && !waterPlaces.containsKey(position); // and no water on the map
     }
 
     @Override
     public WorldElement returnObjectAt(Vector2d position) { //ważne do wyświetlania elementów mapy
-        for(Lake lake : lakes) {
-            if(lake.isLake(position)) {
-                return lake;
-            }
+        if (waterPlaces.containsKey(position)) {
+            return waterPlaces.get(position);
         }
         return super.returnObjectAt(position);
     }
 
-
-    @Override
-    public void generateEnvironment(int grassCount,int day){
-        super.generateEnvironment(grassCount,day);
-        if(day%5==1){
-            Random rand = new Random();
-            for(Lake lake : lakes) {
-                int s=rand.nextInt(2);
-                if(s==0){
-                    lake.reduceLake();
-                }
-                else{
-                    lake.extendLake();
-                }
-                for(Vector2d position : animalsAtPositions.keySet()){
-                    if(lake.isLake(position)) {
-                        SortedLinkedList<Animal> animals = animalsAtPositions.get(position);
-                        for(Animal animal : animals){
-                            animal.setEnergy(0); //nieładne to chyba
-                        }
-                    }
-                }
-
-
-            }
-
-
-
-        }
-
-
-
+    public void generateRandomWaterPosition() {
+        SecureRandom random = new SecureRandom();
+        int lenx =boundary.upperRight().getX();
+        int leny =boundary.upperRight().getY();
+        int x = (int) (random.nextInt((int) (lenx*0.6))+0.2*lenx);
+        int y = (int) (random.nextInt((int) (leny*0.6))+0.2*leny);
+        Vector2d position = new Vector2d(x, y);
+        Water water = new Water(position);
+        waterPlaces.put(position, water);
     }
 
 

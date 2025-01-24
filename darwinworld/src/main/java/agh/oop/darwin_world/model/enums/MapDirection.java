@@ -36,10 +36,10 @@ public enum MapDirection {
             case E -> "E";
             case S -> "S";
             case W -> "W";
-            case NE -> "R";
-            case SW -> "T";
-            case NW -> "Y";
-            case SE -> "U";
+            case NE -> "NE";
+            case SW -> "SW";
+            case NW -> "NW";
+            case SE -> "SE";
         };
     }
 

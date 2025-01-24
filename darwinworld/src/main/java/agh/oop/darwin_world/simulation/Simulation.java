@@ -2,11 +2,13 @@ package agh.oop.darwin_world.simulation;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.world_elements.Animal;
 import agh.oop.darwin_world.model.worlds.AbstractWorldMap;
+import agh.oop.darwin_world.model.worlds.Boundary;
 import agh.oop.darwin_world.presenter.ConsoleMapDisplay;
 import agh.oop.darwin_world.presenter.UserConfigurationRecord;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class Simulation implements Runnable {
 
@@ -16,7 +18,7 @@ public class Simulation implements Runnable {
     private List<Animal> animals = new ArrayList<>();
     private AbstractWorldMap worldMap;
     private final int plantsGrowingEveryDay;
-    private int day = 0;
+    private int days = 0;
 
     public Simulation(UserConfigurationRecord config)
     {
@@ -25,9 +27,7 @@ public class Simulation implements Runnable {
 
         this.plantsGrowingEveryDay = config.plantsGrowingDaily(); //obserwator w terminalu
         placeAnimalsOnTheMap(config);
-
-        worldMap.generateEnvironment(plantsGrowingEveryDay,0);
-
+        worldMap.generatePlants(plantsGrowingEveryDay);
         this.animals = this.worldMap.getAnimalsToList();
 
     }
@@ -38,7 +38,6 @@ public class Simulation implements Runnable {
 
     @Override
     public void run(){
-
 
 
         for (int i=0;i<100;i++)
@@ -93,7 +92,6 @@ public class Simulation implements Runnable {
             Thread.sleep(1);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-
         }
     }
 

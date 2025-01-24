@@ -23,38 +23,52 @@ import static java.lang.Math.min;
 public class StartingWindowPresenter {
 
     @FXML
+    private ComboBox<String> csvComboBox;
 
-    public ComboBox<String> csvCombo;
     @FXML
-    public ComboBox<WorldMapType> mapType;
+    private ComboBox<WorldMapType> mapTypeBox;
+
     @FXML
-    public ComboBox<AnimalMutationType> mutationType;
+    private ComboBox<AnimalMutationType> mutationTypeBox;
+
     @FXML
-    public Spinner<Integer> widthSpinner;
+    private Spinner<Integer> widthSpinner;
+
     @FXML
-    public Spinner<Integer> heightSpinner;
+    private Spinner<Integer> heightSpinner;
+
     @FXML
-    public Spinner<Integer> animalCountSpinner;
+    private Spinner<Integer> animalCountSpinner;
+
     @FXML
-    public Spinner<Integer> startingEnergySpinner;
+    private Spinner<Integer> startingEnergySpinner;
+
     @FXML
-    public Spinner<Integer> reproductionEnergySpinner;
+    private Spinner<Integer> reproductionEnergySpinner;
+
     @FXML
-    public Spinner<Integer> childEnergySpinner;
+    private Spinner<Integer> childEnergySpinner;
+
     @FXML
-    public Spinner<Integer> energyFromPlantSpinner;
+    private Spinner<Integer> energyFromPlantSpinner;
+
     @FXML
-    public Spinner<Integer> genomeLengthSpinner;
+    private Spinner<Integer> genomeLengthSpinner;
+
     @FXML
-    public Spinner<Integer> minMutationsSpinner;
+    private Spinner<Integer> minMutationsSpinner;
+
     @FXML
-    public Spinner<Integer> maxMutationsSpinner;
+    private Spinner<Integer> maxMutationsSpinner;
+
     @FXML
-    public Spinner<Integer> plantsAtStartSpinner;
+    private Spinner<Integer> plantsAtStartSpinner;
+
     @FXML
-    public Spinner<Integer> plantsPerDaySpinner;
+    private Spinner<Integer> plantsPerDaySpinner;
+
     @FXML
-    public Label errorLabel;
+    private CheckBox saveLogCheck;
 
     @FXML
     private Label errorLabel;
