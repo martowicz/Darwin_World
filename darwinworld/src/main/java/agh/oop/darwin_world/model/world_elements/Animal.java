@@ -49,25 +49,26 @@ public class Animal implements WorldElement, Comparable<Animal> {
         //New animals have random orientation
         this.animalOrientation= MapDirection.getRandomPosition();
 
+        //przemyśleć to bo w teorii np ojciec się rusza to syn też bo to byłoby to samo miejsce w pamięci
         this.animalPosition = new Vector2d(parent1.animalPosition.getX(), parent1.animalPosition.getY());
         this.genomeLength = config.genomLength();
         this.energy = 2*config.animalsEnergySpentOnCopulation();
         Random r = new Random();
         this.iterator = r.nextInt(this.genomeLength);
 
-        //creating genome from parents
+        //przypisywanie genów
         getGenesFromParents(parent1, parent2);
 
-        //genome mutation
+
+        //mutowanie genów
         this.mutation = config.mutationType().enumToMutation(config.minMutations(), config.maxMutations());
         this.mutation.mutateGenes(genes);
 
 
     }
-    public void setEnergy(int energy){
-        this.energy = energy;
-    }
+
     public void getGenesFromParents(Animal parent1,Animal parent2) {
+
         List <Integer> parent1genes=parent1.genes;
         List <Integer> parent2genes=parent2.genes;
         int parent1energy=parent1.energy;
@@ -76,30 +77,59 @@ public class Animal implements WorldElement, Comparable<Animal> {
         int side = rand.nextInt(2); //0 - lewa strona 1-prawa strona
         double percentageofparent1 = (double) (parent1energy) / (parent1energy + parent2energy);
         double percentageofparent2 = 1 - percentageofparent1;
-        //wybór strony
+        System.out.println(side + " " + percentageofparent1 + " " + percentageofparent2);
+        System.out.println(parent1genes.toString() + " " + parent2genes.toString());
         if (side == 0) {
+
+
+            //TODO to chyba coś nie tak bo ten kod jest taki sam
+
+
             //bierzemy silniejszego z lewej
             if (percentageofparent2 > percentageofparent1) {
                 int divider = (int) (percentageofparent2 * parent2genes.size());
-                for (int i = 0; i < divider; i++) {genes.add(parent2genes.get(i));}
-                for (int i = divider; i < parent1genes.size(); i++) {genes.add(parent1genes.get(i));}
+                System.out.println(divider);
+                for (int i = 0; i < divider; i++) {
+                    genes.add(parent2genes.get(i));
+                }
+                for (int i = divider; i < parent1genes.size(); i++) {
+                    genes.add(parent1genes.get(i));
+                }
             } else {
                 int divider = (int) (percentageofparent2 * parent1genes.size());
-                for (int i = 0; i < divider; i++) {genes.add(parent1genes.get(i));}
-                for (int i = divider; i < parent1genes.size(); i++) {genes.add(parent2genes.get(i));}
+                System.out.println(divider);
+                for (int i = 0; i < divider; i++) {
+                    genes.add(parent1genes.get(i));
+                }
+                for (int i = divider; i < parent1genes.size(); i++) {
+                    genes.add(parent2genes.get(i));
+                }
             }
         } else {
             //bierzemy silniejszego z prawej
             if (percentageofparent2 > percentageofparent1) {
                 int divider = (int) (percentageofparent2 * parent2genes.size());
-                for (int i = 0; i < divider; i++) {genes.add(parent1genes.get(i));}
-                for (int i = divider; i < parent1genes.size(); i++) {genes.add(parent2genes.get(i));}
+                System.out.println(divider);
+                for (int i = 0; i < divider; i++) {
+                    genes.add(parent1genes.get(i));
+                }
+                for (int i = divider; i < parent1genes.size(); i++) {
+                    genes.add(parent2genes.get(i));
+                }
             } else {
                 int divider = (int) (percentageofparent2 * parent1genes.size());
-                for (int i = 0; i < divider; i++) {genes.add(parent2genes.get(i));}
-                for (int i = divider; i < parent1genes.size(); i++) {genes.add(parent1genes.get(i));}
+                System.out.println(divider);
+                for (int i = 0; i < divider; i++) {
+                    genes.add(parent2genes.get(i));
+                }
+                for (int i = divider; i < parent1genes.size(); i++) {
+                    genes.add(parent1genes.get(i));
+                }
             }
         }
+
+
+
     }
 
     public void setAnimalPosition(Vector2d position){
@@ -112,9 +142,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     @Override
     public String toString() {
-        String yellowText = "\u001B[33m";
-        String resetText = "\u001B[0m";
-        return yellowText+animalOrientation.toString()+resetText;
+        return animalOrientation.toString();
     }
 
     @Override
@@ -141,6 +169,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
         this.dayOfDeath = dayOfDeath;
     }
 
+
     public int getKids(){
         return kids.size();
     }
@@ -150,6 +179,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
                 .mapToInt(Animal::getDescendants)
                 .sum();
     }
+
 
     public void addKid(Animal kid){
         kids.add(kid);
@@ -166,6 +196,10 @@ public class Animal implements WorldElement, Comparable<Animal> {
     public MapDirection getAnimalOrientation()
     {
         return animalOrientation;
+    }
+
+    public String info(){
+        return genes.toString()+" "+animalOrientation.toString()+" "+animalPosition.toString()+" "+energy;
     }
 
     @Override
