@@ -17,7 +17,7 @@
 
                 <HBox alignment="CENTER" prefHeight=" .0" prefWidth="601.0" spacing="5">
                     <Label text="Choose configuration or set a new one: " textAlignment="CENTER" />
-                    <ComboBox fx:id="csvComboBox" layoutX="200.0" layoutY="33.0" prefWidth="200.0" />
+                    <ComboBox fx:id="csvCombo" layoutX="200.0" layoutY="33.0" prefWidth="200.0" />
                 </HBox>
                 <HBox alignment="CENTER" prefHeight="26.0" prefWidth="601.0" spacing="5">
                     <Label text="New configuration setup" textAlignment="CENTER">
@@ -28,11 +28,11 @@
                 </HBox>
                 <HBox alignment="BOTTOM_RIGHT" prefHeight="26.0" prefWidth="601.0" spacing="5">
                     <Label text="Choose your map type: " textAlignment="CENTER" />
-                    <ComboBox fx:id="mapTypeBox" layoutX="200.0" layoutY="33.0" prefWidth="200.0" />
+                    <ComboBox fx:id="mapType" layoutX="200.0" layoutY="33.0" prefWidth="200.0" />
                 </HBox>
                 <HBox alignment="BOTTOM_RIGHT" prefHeight="26.0" prefWidth="601.0" spacing="5">
                     <Label text="Choose your mutation type: " textAlignment="CENTER" />
-                    <ComboBox fx:id="mutationTypeBox" layoutX="200.0" layoutY="33.0" prefWidth="200.0" />
+                    <ComboBox fx:id="mutationType" layoutX="200.0" layoutY="33.0" prefWidth="200.0" />
                 </HBox>
                 <HBox alignment="BOTTOM_RIGHT" prefHeight="26.0" prefWidth="601.0" spacing="5">
                     <Label text="Choose map width: " />

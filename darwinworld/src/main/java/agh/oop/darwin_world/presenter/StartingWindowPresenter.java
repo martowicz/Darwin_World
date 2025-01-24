@@ -23,55 +23,41 @@ import static java.lang.Math.min;
 public class StartingWindowPresenter {
 
     @FXML
-    private ComboBox<String> csvComboBox;
 
+    public ComboBox<String> csvCombo;
     @FXML
-    private ComboBox<WorldMapType> mapTypeBox;
+    public ComboBox<WorldMapType> mapType;
+    @FXML
+    public ComboBox<AnimalMutationType> mutationType;
+    @FXML
+    public Spinner<Integer> widthSpinner;
+    @FXML
+    public Spinner<Integer> heightSpinner;
+    @FXML
+    public Spinner<Integer> animalCountSpinner;
+    @FXML
+    public Spinner<Integer> startingEnergySpinner;
+    @FXML
+    public Spinner<Integer> reproductionEnergySpinner;
+    @FXML
+    public Spinner<Integer> childEnergySpinner;
+    @FXML
+    public Spinner<Integer> energyFromPlantSpinner;
+    @FXML
+    public Spinner<Integer> genomeLengthSpinner;
+    @FXML
+    public Spinner<Integer> minMutationsSpinner;
+    @FXML
+    public Spinner<Integer> maxMutationsSpinner;
+    @FXML
+    public Spinner<Integer> plantsAtStartSpinner;
+    @FXML
+    public Spinner<Integer> plantsPerDaySpinner;
+    @FXML
+    public Label errorLabel;
+    @FXML
+    public CheckBox saveLogCheck;
 
-    @FXML
-    private ComboBox<AnimalMutationType> mutationTypeBox;
-
-    @FXML
-    private Spinner<Integer> widthSpinner;
-
-    @FXML
-    private Spinner<Integer> heightSpinner;
-
-    @FXML
-    private Spinner<Integer> animalCountSpinner;
-
-    @FXML
-    private Spinner<Integer> startingEnergySpinner;
-
-    @FXML
-    private Spinner<Integer> reproductionEnergySpinner;
-
-    @FXML
-    private Spinner<Integer> childEnergySpinner;
-
-    @FXML
-    private Spinner<Integer> energyFromPlantSpinner;
-
-    @FXML
-    private Spinner<Integer> genomeLengthSpinner;
-
-    @FXML
-    private Spinner<Integer> minMutationsSpinner;
-
-    @FXML
-    private Spinner<Integer> maxMutationsSpinner;
-
-    @FXML
-    private Spinner<Integer> plantsAtStartSpinner;
-
-    @FXML
-    private Spinner<Integer> plantsPerDaySpinner;
-
-    @FXML
-    private CheckBox saveLogCheck;
-
-    @FXML
-    private Label errorLabel;
 
     int mapWidth;
     int mapHeight;
@@ -92,13 +78,13 @@ public class StartingWindowPresenter {
     @FXML
     void initialize()
     {
-        csvComboBox.getItems().addAll("Config1", "Config2", "Config3");
+        csvCombo.getItems().addAll("Config1", "Config2", "Config3");
 
         for(WorldMapType typeOfMap : WorldMapType.values()) {
-            mapTypeBox.getItems().add(typeOfMap);
+            mapType.getItems().add(typeOfMap);
             }
         for(AnimalMutationType typeOfMutation : AnimalMutationType.values()) {
-            mutationTypeBox.getItems().add(typeOfMutation);
+            mutationType.getItems().add(typeOfMutation);
             }
         // Set default values for spinners
         setSpinnerDefaults(widthSpinner, 1, 100, 10);
@@ -123,9 +109,9 @@ public class StartingWindowPresenter {
     @FXML
     private void onSaveClicked() {
         try {
-            String selectedConfig = csvComboBox.getValue();
-            WorldMapType selectedMapType = mapTypeBox.getValue();
-            AnimalMutationType selectedMutationType = mutationTypeBox.getValue();
+            String selectedConfig = csvCombo.getValue();
+            WorldMapType selectedMapType = mapType.getValue();
+            AnimalMutationType selectedMutationType = mutationType.getValue();
 
             mapWidth = widthSpinner.getValue();
             mapHeight = heightSpinner.getValue();
@@ -164,7 +150,7 @@ public class StartingWindowPresenter {
 
         UserConfigurationRecord config = new UserConfigurationRecord(
                 new Boundary(new Vector2d(0,0),new Vector2d(widthSpinner.getValue(),heightSpinner.getValue())),
-                mapTypeBox.getValue(),
+                mapType.getValue(),
                 plantsAtStartSpinner.getValue(),
                 energyFromPlantSpinner.getValue(),
                 plantsPerDaySpinner.getValue(),
@@ -175,7 +161,7 @@ public class StartingWindowPresenter {
                 minMutationsSpinner.getValue(),
                 maxMutationsSpinner.getValue(),
                 genomeLengthSpinner.getValue(),
-                mutationTypeBox.getValue()
+                mutationType.getValue()
         );
 
         //errorLabel.setText("");
