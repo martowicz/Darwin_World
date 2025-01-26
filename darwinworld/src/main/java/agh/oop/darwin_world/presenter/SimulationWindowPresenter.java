@@ -3,6 +3,7 @@ package agh.oop.darwin_world.presenter;
 import agh.oop.darwin_world.World;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.world_elements.WorldElement;
+import agh.oop.darwin_world.model.worlds.AbstractWorldMap;
 import agh.oop.darwin_world.model.worlds.Boundary;
 import agh.oop.darwin_world.model.worlds.WorldMap;
 import agh.oop.darwin_world.simulation.Simulation;
@@ -35,7 +36,16 @@ public class SimulationWindowPresenter implements MapChangeListener {
     @FXML
     private Label moveDescriptionLabel;
 
-    WorldMap worldMap;
+    @FXML
+    private Label numberOfAnimalsLabel;
+
+    @FXML
+    private Label numberOfPlantsLabel;
+
+    @FXML
+    private Label averageEnergyLabel;
+
+    AbstractWorldMap worldMap;
 
     Stage newWindowStage;
     @Override
@@ -43,6 +53,7 @@ public class SimulationWindowPresenter implements MapChangeListener {
         Platform.runLater(() -> {
             drawMap();
             moveDescriptionLabel.setText(message);
+            updateStatistics();
         });
     }
 
@@ -60,6 +71,13 @@ public class SimulationWindowPresenter implements MapChangeListener {
         for (Node label : mapGrid.getChildren())
             GridPane.setHalignment(label, HPos.CENTER);
 
+    }
+
+    public void updateStatistics() {
+        int numberOfAnimals = worldMap.getNumberOfAnimals();
+        numberOfAnimalsLabel.setText(String.valueOf(numberOfAnimals));
+        averageEnergyLabel.setText(String.format("%.2f",worldMap.averageAnimalEnergy()));
+        numberOfPlantsLabel.setText(String.valueOf(worldMap.getNumberOfPlants()));
     }
 
     public void fillMapGridWithElements(int minX, int maxX, int minY, int maxY) {
@@ -129,6 +147,11 @@ public class SimulationWindowPresenter implements MapChangeListener {
         System.out.println("Simulation Window presenter");
 
     }
+
+    public void onPauseButtonClicked() {
+
+    }
+
 
 
     public void runSimulation(UserConfigurationRecord config, SimulationEngine simulationEngine,Stage newWindowStage) {

@@ -6,8 +6,8 @@ public class Lake implements WorldElement {
     private int radius=0;
     private Vector2d source_position;
     public Lake(UserConfigurationRecord config) {
-        RandomPositionGenerator r = new RandomPositionGenerator(config.mapBoundary());
-        this.source_position=r.generate();
+        RandomPositionGenerator r = new RandomPositionGenerator();
+        this.source_position=r.generate(config.mapBoundary());
     }
     public void extendLake(){
         radius+=1;
@@ -17,7 +17,7 @@ public class Lake implements WorldElement {
             radius-=1;
         }
     }
-    public boolean isLake(Vector2d position){
+    public boolean occupiedByLake(Vector2d position){
         return (source_position.getX()-radius<=position.getX() &&
                 source_position.getX()+radius>=position.getX() &&
                 source_position.getY()-radius<=position.getY() &&
@@ -25,7 +25,6 @@ public class Lake implements WorldElement {
     }
     @Override
     public String toString() {
-
         return "8";
     }
     @Override

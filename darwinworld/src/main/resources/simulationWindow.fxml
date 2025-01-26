@@ -2,12 +2,8 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            minHeight="650.0" minWidth="850.0"
-            fx:controller="agh.oop.darwin_world.presenter.SimulationWindowPresenter"
-            stylesheets="simulationWindow.css"
-            style="-fx-padding: 25;">
+
+<BorderPane minHeight="1000.0" minWidth="1500.0" style="-fx-padding: 25;" stylesheets="simulationWindow.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.oop.darwin_world.presenter.SimulationWindowPresenter">
     <center>
             <HBox alignment="CENTER">
                 <ScrollPane fx:id="mapScrollPane" style="-fx-padding: 20px">
@@ -15,10 +11,33 @@
 
                     </GridPane>
                 </ScrollPane>
+            <VBox>
+                <GridPane fx:id="statsPanel" minWidth="300" hgap="20" vgap="10">
+                    <Label GridPane.columnIndex="1" GridPane.rowIndex="1" text="Number of animals:"/>
+                    <Label GridPane.columnIndex="2" GridPane.rowIndex="1" fx:id="numberOfAnimalsLabel"/>
+                    <Label GridPane.columnIndex="1" GridPane.rowIndex="2" text="Number of plants:"/>
+                    <Label GridPane.columnIndex="2" GridPane.rowIndex="2" fx:id="numberOfPlantsLabel"/>
+                    <Label GridPane.columnIndex="1" GridPane.rowIndex="3" text="Number of empty fields:"/>
+                    <Label GridPane.columnIndex="2" GridPane.rowIndex="3" fx:id="numberOfEmptyFieldsLabel"/>
+                    <Label GridPane.columnIndex="1" GridPane.rowIndex="4" text="Average energy:"/>
+                    <Label GridPane.columnIndex="2" GridPane.rowIndex="4" fx:id="averageEnergyLabel"/>
+                    <Label GridPane.columnIndex="1" GridPane.rowIndex="5" text="Average life span:"/>
+                    <Label GridPane.columnIndex="2" GridPane.rowIndex="5" fx:id="averageLifeSpanLabel"/>
+                    <Label GridPane.columnIndex="1" GridPane.rowIndex="6" text="Average number of children:"/>
+                    <Label GridPane.columnIndex="2" GridPane.rowIndex="6" fx:id="averageNumberOfChildrenLabel"/>
+                    <Label GridPane.columnIndex="1" GridPane.rowIndex="7" GridPane.valignment="TOP"
+                           text="Most popular genotype:"/>
+                    <Label GridPane.columnIndex="2" GridPane.rowIndex="7" fx:id="mostPopularGenotypeLabel"/>
+                </GridPane>
+                <Button fx:id="pauseButton" onAction="#onPauseButtonClicked">
+
+                </Button>
+
+            </VBox>
             </HBox>
     </center>
     <top>
-        <Label fx:id="moveDescriptionLabel" text="Nothing yet" textAlignment="CENTER"/>
+        <Label fx:id="moveDescriptionLabel" text="Nothing yet" textAlignment="CENTER" />
     </top>
 
 </BorderPane>

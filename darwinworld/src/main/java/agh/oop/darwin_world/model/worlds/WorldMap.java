@@ -27,8 +27,8 @@ public interface WorldMap{
 
     void rotate(Animal animal);
 
-    Boundary getCurrentBounds();
+    public Boundary getCurrentBounds();
 
-
+    boolean plantCanBePlaced(Vector2d position);
 
 }

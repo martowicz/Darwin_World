@@ -2,6 +2,7 @@ package agh.oop.darwin_world.model.worlds;
 
 
 import agh.oop.darwin_world.model.enums.MapDirection;
+import agh.oop.darwin_world.model.utils.RandomPositionGenerator;
 import agh.oop.darwin_world.model.utils.SortedLinkedList;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.utils.MapVisualizer;
@@ -22,22 +23,30 @@ public abstract class AbstractWorldMap implements WorldMap
     protected final MapVisualizer visualizer;
 
     protected final Boundary boundary;
-    protected final int equatorYmin;
-    protected final int equatorYmax;
+    protected final Boundary equatorBoundary;
+    protected final Boundary underEquatorBoundary;
+    protected final Boundary overEquatorBoundary;
+    protected final int numberOfFields;
+
     protected final int energyFromOnePlant;
     protected final int startingPlantsCount;
     protected final UserConfigurationRecord config;
     protected final UUID id;
     protected final List<MapChangeListener> observers = new ArrayList<>();
+    protected final RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator();;
 
 
     protected AbstractWorldMap(UserConfigurationRecord config) {
         this.visualizer = new MapVisualizer(this);
         this.boundary = config.mapBoundary();
+        this.numberOfFields = (boundary.upperRight().getY() - boundary.lowerLeft().getY()+1)*(boundary.upperRight().getX() - boundary.lowerLeft().getX()+1);
         this.config = config;
         this.id = UUID.randomUUID();
-        this.equatorYmin = (int) (0.4*(boundary.upperRight().getY()-boundary.lowerLeft().getY()));
-        this.equatorYmax = (int) (0.6*(boundary.upperRight().getY()-boundary.lowerLeft().getY()));
+        int equatorYmin = (int) (0.4*(boundary.upperRight().getY()-boundary.lowerLeft().getY()));
+        int equatorYmax = (int) (0.6*(boundary.upperRight().getY()-boundary.lowerLeft().getY()));
+        this.equatorBoundary = new Boundary(new Vector2d(boundary.lowerLeft().getX(),equatorYmin), new Vector2d(boundary.upperRight().getX(),equatorYmax));
+        this.overEquatorBoundary = new Boundary(boundary.lowerLeft(), new Vector2d(boundary.upperRight().getX(),equatorYmin-1));
+        this.underEquatorBoundary = new Boundary(new Vector2d(boundary.lowerLeft().getX(),equatorYmax+1),boundary.upperRight());
         this.energyFromOnePlant = config.energyFromPlant();
         this.startingPlantsCount = config.startingPlantNumber();
         generateEnvironment(startingPlantsCount,0);
@@ -46,6 +55,8 @@ public abstract class AbstractWorldMap implements WorldMap
 
     @Override
     public void reproduce() {
+
+        System.out.println("Reproduce");
 
         for (Vector2d position : animalsAtPositions.keySet()) {
 
@@ -203,52 +214,30 @@ public abstract class AbstractWorldMap implements WorldMap
     }
 
 
+    @Override
+    public boolean plantCanBePlaced(Vector2d position){
+        return !plants.containsKey(position);
+    }
 
-
-    public void generateEnvironment(int grassCount, int day){
+    public void generateEnvironment(int plantsCount, int day){
         SecureRandom rand = new SecureRandom();
-        Random xx = new Random();
-        Random yy= new Random();
-
-        //zmienić tak że jeśli na pozycji już coś jest to losuje jeszcze raz i jeśli wszyskie miejsca są zajęte to nei losuje
-
         int i=0;
-        while (i<grassCount){
-            int yCoordinate;
+        while (i<plantsCount && plants.size()<numberOfFields){
+            Vector2d generatedPosition;
             double v = rand.nextDouble();
-            if(v>0.8){
-                //equator
-                v=rand.nextInt(2);
-                if(v==0){
-                    //top-half
-                    yCoordinate = yy.nextInt(boundary.upperRight().getY()-equatorYmax+1)+equatorYmax;
-                }
-                else{
-                    //bottomhalf
-                    yCoordinate = yy.nextInt(equatorYmin - boundary.lowerLeft().getY()+1)+boundary.lowerLeft().getY();
-                }
-            }
+            if(v<0.8){generatedPosition=randomPositionGenerator.generate(equatorBoundary);}
             else{
-                yCoordinate = yy.nextInt(equatorYmax - equatorYmin + 1) + equatorYmin;
-                //rest
+                if(v<0.9){generatedPosition=randomPositionGenerator.generate(overEquatorBoundary);}
+                else{generatedPosition=randomPositionGenerator.generate(underEquatorBoundary);}
             }
-            int xCoordinate = xx.nextInt(boundary.upperRight().getY()-boundary.lowerLeft().getY()+1)+boundary.lowerLeft().getY();
-            Vector2d newPosition = new Vector2d(xCoordinate, yCoordinate);
-            if(!plants.containsKey(newPosition)){
-                Plant plant = new Plant(newPosition);
-                plants.put(newPosition, plant);
+            if(plantCanBePlaced(generatedPosition)){
+                Plant plant = new Plant(generatedPosition);
+                plants.put(generatedPosition, plant);
                 i++;
             }
-
         }
     }
 
-
-
-
-
-
-    //sprawdza czy na danej pozycji jest cokolwiek (nadpisać w flowsanddrains) i to zwraca
     @Override
     public WorldElement returnObjectAt(Vector2d position) {
         // Sprawdzenie, czy na pozycji znajdują się zwierzęta
@@ -275,15 +264,12 @@ public abstract class AbstractWorldMap implements WorldMap
         return returnObjectAt(position) != null;
     }
 
-
     //TODO
     @Override
     public LinkedList<WorldElement> getElements()
     {
         return new LinkedList<>(); //dopisze sie to do visualizera w javafx i pewnie metodę reprezentation
     }
-
-
 
 
     @Override
@@ -295,7 +281,6 @@ public abstract class AbstractWorldMap implements WorldMap
         return visualizer.draw(boundary.lowerLeft(),boundary.upperRight());
 
     }
-
 
     //Używane aby komunikować się z ux np w teminalu bądź javafx
 
@@ -312,11 +297,26 @@ public abstract class AbstractWorldMap implements WorldMap
             observer.mapChanged(this,message);
         }
     }
-
-    public Boundary getCurrentBounds() {
+    @Override
+    public Boundary getCurrentBounds(){
         return boundary;
     }
 
+    public int getNumberOfAnimals(){
+        return getAnimalsToList().size();
+    }
+
+    public double averageAnimalEnergy(){
+        int sum = 0;
+        for(Animal animal : getAnimalsToList()){
+            sum+=animal.getEnergy();
+        }
+        return (double) sum/getAnimalsToList().size();
+    }
+
+    public int getNumberOfPlants(){
+        return plants.size();
+    }
 
 
 
