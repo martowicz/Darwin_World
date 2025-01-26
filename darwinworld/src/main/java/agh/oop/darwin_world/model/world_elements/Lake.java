@@ -25,9 +25,8 @@ public class Lake implements WorldElement {
     }
     @Override
     public String toString() {
-        String blueText = "\u001B[34m";
-        String resetText = "\u001B[0m";
-        return blueText+"8"+resetText;
+
+        return "8";
     }
     @Override
     public Vector2d getPosition() {return source_position;}

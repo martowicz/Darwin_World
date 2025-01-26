@@ -16,17 +16,15 @@ public class Simulation implements Runnable {
     private List<Animal> animals = new ArrayList<>();
     private AbstractWorldMap worldMap;
     private final int plantsGrowingEveryDay;
-    private int day = 0;
+    private int days = 0;
 
     public Simulation(UserConfigurationRecord config)
     {
         this.numberOfAnimals=config.animalsCountAtStart();
         this.worldMap = config.mapType().enumToMap(config);
-        this.worldMap.addObserver(new ConsoleMapDisplay());
+        //this.worldMap.addObserver(new ConsoleMapDisplay());
         this.plantsGrowingEveryDay = config.plantsGrowingDaily(); //obserwator w terminalu
         placeAnimalsOnTheMap(config);
-
-
         this.animals = this.worldMap.getAnimalsToList();
 
     }
@@ -38,22 +36,30 @@ public class Simulation implements Runnable {
     @Override
     public void run(){
 
-        int days=0;
-
-        for (int i=0;i<100;i++)
-        {
+        while (!animals.isEmpty()) {
             animals = worldMap.getAnimalsToList();
-            days +=1;
+            days += 1;
             //1-Usunięcie martwych zwierzaków z mapy.
             //--
             removeDeadAnimals(days);
             //--
 
+            worldMap.notifyObservers("dniii:"+days);
+            sleep();
 
             //2-Skręt i przemieszczenie każdego zwierzaka.
             //--
             rotateAllAnimals();
+
+
+            worldMap.notifyObservers("dni:"+days);
+            worldMap.displayLinkedLists();
+
+            sleep();
+
             moveAllAnimals();
+
+
             //--
 
 
@@ -71,25 +77,23 @@ public class Simulation implements Runnable {
 
             //5-Wzrastanie nowych roślin na wybranych polach mapy.
             //--
-            worldMap.generateEnvironment(plantsGrowingEveryDay,days);
+            worldMap.generateEnvironment(plantsGrowingEveryDay, days);
             //--
 
             //6-Koniec dnia(zwierzęta tracą energie)
             //--
-            worldMap.dayPasses();
+            worldMap.dayPasses(days);
+            System.out.println(days + " days passed");
+
             //--
 
 
-            sleep();
-
-
-
-
         }
+
     }
     private void sleep() {
         try {
-            Thread.sleep(100);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
 

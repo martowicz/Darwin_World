@@ -6,6 +6,7 @@ import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.worlds.Boundary;
 import agh.oop.darwin_world.simulation.Simulation;
 import agh.oop.darwin_world.simulation.SimulationApp;
+import agh.oop.darwin_world.simulation.SimulationEngine;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -73,11 +74,13 @@ public class StartingWindowPresenter {
     int maxMutations;
     int plantsAtStart;
     int plantsPerDay;
-
+    SimulationEngine simulationEngine = new SimulationEngine();
 
     @FXML
     void initialize()
     {
+
+
         csvCombo.getItems().addAll("Config1", "Config2", "Config3");
 
         for(WorldMapType typeOfMap : WorldMapType.values()) {
@@ -177,7 +180,7 @@ public class StartingWindowPresenter {
         configureStage(newWindowStage, viewRoot);
 
         newWindowStage.show();
-        presenter.runSimulation(config);
+        presenter.runSimulation(config,simulationEngine, newWindowStage);
 
 
     }

@@ -26,4 +26,9 @@ public interface WorldMap{
     void reproduce();
 
     void rotate(Animal animal);
-    }
+
+    Boundary getCurrentBounds();
+
+
+
+}

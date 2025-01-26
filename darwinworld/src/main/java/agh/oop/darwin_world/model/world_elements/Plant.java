@@ -23,9 +23,8 @@ public class Plant implements WorldElement
     @Override
     public String toString()
     {
-        String greenText = "\u001B[32m";
-        String resetText = "\u001B[0m";
-        return greenText+PLANT_SYMBOL+resetText;
+
+        return PLANT_SYMBOL;
     }
 
 

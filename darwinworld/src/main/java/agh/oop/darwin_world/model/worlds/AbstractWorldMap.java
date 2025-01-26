@@ -84,7 +84,7 @@ public abstract class AbstractWorldMap implements WorldMap
         Vector2d position = animal.getPosition();
         if (canMoveTo(animal.getPosition())) {
             addAnimal(position, animal);
-            notifyObservers("placed at " + position);
+            //notifyObservers("placed at " + position);
         } else {// throw new IncorrectPositionException(position);}
         }
     }
@@ -127,12 +127,12 @@ public abstract class AbstractWorldMap implements WorldMap
             removeAnimal(oldCoordinates, animal);
             addAnimal(newCoordinates, animal);
             animal.setAnimalPosition(newCoordinates);
-            notifyObservers("Move from " + oldCoordinates + " to " + newCoordinates);
+            //notifyObservers("Move from " + oldCoordinates + " to " + newCoordinates);
         }
         else if(newCoordinates.getY()>boundary.upperRight().getY() || newCoordinates.getY()<boundary.lowerLeft().getY()) {
             MapDirection currentOrientation = animal.getAnimalOrientation();
             animal.setAnimalOrientation(currentOrientation.reverse());
-            notifyObservers("Reversed");
+            //notifyObservers("Reversed");
 
         }
         else if(newCoordinates.getX()<boundary.lowerLeft().getX()) {
@@ -140,7 +140,7 @@ public abstract class AbstractWorldMap implements WorldMap
             animal.setAnimalPosition(newPosition);
             removeAnimal(oldCoordinates, animal);
             addAnimal(newPosition, animal);
-            notifyObservers("Move from " + oldCoordinates + " to " + newPosition);
+            //notifyObservers("Move from " + oldCoordinates + " to " + newPosition);
 
         }
         else{
@@ -148,7 +148,7 @@ public abstract class AbstractWorldMap implements WorldMap
             animal.setAnimalPosition(newPosition);
             removeAnimal(oldCoordinates, animal);
             addAnimal(newPosition, animal);
-            notifyObservers("Move from " + oldCoordinates + " to " + newPosition);
+            //notifyObservers("Move from " + oldCoordinates + " to " + newPosition);
 
         }
     }
@@ -185,19 +185,21 @@ public abstract class AbstractWorldMap implements WorldMap
                 SortedLinkedList<Animal> animalsInPosition = animalsAtPositions.get(position);
                 Animal animal = animalsInPosition.getHead();
                 animal.eat(energyFromOnePlant);
-                notifyObservers("Plant eaten on " + position);
+                //notifyObservers("Plant eaten on " + position);
                 plants.remove(position);
             }
         }
     }
 
-    public void dayPasses(){
+    public void dayPasses(int days){
         for(Vector2d position : animalsAtPositions.keySet()){
             SortedLinkedList<Animal> animalsInPosition = animalsAtPositions.get(position);
             for(Animal animal : animalsInPosition){
                 animal.dayPasses();
             }
+
         }
+
     }
 
 
@@ -296,13 +298,15 @@ public abstract class AbstractWorldMap implements WorldMap
 
 
     //Używane aby komunikować się z ux np w teminalu bądź javafx
+
     public void addObserver(MapChangeListener observer) {
         observers.add(observer);
     }
+
     public void removeObserver(MapChangeListener observer) {
         observers.remove(observer);
     }
-    protected void notifyObservers(String message)
+    public void notifyObservers(String message)
     {
         for (MapChangeListener observer : observers) {
             observer.mapChanged(this,message);

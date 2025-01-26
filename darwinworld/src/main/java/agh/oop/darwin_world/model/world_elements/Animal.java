@@ -125,9 +125,8 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     @Override
     public String toString() {
-        String yellowText = "\u001B[33m";
-        String resetText = "\u001B[0m";
-        return yellowText+animalOrientation.toString()+resetText;
+
+        return animalOrientation.toString();
     }
 
     @Override
