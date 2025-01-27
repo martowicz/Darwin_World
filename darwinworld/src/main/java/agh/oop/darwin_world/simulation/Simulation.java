@@ -20,6 +20,8 @@ public class Simulation implements Runnable {
     private final int plantsGrowingEveryDay;
     private int days = 0;
     private final RandomPositionGenerator randomPositionGenerator;
+    private boolean running=true;
+    private final Object lock = new Object();
 
     public Simulation(UserConfigurationRecord config)
     {
@@ -41,6 +43,16 @@ public class Simulation implements Runnable {
     public void run(){
 
         while (!animals.isEmpty()) {
+            synchronized (lock) {
+                while (!running) {
+                    try {
+                        lock.wait();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
             animals = worldMap.getAnimalsToList();
             days += 1;
             //1-Usunięcie martwych zwierzaków z mapy.
@@ -101,6 +113,21 @@ public class Simulation implements Runnable {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
 
+        }
+    }
+
+    public boolean isRunning(){
+        return running;
+    }
+
+    public void pauseSimulation(){
+        running=false;
+    }
+
+    public void resumeSimulation(){
+        running=true;
+        synchronized (lock) {
+            lock.notify();
         }
     }
 

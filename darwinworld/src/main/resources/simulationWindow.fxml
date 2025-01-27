@@ -12,32 +12,44 @@
                     </GridPane>
                 </ScrollPane>
             <VBox>
-                <GridPane fx:id="statsPanel" minWidth="300" hgap="20" vgap="10">
-                    <Label GridPane.columnIndex="1" GridPane.rowIndex="1" text="Number of animals:"/>
-                    <Label GridPane.columnIndex="2" GridPane.rowIndex="1" fx:id="numberOfAnimalsLabel"/>
-                    <Label GridPane.columnIndex="1" GridPane.rowIndex="2" text="Number of plants:"/>
-                    <Label GridPane.columnIndex="2" GridPane.rowIndex="2" fx:id="numberOfPlantsLabel"/>
-                    <Label GridPane.columnIndex="1" GridPane.rowIndex="3" text="Number of empty fields:"/>
-                    <Label GridPane.columnIndex="2" GridPane.rowIndex="3" fx:id="numberOfEmptyFieldsLabel"/>
-                    <Label GridPane.columnIndex="1" GridPane.rowIndex="4" text="Average energy:"/>
-                    <Label GridPane.columnIndex="2" GridPane.rowIndex="4" fx:id="averageEnergyLabel"/>
-                    <Label GridPane.columnIndex="1" GridPane.rowIndex="5" text="Average life span:"/>
-                    <Label GridPane.columnIndex="2" GridPane.rowIndex="5" fx:id="averageLifeSpanLabel"/>
-                    <Label GridPane.columnIndex="1" GridPane.rowIndex="6" text="Average number of children:"/>
-                    <Label GridPane.columnIndex="2" GridPane.rowIndex="6" fx:id="averageNumberOfChildrenLabel"/>
-                    <Label GridPane.columnIndex="1" GridPane.rowIndex="7" GridPane.valignment="TOP"
-                           text="Most popular genotype:"/>
-                    <Label GridPane.columnIndex="2" GridPane.rowIndex="7" fx:id="mostPopularGenotypeLabel"/>
+                <GridPane fx:id="statsPanel" hgap="20" minWidth="300" vgap="10">
+                    <Label text="Number of animals:" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <Label fx:id="numberOfAnimalsLabel" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                    <Label text="Number of plants:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <Label fx:id="numberOfPlantsLabel" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                    <Label text="Number of empty fields:" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <Label fx:id="numberOfEmptyFieldsLabel" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                    <Label text="Average energy:" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                    <Label fx:id="averageEnergyLabel" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                    <Label text="Average life span:" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                    <Label fx:id="averageLifeSpanLabel" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                    <Label text="Average number of children:" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                    <Label fx:id="averageNumberOfChildrenLabel" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                    <Label text="Most popular genotype:" GridPane.columnIndex="1" GridPane.rowIndex="7" GridPane.valignment="TOP" />
+                    <Label fx:id="mostPopularGenotypeLabel" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+               <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
                 </GridPane>
-                <Button fx:id="pauseButton" onAction="#onPauseButtonClicked">
+                <Button fx:id="pauseStartButton" onAction="#onPauseStartButtonClicked">
 
                 </Button>
 
             </VBox>
             </HBox>
     </center>
-    <top>
-        <Label fx:id="moveDescriptionLabel" text="Nothing yet" textAlignment="CENTER" />
-    </top>
+
 
 </BorderPane>

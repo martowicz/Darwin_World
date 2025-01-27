@@ -2,6 +2,7 @@ package agh.oop.darwin_world.presenter;
 
 import agh.oop.darwin_world.World;
 import agh.oop.darwin_world.model.utils.Vector2d;
+import agh.oop.darwin_world.model.world_elements.Animal;
 import agh.oop.darwin_world.model.world_elements.WorldElement;
 import agh.oop.darwin_world.model.worlds.AbstractWorldMap;
 import agh.oop.darwin_world.model.worlds.Boundary;
@@ -13,15 +14,19 @@ import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.util.Collections;
 
 
@@ -33,8 +38,6 @@ public class SimulationWindowPresenter implements MapChangeListener {
     @FXML
     public GridPane mapGrid;
 
-    @FXML
-    private Label moveDescriptionLabel;
 
     @FXML
     private Label numberOfAnimalsLabel;
@@ -45,14 +48,17 @@ public class SimulationWindowPresenter implements MapChangeListener {
     @FXML
     private Label averageEnergyLabel;
 
+    @FXML
+    private Button pauseStartButton;
+
     AbstractWorldMap worldMap;
+    Simulation simulation;
 
     Stage newWindowStage;
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
             drawMap();
-            moveDescriptionLabel.setText(message);
             updateStatistics();
         });
     }
@@ -84,9 +90,10 @@ public class SimulationWindowPresenter implements MapChangeListener {
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <=maxY; y++) {
                 Label label = new Label(" ");
-                if(worldMap.isOccupied(new Vector2d(x, y)))
+                Vector2d position = new Vector2d(x, y);
+                if(worldMap.isOccupied(position))
                 {
-                    WorldElement el = worldMap.returnObjectAt(new Vector2d(x, y));
+                    WorldElement el = worldMap.returnObjectAt(position);
                     label.setText(el.toString());
                 }
                 else
@@ -98,11 +105,12 @@ public class SimulationWindowPresenter implements MapChangeListener {
                 label.getStyleClass().add("mapAnimalLabel");
                 mapGrid.add(label, x - minX + 1, maxY - y + 1);
 
+
             }
         }
     }
 
-
+    private void drawGridCell(Vector2d position, int column, int row) {}
 
 
 
@@ -145,11 +153,24 @@ public class SimulationWindowPresenter implements MapChangeListener {
     void initialize()
     {
         System.out.println("Simulation Window presenter");
+        pauseStartButton.setText("Pause");
 
     }
 
-    public void onPauseButtonClicked() {
-
+    public void onPauseStartButtonClicked() {
+        try{
+            if(simulation.isRunning()){
+                simulation.pauseSimulation();
+                pauseStartButton.setText("Start");
+            }
+            else{
+                simulation.resumeSimulation();
+                pauseStartButton.setText("Pause");
+            }
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
 
@@ -158,6 +179,7 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
         System.out.println("Simulation running...");
         Simulation simulation = new Simulation(config);
+        this.simulation = simulation;
         simulation.getWorldMap().addObserver(this);
         simulationEngine.addToAsyncInThreadPool(simulation);
 
