@@ -13,6 +13,8 @@
                 </ScrollPane>
             <VBox>
                 <GridPane fx:id="statsPanel" hgap="20" minWidth="300" vgap="10">
+                    <Label text="Current day: " GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                    <Label fx:id="dayLabel" GridPane.columnIndex="2" GridPane.rowIndex="0" />
                     <Label text="Number of animals:" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                     <Label fx:id="numberOfAnimalsLabel" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                     <Label text="Number of plants:" GridPane.columnIndex="1" GridPane.rowIndex="2" />

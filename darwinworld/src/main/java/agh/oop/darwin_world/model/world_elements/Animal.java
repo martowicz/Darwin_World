@@ -3,6 +3,8 @@ import agh.oop.darwin_world.model.enums.MapDirection;
 import agh.oop.darwin_world.model.mutation.AbstractMutation;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.presenter.UserConfigurationRecord;
+import javafx.scene.paint.Color;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -132,6 +134,11 @@ public class Animal implements WorldElement, Comparable<Animal> {
     @Override
     public Vector2d getPosition() {
         return animalPosition;
+    }
+
+    @Override
+    public Color getColor() {
+        return Color.RED;
     }
 
     public void rotate(){

@@ -1,5 +1,6 @@
 package agh.oop.darwin_world.model.world_elements;
 import agh.oop.darwin_world.model.utils.Vector2d;
+import javafx.scene.paint.Color;
 
 import java.util.Objects;
 
@@ -21,6 +22,11 @@ public class Plant implements WorldElement
     }
 
     @Override
+    public Color getColor() {
+        return Color.GREEN;
+    }
+
+    @Override
     public String toString()
     {
 
@@ -32,4 +38,6 @@ public class Plant implements WorldElement
     public int hashCode() {
         return Objects.hashCode(plantPosition);
     }
+
+
 }

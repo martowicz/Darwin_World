@@ -39,6 +39,10 @@ public class Simulation implements Runnable {
         return worldMap;
     }
 
+    public int getDay(){
+        return days;
+    }
+
     @Override
     public void run(){
 
@@ -95,7 +99,7 @@ public class Simulation implements Runnable {
             //--
             worldMap.generateEnvironment(plantsGrowingEveryDay, days);
             //--
-
+            worldMap.displayLinkedLists();
             //6-Koniec dnia(zwierzęta tracą energie)
             //--
             worldMap.dayPasses(days);
@@ -109,7 +113,7 @@ public class Simulation implements Runnable {
     }
     private void sleep() {
         try {
-            Thread.sleep(200);
+            Thread.sleep(50);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
 

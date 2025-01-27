@@ -148,17 +148,23 @@ public abstract class AbstractWorldMap implements WorldMap
         }
         else if(newCoordinates.getX()<boundary.lowerLeft().getX()) {
             Vector2d newPosition = new Vector2d(boundary.upperRight().getX(), newCoordinates.getY());
-            animal.setAnimalPosition(newPosition);
-            removeAnimal(oldCoordinates, animal);
-            addAnimal(newPosition, animal);
+            if(canMoveTo(newPosition)) {
+                animal.setAnimalPosition(newPosition);
+                removeAnimal(oldCoordinates, animal);
+                addAnimal(newPosition, animal);
+            }
+
             //notifyObservers("Move from " + oldCoordinates + " to " + newPosition);
 
         }
         else{
             Vector2d newPosition = new Vector2d(boundary.lowerLeft().getX(), newCoordinates.getY());
-            animal.setAnimalPosition(newPosition);
-            removeAnimal(oldCoordinates, animal);
-            addAnimal(newPosition, animal);
+            if(canMoveTo(newPosition)) {
+                animal.setAnimalPosition(newPosition);
+                removeAnimal(oldCoordinates, animal);
+                addAnimal(newPosition, animal);
+            }
+
             //notifyObservers("Move from " + oldCoordinates + " to " + newPosition);
 
         }
@@ -258,6 +264,22 @@ public abstract class AbstractWorldMap implements WorldMap
         // Jeśli na pozycji nic nie ma, zwracamy null
         return null;
     }
+
+    public WorldElement returnEnvironmentAt(Vector2d position) {
+        if(plants.containsKey(position)){
+            return plants.get(position);
+        }
+        return null;
+    }
+
+    public WorldElement returnAnimalAt(Vector2d position) {
+        if(animalsAtPositions.containsKey(position)){
+            return animalsAtPositions.get(position).getHead();
+        }
+        return null;
+    }
+
+
     @Override
     public boolean isOccupied(Vector2d position)
     {

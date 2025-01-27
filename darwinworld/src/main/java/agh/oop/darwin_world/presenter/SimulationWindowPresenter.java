@@ -3,6 +3,8 @@ package agh.oop.darwin_world.presenter;
 import agh.oop.darwin_world.World;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.world_elements.Animal;
+import agh.oop.darwin_world.model.world_elements.Lake;
+import agh.oop.darwin_world.model.world_elements.Plant;
 import agh.oop.darwin_world.model.world_elements.WorldElement;
 import agh.oop.darwin_world.model.worlds.AbstractWorldMap;
 import agh.oop.darwin_world.model.worlds.Boundary;
@@ -22,6 +24,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Circle;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -49,11 +52,15 @@ public class SimulationWindowPresenter implements MapChangeListener {
     private Label averageEnergyLabel;
 
     @FXML
+    private Label dayLabel;
+
+    @FXML
     private Button pauseStartButton;
 
     AbstractWorldMap worldMap;
     Simulation simulation;
 
+    private static final Color EMPTY_CELL_COLOR = javafx.scene.paint.Color.rgb(69, 38, 38);
     Stage newWindowStage;
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
@@ -63,91 +70,95 @@ public class SimulationWindowPresenter implements MapChangeListener {
         });
     }
 
+    private void clearGrid() {
+        mapGrid.getChildren().retainAll(mapGrid.getChildren().get(0));
+        mapGrid.getColumnConstraints().clear();
+        mapGrid.getRowConstraints().clear();
+    }
+
     public void drawMap() {
         clearGrid();
         Boundary boundary = worldMap.getCurrentBounds();
-        int minX = boundary.lowerLeft().getX();
-        int minY = boundary.lowerLeft().getY();
-        int maxX = boundary.upperRight().getX();
-        int maxY = boundary.upperRight().getY();
-
-        configureMapGrid(minX, maxX, minY, maxY);
-        fillMapGridWithElements(minX, maxX, minY, maxY);
-
-        for (Node label : mapGrid.getChildren())
-            GridPane.setHalignment(label, HPos.CENTER);
-
+        int gridSize = calculateGridSize(boundary);
+        drawGrid(boundary, gridSize);
     }
+
+    private int calculateGridSize(Boundary boundary) {
+        int mapWidth = boundary.upperRight().getX() - boundary.lowerLeft().getX() + 1;
+        int mapHeight = boundary.upperRight().getY() - boundary.lowerLeft().getY() + 1;
+
+        int maxGridSize = Math.max(mapWidth, mapHeight);
+        int cellSize = 800 / maxGridSize;
+
+        return cellSize;
+    }
+
+    private void drawGrid(Boundary boundary, int cellSize) {
+        for (int i = boundary.lowerLeft().getY(); i <= boundary.upperRight().getY(); i++) {
+            for (int j = boundary.lowerLeft().getX(); j <= boundary.upperRight().getX(); j++) {
+                Vector2d position = new Vector2d(j, i);
+                drawGridCell(position, j - boundary.lowerLeft().getX() + 1, boundary.upperRight().getY() - i + 1, cellSize);
+            }
+        }
+    }
+
+    private Node createNodeForElement(Vector2d position, int cellSize) {
+        StackPane stackPane = createStackPane(cellSize);
+        Rectangle cell = createCell(position, cellSize);
+        stackPane.getChildren().add(cell);
+        WorldElement element = worldMap.returnAnimalAt(position);
+        if(element instanceof Animal){
+            Circle circle = createAnimalCircle((Animal) element, cellSize);
+            //circle.setOnMouseClicked(event -> handleAnimalClick((Animal) element));
+            stackPane.getChildren().add(circle);
+        }
+
+
+
+        return stackPane;
+    }
+
+    private Circle createAnimalCircle(Animal animal, int cellSize) {
+        Circle circle = new Circle((int) (cellSize / 5));
+        circle.setFill(Color.RED);
+        return circle;
+    }
+
+    private StackPane createStackPane(int cellSize) {
+        StackPane stackPane = new StackPane();
+        stackPane.setMinSize(cellSize, cellSize);
+        stackPane.setMaxSize(cellSize, cellSize);
+        return stackPane;
+    }
+
+    private Rectangle createCell(Vector2d position, int cellSize) {
+         Rectangle cell = new Rectangle(cellSize, cellSize);
+         WorldElement environmentObject = worldMap.returnEnvironmentAt(position);
+         if (environmentObject != null) {
+            cell.setFill(environmentObject.getColor());
+        }
+        else{cell.setFill(Color.BLACK);}
+        return cell;
+    }
+
 
     public void updateStatistics() {
         int numberOfAnimals = worldMap.getNumberOfAnimals();
         numberOfAnimalsLabel.setText(String.valueOf(numberOfAnimals));
         averageEnergyLabel.setText(String.format("%.2f",worldMap.averageAnimalEnergy()));
         numberOfPlantsLabel.setText(String.valueOf(worldMap.getNumberOfPlants()));
+        dayLabel.setText(String.valueOf(simulation.getDay()));
     }
 
-    public void fillMapGridWithElements(int minX, int maxX, int minY, int maxY) {
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <=maxY; y++) {
-                Label label = new Label(" ");
-                Vector2d position = new Vector2d(x, y);
-                if(worldMap.isOccupied(position))
-                {
-                    WorldElement el = worldMap.returnObjectAt(position);
-                    label.setText(el.toString());
-                }
-                else
-                {
-                    label.setText(" ");
 
 
-                }
-                label.getStyleClass().add("mapAnimalLabel");
-                mapGrid.add(label, x - minX + 1, maxY - y + 1);
-
-
-            }
-        }
+    private void drawGridCell(Vector2d position, int column, int row, int cellSize) {
+        Node node = createNodeForElement(position, cellSize);
+        mapGrid.add(node, column, row);
     }
 
-    private void drawGridCell(Vector2d position, int column, int row) {}
 
 
-
-    public void configureMapGrid(int xMin, int xMax, int yMin, int yMax) {
-
-        int MAP_WIDTH = xMax-xMin+1;
-        int MAP_HEIGHT = yMax-yMin+1;
-        int RECT_CELL_SIZE;
-        int MAX_MAP_SIZE  = (int)(newWindowStage.getHeight()*0.7);
-        if (MAP_WIDTH>MAP_HEIGHT)
-        {
-            RECT_CELL_SIZE = MAX_MAP_SIZE /MAP_WIDTH;
-        }
-        else
-        {
-            RECT_CELL_SIZE = MAX_MAP_SIZE /MAP_HEIGHT;
-        }
-
-        mapGrid.add(new Label("y\\x"), 0, 0);
-
-        for (int x = xMin; x <= xMax; x++)
-            mapGrid.add(new Label("%d".formatted(x)), x - xMin + 1, 0);
-        for (int y = yMin; y <= yMax; y++)
-            mapGrid.add(new Label("%d".formatted(y)), 0, yMax - y + 1);
-
-        for (int i = 0; i < xMax - xMin + 2; i++)
-            mapGrid.getColumnConstraints().add(new ColumnConstraints(RECT_CELL_SIZE));
-        for (int i = 0; i < yMax - yMin + 2; i++)
-            mapGrid.getRowConstraints().add(new RowConstraints(RECT_CELL_SIZE));
-
-    }
-
-    private void clearGrid() {
-        mapGrid.getChildren().retainAll(mapGrid.getChildren().getFirst()); // hack to retain visible grid lines
-        mapGrid.getColumnConstraints().clear();
-        mapGrid.getRowConstraints().clear();
-    }
 
     @FXML
     void initialize()

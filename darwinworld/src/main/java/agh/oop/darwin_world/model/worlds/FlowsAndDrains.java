@@ -1,6 +1,7 @@
 package agh.oop.darwin_world.model.worlds;
 
 
+import agh.oop.darwin_world.World;
 import agh.oop.darwin_world.model.utils.SortedLinkedList;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.world_elements.Animal;
@@ -38,6 +39,16 @@ public class FlowsAndDrains extends AbstractWorldMap {
             }
         }
             return super.returnObjectAt(position);
+    }
+
+    @Override
+    public WorldElement returnEnvironmentAt(Vector2d position) {
+        for (Lake lake : lakes) {
+            if (lake.occupiedByLake(position)) {
+                return lake;
+            }
+        }
+        return super.returnEnvironmentAt(position);
     }
 
 

@@ -2,6 +2,8 @@ package agh.oop.darwin_world.model.world_elements;
 import agh.oop.darwin_world.model.utils.RandomPositionGenerator;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.presenter.UserConfigurationRecord;
+import javafx.scene.paint.Color;
+
 public class Lake implements WorldElement {
     private int radius=0;
     private Vector2d source_position;
@@ -29,4 +31,10 @@ public class Lake implements WorldElement {
     }
     @Override
     public Vector2d getPosition() {return source_position;}
+
+    @Override
+    public Color getColor() {
+        return Color.BLUE;
+    }
+
 }
