@@ -16,6 +16,7 @@ public class Simulation implements Runnable {
     private int movesCount = 0;
     private int animalsEnergyAtStart;
     private List<Animal> animals = new ArrayList<>();
+    private List<Animal> deadAnimals = new ArrayList<>();
     private AbstractWorldMap worldMap;
     private final int plantsGrowingEveryDay;
     private int days = 0;
@@ -99,11 +100,10 @@ public class Simulation implements Runnable {
             //--
             worldMap.generateEnvironment(plantsGrowingEveryDay, days);
             //--
-            worldMap.displayLinkedLists();
             //6-Koniec dnia(zwierzęta tracą energie)
             //--
             worldMap.dayPasses(days);
-            System.out.println(days + " days passed");
+            //System.out.println(days + " days passed");
 
             //--
 
@@ -113,7 +113,7 @@ public class Simulation implements Runnable {
     }
     private void sleep() {
         try {
-            Thread.sleep(50);
+            Thread.sleep(60);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
 
@@ -155,8 +155,6 @@ public class Simulation implements Runnable {
     }
 
     private void rotateAllAnimals() {
-
-
         for(Animal animal : animals){
             worldMap.rotate(animal);
         }
@@ -165,13 +163,36 @@ public class Simulation implements Runnable {
     private void removeDeadAnimals(int day){
 
         for(Animal animal : animals){
-            if(animal.getEnergy()<=0){
+            if(animal.getEnergy()<=0 || animal.diesForOtherCause()){
                 Vector2d position = animal.getPosition();
                 animal.dies(day);
                 worldMap.removeAnimal(position,animal);
+                deadAnimals.add(animal);
             }
         }
 
+    }
+
+    public double averageAgeForDeadAnimals(){
+        int sum=0;
+        if(deadAnimals.isEmpty()){
+            return 0;
+        }
+        for(Animal animal : deadAnimals){
+            sum+=animal.getAge();
+        }
+        return (double) sum/deadAnimals.size();
+    }
+
+    public double averageKidsNumberForAliveAnimals(){
+        if(animals.isEmpty()){
+            return 0;
+        }
+        int sum=0;
+        for(Animal animal : animals){
+            sum+=animal.getKids();
+        }
+        return (double) sum/animals.size();
     }
 
 

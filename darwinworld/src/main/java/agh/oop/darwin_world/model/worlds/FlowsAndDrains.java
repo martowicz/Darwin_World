@@ -69,8 +69,8 @@ public class FlowsAndDrains extends AbstractWorldMap {
                     if (lake.occupiedByLake(position)) {
                         SortedLinkedList<Animal> animals = animalsAtPositions.get(position);
                         for (Animal animal : animals) {
-                            animal.setEnergy(0);
-                            System.out.println("Zwierze umiera przez wode");//nieładne to chyba
+                            animal.setDyingForOtherCause();
+                            //System.out.println("Animal dying because of water");
                         }
                     }
                 }

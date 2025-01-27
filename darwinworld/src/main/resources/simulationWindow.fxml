@@ -2,15 +2,35 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <BorderPane minHeight="1000.0" minWidth="1500.0" style="-fx-padding: 25;" stylesheets="simulationWindow.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.oop.darwin_world.presenter.SimulationWindowPresenter">
     <center>
             <HBox alignment="CENTER">
-                <ScrollPane fx:id="mapScrollPane" style="-fx-padding: 20px">
-                    <GridPane fx:id="mapGrid" alignment="CENTER" gridLinesVisible="true">
-
+                <VBox>
+                    <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="18.0" prefWidth="307.0" text="Animal tracking panel">
+               <font>
+                  <Font size="21.0" />
+               </font></Label>
+                    <GridPane fx:id="animalTrackingPanel" hgap="20" minWidth="300" vgap="10">
+                        <Label text="Genome: " GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                        <Label fx:id="genomeTrackingLabel" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                        <Label text="Active genome: " GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="activeGeneTrackingLabel" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Label text="Energy: " GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label fx:id="energyTrackingLabel" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <Label text="Plants eaten: " GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label fx:id="plantsEatenTrackingLabel" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <Label text="Kids count: " GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Label fx:id="kidsTrackingLabel" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                        <Label text="Descendants count: " GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <Label fx:id="descendantsTrackingLabel" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                        <Label text="Lifespan: " GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <Label fx:id="lifespanTrackingLabel" GridPane.columnIndex="2" GridPane.rowIndex="6" />
                     </GridPane>
-                </ScrollPane>
+                </VBox>
+                    <GridPane fx:id="mapGrid" alignment="CENTER" gridLinesVisible="true">
+                    </GridPane>
             <VBox>
                 <GridPane fx:id="statsPanel" hgap="20" minWidth="300" vgap="10">
                     <Label text="Current day: " GridPane.columnIndex="1" GridPane.rowIndex="0" />
@@ -45,7 +65,7 @@
                   <RowConstraints />
                </rowConstraints>
                 </GridPane>
-                <Button fx:id="pauseStartButton" onAction="#onPauseStartButtonClicked">
+                <Button fx:id="pauseStartButton" alignment="CENTER" contentDisplay="CENTER" onAction="#onPauseStartButtonClicked" prefHeight="26.0" prefWidth="298.0">
 
                 </Button>
 

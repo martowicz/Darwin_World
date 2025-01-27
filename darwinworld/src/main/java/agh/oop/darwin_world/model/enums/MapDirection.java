@@ -32,14 +32,14 @@ public enum MapDirection {
     @Override
     public String toString() {
         return switch (this){
-            case N -> "^";
-            case E -> ">";
-            case S -> "v";
-            case W -> "<";
-            case NE -> "^/>";
-            case SW -> "v/<";
-            case NW -> "^/<";
-            case SE -> "v/>";
+            case N -> "\u2191";
+            case E -> "\u2192";
+            case S -> "\u2193";
+            case W -> "\u2190";
+            case NE -> "\u2197";
+            case SW -> "\u2199";
+            case NW -> "\u2196";
+            case SE -> "\u2198";
         };
     }
 

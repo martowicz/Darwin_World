@@ -56,25 +56,34 @@ public abstract class AbstractWorldMap implements WorldMap
     @Override
     public void reproduce() {
 
-        System.out.println("Reproduce");
 
         for (Vector2d position : animalsAtPositions.keySet()) {
-
             SortedLinkedList<Animal> animalsInPosition = animalsAtPositions.get(position);
-            if(!animalsInPosition.canIntercourse())
-                return;
+            if(animalsInPosition.canIntercourse()){
+                Animal firstAnimal = animalsInPosition.getHead();
+                Animal secondAnimal = animalsInPosition.getSecondElement();
+                if (secondAnimal.getEnergy()>=config.animalsEnergyToCopulate()){
+                    Animal kid = new Animal(firstAnimal,secondAnimal,config);
+                    Vector2d kidPosition = new Vector2d(firstAnimal.getPosition().getX(),firstAnimal.getPosition().getY());
+                    addAnimal(kidPosition,kid);
+                    firstAnimal.addKid(kid);
+                    secondAnimal.addKid(kid);
+                    System.out.println("New kid on " + kidPosition);
+                }
 
-            Animal firstAnimal = animalsInPosition.getHead();
-            Animal secondAnimal = animalsInPosition.getSecondElement();
-
-            if (secondAnimal.getEnergy()<config.animalsEnergyToCopulate())
-                return;
+            }
 
 
-            Animal kidos = new Animal(firstAnimal,secondAnimal,config);
-            addAnimal(firstAnimal.getPosition(),kidos);
 
-            System.out.println("can mate" +firstAnimal+secondAnimal);
+
+
+
+
+
+
+
+
+
 
         }
 
@@ -338,6 +347,18 @@ public abstract class AbstractWorldMap implements WorldMap
 
     public int getNumberOfPlants(){
         return plants.size();
+    }
+
+    public int getNumberOfEmptyFields(){
+        int emptyFields = 0;
+        for(int x=boundary.lowerLeft().getX();x<=boundary.upperRight().getX();x++){
+            for(int y=boundary.lowerLeft().getY();y<=boundary.upperRight().getY();y++){
+                if(returnObjectAt(new Vector2d(x,y))==null){
+                    emptyFields++;
+                }
+            }
+        }
+        return emptyFields;
     }
 
 

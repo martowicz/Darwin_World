@@ -1,10 +1,7 @@
 package agh.oop.darwin_world.presenter;
 
-import agh.oop.darwin_world.World;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.world_elements.Animal;
-import agh.oop.darwin_world.model.world_elements.Lake;
-import agh.oop.darwin_world.model.world_elements.Plant;
 import agh.oop.darwin_world.model.world_elements.WorldElement;
 import agh.oop.darwin_world.model.worlds.AbstractWorldMap;
 import agh.oop.darwin_world.model.worlds.Boundary;
@@ -13,52 +10,71 @@ import agh.oop.darwin_world.simulation.Simulation;
 import agh.oop.darwin_world.simulation.SimulationEngine;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Circle;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-
-import java.awt.*;
-import java.util.Collections;
 
 
 public class SimulationWindowPresenter implements MapChangeListener {
 
     @FXML
     public ScrollPane mapScrollPane;
-
     @FXML
     public GridPane mapGrid;
-
-
     @FXML
     private Label numberOfAnimalsLabel;
-
     @FXML
     private Label numberOfPlantsLabel;
-
     @FXML
     private Label averageEnergyLabel;
-
     @FXML
     private Label dayLabel;
-
     @FXML
     private Button pauseStartButton;
 
     AbstractWorldMap worldMap;
     Simulation simulation;
+
+
+    @FXML
+    public Label genomeTrackingLabel;
+    @FXML
+    public Label activeGeneTrackingLabel;
+    @FXML
+    public Label energyTrackingLabel;
+    @FXML
+    public Label plantsEatenTrackingLabel;
+    @FXML
+    public Label kidsTrackingLabel;
+    @FXML
+    public Label descendantsTrackingLabel;
+    @FXML
+    public Label lifespanTrackingLabel;
+    @FXML
+    public GridPane animalTrackingPanel;
+
+    private boolean animalIsTracked = false;
+    private Animal currentAnimalTracked;
+
+
+    @FXML
+    public GridPane statsPanel;
+    @FXML
+    public Label numberOfEmptyFieldsLabel;
+    @FXML
+    public Label averageLifeSpanLabel;
+    @FXML
+    public Label averageNumberOfChildrenLabel;
+    @FXML
+    public Label mostPopularGenotypeLabel;
+
 
     private static final Color EMPTY_CELL_COLOR = javafx.scene.paint.Color.rgb(69, 38, 38);
     Stage newWindowStage;
@@ -66,7 +82,8 @@ public class SimulationWindowPresenter implements MapChangeListener {
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
             drawMap();
-            updateStatistics();
+            updateAnimalStats();
+            updateSimulationStats();
         });
     }
 
@@ -97,10 +114,16 @@ public class SimulationWindowPresenter implements MapChangeListener {
         for (int i = boundary.lowerLeft().getY(); i <= boundary.upperRight().getY(); i++) {
             for (int j = boundary.lowerLeft().getX(); j <= boundary.upperRight().getX(); j++) {
                 Vector2d position = new Vector2d(j, i);
-                drawGridCell(position, j - boundary.lowerLeft().getX() + 1, boundary.upperRight().getY() - i + 1, cellSize);
+                drawCell(position, j - boundary.lowerLeft().getX() + 1, boundary.upperRight().getY() - i + 1, cellSize);
             }
         }
     }
+
+    private void drawCell(Vector2d position, int column, int row, int cellSize) {
+        Node node = createNodeForElement(position, cellSize);
+        mapGrid.add(node, column, row);
+    }
+
 
     private Node createNodeForElement(Vector2d position, int cellSize) {
         StackPane stackPane = createStackPane(cellSize);
@@ -109,20 +132,21 @@ public class SimulationWindowPresenter implements MapChangeListener {
         WorldElement element = worldMap.returnAnimalAt(position);
         if(element instanceof Animal){
             Circle circle = createAnimalCircle((Animal) element, cellSize);
-            //circle.setOnMouseClicked(event -> handleAnimalClick((Animal) element));
+            if(currentAnimalTracked!=null && currentAnimalTracked.getPosition().equals(position)){
+                circle.setFill(Color.RED);
+            }
             stackPane.getChildren().add(circle);
+            Label label = new Label(((Animal) element).getAnimalOrientation().toString());
+            double fontSize = cellSize * 0.5; // np. 30% rozmiaru cellSize
+            label.setStyle("-fx-font-size: " + fontSize + "px;");
+            stackPane.getChildren().add(label);
+            stackPane.setOnMouseClicked(event -> handleAnimalClick((Animal) element));
+
         }
-
-
-
         return stackPane;
     }
 
-    private Circle createAnimalCircle(Animal animal, int cellSize) {
-        Circle circle = new Circle((int) (cellSize / 5));
-        circle.setFill(Color.RED);
-        return circle;
-    }
+
 
     private StackPane createStackPane(int cellSize) {
         StackPane stackPane = new StackPane();
@@ -141,21 +165,56 @@ public class SimulationWindowPresenter implements MapChangeListener {
         return cell;
     }
 
+    private Circle createAnimalCircle(Animal animal, int cellSize) {
+        Circle circle = new Circle((int) (cellSize / 4));
+        circle.setFill(animal.getColor());
+        return circle;
+    }
 
-    public void updateStatistics() {
+    private void handleAnimalClick(Animal animal) {
+        System.out.println(animal.getAnimalOrientation().toString());
+        if(!animalIsTracked){
+            this.currentAnimalTracked = animal;
+            genomeTrackingLabel.setText(this.currentAnimalTracked.getGenes().toString());
+            activeGeneTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getActiveGene()));
+            energyTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getEnergy()));
+            plantsEatenTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getPlantsEaten()));
+            kidsTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getKids()));
+            descendantsTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getDescendants()));
+            lifespanTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getDeathDay()));
+        }
+        animalIsTracked = !animalIsTracked;
+
+
+    }
+
+
+    public void updateSimulationStats() {
         int numberOfAnimals = worldMap.getNumberOfAnimals();
         numberOfAnimalsLabel.setText(String.valueOf(numberOfAnimals));
         averageEnergyLabel.setText(String.format("%.2f",worldMap.averageAnimalEnergy()));
         numberOfPlantsLabel.setText(String.valueOf(worldMap.getNumberOfPlants()));
         dayLabel.setText(String.valueOf(simulation.getDay()));
+        averageLifeSpanLabel.setText(String.format("%.2f",simulation.averageAgeForDeadAnimals()));
+        averageNumberOfChildrenLabel.setText(String.format("%.2f",simulation.averageKidsNumberForAliveAnimals()));
+        numberOfEmptyFieldsLabel.setText(String.valueOf(worldMap.getNumberOfEmptyFields()));
+
+    }
+
+    public void updateAnimalStats(){
+        if(animalIsTracked){
+            genomeTrackingLabel.setText(this.currentAnimalTracked.getGenes().toString());
+            activeGeneTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getActiveGene()));
+            energyTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getEnergy()));
+            plantsEatenTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getPlantsEaten()));
+            kidsTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getKids()));
+            descendantsTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getDescendants()));
+            lifespanTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getDeathDay()));
+        }
     }
 
 
 
-    private void drawGridCell(Vector2d position, int column, int row, int cellSize) {
-        Node node = createNodeForElement(position, cellSize);
-        mapGrid.add(node, column, row);
-    }
 
 
 

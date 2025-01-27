@@ -20,8 +20,10 @@ public class Animal implements WorldElement, Comparable<Animal> {
     private int plantsEaten=0;
     private int dayOfDeath;
     int genomeLength;
+    private boolean isDead=false;
     private List<Integer> genes = new ArrayList<>();
     private AbstractMutation mutation;
+    private boolean shouldDie=false;
 
 
     // First constructor - animal without parents
@@ -137,9 +139,41 @@ public class Animal implements WorldElement, Comparable<Animal> {
     }
 
     @Override
-    public Color getColor() {
-        return Color.RED;
+    public Color getColor() {return Color.YELLOW;}
+
+    public int getActiveGene(){
+        return genes.get(iterator%genes.size());
     }
+
+    public List<Integer> getGenes(){
+        return genes;
+    }
+
+    public int getPlantsEaten(){
+        return plantsEaten;
+    }
+
+    public int getKids(){
+        return kids.size();
+    }
+
+    public int getDescendants() {
+        return kids.size() + kids.stream()
+                .mapToInt(Animal::getDescendants)
+                .sum();
+    }
+
+    public int getAge(){
+        return age;
+    }
+
+    public String getDeathDay() {
+        return this.isDead ? String.valueOf(this.dayOfDeath) : "Alive";}
+
+
+    public void setDyingForOtherCause(){shouldDie=true;}
+
+    public boolean diesForOtherCause(){return shouldDie;}
 
     public void rotate(){
         iterator++;
@@ -158,18 +192,10 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     public void dies(int dayOfDeath){
         this.dayOfDeath = dayOfDeath;
+        this.isDead=true;
     }
 
 
-    public int getKids(){
-        return kids.size();
-    }
-
-    public int getDescendants() {
-        return kids.size() + kids.stream()
-                .mapToInt(Animal::getDescendants)
-                .sum();
-    }
 
 
     public void addKid(Animal kid){
