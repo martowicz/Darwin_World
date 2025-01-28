@@ -147,7 +147,8 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
             }
             if(currentAnimalTracked!=null && currentAnimalTracked.getPosition().equals(position)){
-                circle.setFill(Color.RED);
+                circle.setStroke(Color.YELLOW);
+                circle.setStrokeWidth(6);
             }
             stackPane.getChildren().add(circle);
             Label label = new Label(((Animal) element).getAnimalOrientation().toString());
@@ -181,7 +182,7 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
     private Circle createAnimalCircle(Animal animal, int cellSize) {
         Circle circle = new Circle((int) (cellSize / 4));
-        circle.setFill(animal.getColor());
+        circle.setFill(animal.getColor()); //pobiera aktualny kolor animala
         return circle;
     }
 

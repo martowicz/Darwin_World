@@ -142,7 +142,16 @@ public class Animal implements WorldElement, Comparable<Animal> {
     }
 
     @Override
-    public Color getColor() {return Color.YELLOW;}
+    public Color getColor() {
+        int b =getEnergy();
+        if(b>255) b=255;
+        int r=255-b;
+        int g=0;
+        //(R,G,B)
+        //(0,0,255) - dużo energii
+        //(255,0,0) - mało energii
+        return Color.rgb(r, g, b);
+    }
 
     public int getActiveGene(){
         return genes.get(iterator%genes.size());
