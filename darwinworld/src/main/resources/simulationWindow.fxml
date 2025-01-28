@@ -73,5 +73,12 @@
             </HBox>
     </center>
 
+    <bottom>
+<HBox>
+        <Button fx:id="simulationEnd" alignment="CENTER" contentDisplay="CENTER" onAction="#onSimulationEndButtonClicked" prefHeight="26.0" prefWidth="298.0" />
+
+</HBox>
+    </bottom>
+
 
 </BorderPane>

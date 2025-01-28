@@ -63,27 +63,18 @@ public abstract class AbstractWorldMap implements WorldMap
                 Animal firstAnimal = animalsInPosition.getHead();
                 Animal secondAnimal = animalsInPosition.getSecondElement();
                 if (secondAnimal.getEnergy()>=config.animalsEnergyToCopulate()){
+
                     Animal kid = new Animal(firstAnimal,secondAnimal,config);
                     Vector2d kidPosition = new Vector2d(firstAnimal.getPosition().getX(),firstAnimal.getPosition().getY());
                     addAnimal(kidPosition,kid);
                     firstAnimal.addKid(kid);
                     secondAnimal.addKid(kid);
+                    firstAnimal.subtractEnergy(config.animalsEnergySpentOnCopulation());
+                    secondAnimal.subtractEnergy(config.animalsEnergySpentOnCopulation());
                     System.out.println("New kid on " + kidPosition);
                 }
 
             }
-
-
-
-
-
-
-
-
-
-
-
-
 
         }
 

@@ -28,6 +28,10 @@ public class SimulationWindowPresenter implements MapChangeListener {
     public ScrollPane mapScrollPane;
     @FXML
     public GridPane mapGrid;
+
+    @FXML
+    public Button simulationEnd;
+
     @FXML
     private Label numberOfAnimalsLabel;
     @FXML
@@ -41,7 +45,7 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
     AbstractWorldMap worldMap;
     Simulation simulation;
-
+    SimulationEngine simulationEngine;
 
     @FXML
     public Label genomeTrackingLabel;
@@ -60,7 +64,6 @@ public class SimulationWindowPresenter implements MapChangeListener {
     @FXML
     public GridPane animalTrackingPanel;
 
-    private boolean animalIsTracked = false;
     private Animal currentAnimalTracked;
 
 
@@ -130,8 +133,19 @@ public class SimulationWindowPresenter implements MapChangeListener {
         Rectangle cell = createCell(position, cellSize);
         stackPane.getChildren().add(cell);
         WorldElement element = worldMap.returnAnimalAt(position);
-        if(element instanceof Animal){
+        if(element != null){
             Circle circle = createAnimalCircle((Animal) element, cellSize);
+            if(currentAnimalTracked!=null && currentAnimalTracked.getEnergy()<=0){
+                genomeTrackingLabel.setText("");
+                activeGeneTrackingLabel.setText("");
+                energyTrackingLabel.setText("0");
+                plantsEatenTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getPlantsEaten()));
+                kidsTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getKids()));
+                descendantsTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getDescendants()));
+                lifespanTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getDeathDay()));
+                currentAnimalTracked=null;
+
+            }
             if(currentAnimalTracked!=null && currentAnimalTracked.getPosition().equals(position)){
                 circle.setFill(Color.RED);
             }
@@ -173,7 +187,7 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
     private void handleAnimalClick(Animal animal) {
         System.out.println(animal.getAnimalOrientation().toString());
-        if(!animalIsTracked){
+        if(currentAnimalTracked == null || animal != currentAnimalTracked){
             this.currentAnimalTracked = animal;
             genomeTrackingLabel.setText(this.currentAnimalTracked.getGenes().toString());
             activeGeneTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getActiveGene()));
@@ -183,7 +197,13 @@ public class SimulationWindowPresenter implements MapChangeListener {
             descendantsTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getDescendants()));
             lifespanTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getDeathDay()));
         }
-        animalIsTracked = !animalIsTracked;
+
+
+    }
+    public void onSimulationEndButtonClicked()
+    {
+        simulationEngine.shutdown(simulation);
+        newWindowStage.close();
 
 
     }
@@ -202,7 +222,7 @@ public class SimulationWindowPresenter implements MapChangeListener {
     }
 
     public void updateAnimalStats(){
-        if(animalIsTracked){
+        if(currentAnimalTracked!=null){
             genomeTrackingLabel.setText(this.currentAnimalTracked.getGenes().toString());
             activeGeneTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getActiveGene()));
             energyTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getEnergy()));
@@ -224,11 +244,11 @@ public class SimulationWindowPresenter implements MapChangeListener {
     {
         System.out.println("Simulation Window presenter");
         pauseStartButton.setText("Pause");
+        simulationEnd.setText("KILL EM ALL!");
 
     }
 
     public void onPauseStartButtonClicked() {
-        try{
             if(simulation.isRunning()){
                 simulation.pauseSimulation();
                 pauseStartButton.setText("Start");
@@ -238,10 +258,8 @@ public class SimulationWindowPresenter implements MapChangeListener {
                 pauseStartButton.setText("Pause");
             }
         }
-        catch(Exception e){
-            System.out.println(e.getMessage());
-        }
-    }
+
+
 
 
 
@@ -252,6 +270,8 @@ public class SimulationWindowPresenter implements MapChangeListener {
         this.simulation = simulation;
         simulation.getWorldMap().addObserver(this);
         simulationEngine.addToAsyncInThreadPool(simulation);
+
+        this.simulationEngine = simulationEngine;
 
         this.newWindowStage=newWindowStage;
         this.worldMap=simulation.getWorldMap();

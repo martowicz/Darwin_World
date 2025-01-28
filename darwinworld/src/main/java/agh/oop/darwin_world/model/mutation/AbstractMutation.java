@@ -20,7 +20,7 @@ public abstract class AbstractMutation {
         for (int i = 0; i < number_of_genes_to_change; i++) {
             int gene_to_change= r.nextInt(genes.size());
             int geneValue = genes.get(gene_to_change);
-            genes.set(gene_to_change,changeGene(geneValue));
+            genes.set(gene_to_change,(changeGene(geneValue)+genes.size())%genes.size());
         }
     }
 

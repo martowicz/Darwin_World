@@ -26,6 +26,9 @@ public class Animal implements WorldElement, Comparable<Animal> {
     private boolean shouldDie=false;
 
 
+
+
+
     // First constructor - animal without parents
     public Animal (UserConfigurationRecord config, Vector2d position)
     {
@@ -177,8 +180,12 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     public void rotate(){
         iterator++;
-        int rotation = genes.get(iterator% genomeLength);
+        iterator=iterator % genomeLength;
+
+        int rotation = genes.get(iterator);
+
         animalOrientation = animalOrientation.rotate(rotation);
+
     }
 
     public List<Integer> getListOfGenes(){
@@ -251,6 +258,11 @@ public class Animal implements WorldElement, Comparable<Animal> {
             }
 
         }
+    }
+
+    public void subtractEnergy(int energyToReproduce)
+    {
+        energy-=energyToReproduce;
     }
 
 }

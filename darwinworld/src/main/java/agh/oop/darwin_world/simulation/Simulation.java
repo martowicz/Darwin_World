@@ -21,9 +21,9 @@ public class Simulation implements Runnable {
     private final int plantsGrowingEveryDay;
     private int days = 0;
     private final RandomPositionGenerator randomPositionGenerator;
-    private boolean running=true;
+    volatile private boolean running=true;
     private final Object lock = new Object();
-
+    volatile private boolean ended = false;
     public Simulation(UserConfigurationRecord config)
     {
         this.numberOfAnimals=config.animalsCountAtStart();
@@ -48,22 +48,21 @@ public class Simulation implements Runnable {
     public void run(){
 
         while (!animals.isEmpty()) {
-            synchronized (lock) {
-                while (!running) {
-                    try {
-                        lock.wait();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
+            if (ended) return;
+            if (!running) continue;
+
 
             animals = worldMap.getAnimalsToList();
+
             days += 1;
+
             //1-Usunięcie martwych zwierzaków z mapy.
             //--
             removeDeadAnimals(days);
             //--
+
+
+            animals = worldMap.getAnimalsToList();
 
             worldMap.notifyObservers("dni:"+days);
             sleep();
@@ -92,6 +91,7 @@ public class Simulation implements Runnable {
 
             //4-Rozmnażanie się najedzonych zwierzaków znajdujących się na tym samym polu.
             //--
+            System.out.println(days);
             worldMap.reproduce();
             //--
 
@@ -100,12 +100,15 @@ public class Simulation implements Runnable {
             //--
             worldMap.generateEnvironment(plantsGrowingEveryDay, days);
             //--
+
+
             //6-Koniec dnia(zwierzęta tracą energie)
             //--
             worldMap.dayPasses(days);
             //System.out.println(days + " days passed");
 
             //--
+            animals = worldMap.getAnimalsToList();
 
 
         }
@@ -113,11 +116,14 @@ public class Simulation implements Runnable {
     }
     private void sleep() {
         try {
-            Thread.sleep(60);
+            Thread.sleep(50);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
 
         }
+    }
+    public void end() {
+        ended = true;
     }
 
     public boolean isRunning(){
@@ -130,9 +136,7 @@ public class Simulation implements Runnable {
 
     public void resumeSimulation(){
         running=true;
-        synchronized (lock) {
-            lock.notify();
-        }
+
     }
 
     private void placeAnimalsOnTheMap(UserConfigurationRecord config) {
@@ -156,7 +160,9 @@ public class Simulation implements Runnable {
 
     private void rotateAllAnimals() {
         for(Animal animal : animals){
+
             worldMap.rotate(animal);
+
         }
     }
 
