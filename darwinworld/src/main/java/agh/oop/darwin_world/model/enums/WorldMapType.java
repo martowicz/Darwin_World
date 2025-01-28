@@ -7,8 +7,7 @@ import agh.oop.darwin_world.presenter.UserConfigurationRecord;
 
 public enum WorldMapType {
     ROUND_WORLD,
-    WATER_WORLD,
-    RECTANGULAR_WORLD;
+    WATER_WORLD;
 
 
     //czy private
@@ -17,7 +16,6 @@ public enum WorldMapType {
         return switch (this){
             case ROUND_WORLD -> new Earth(config);
             case WATER_WORLD -> new FlowsAndDrains(config);
-            case RECTANGULAR_WORLD -> new RectangularMap(config);
         };
     }
 
@@ -26,7 +24,18 @@ public enum WorldMapType {
         return switch (this){
             case ROUND_WORLD -> "Earth_Globe";
             case WATER_WORLD -> "Flows_and_Drains";
-            case RECTANGULAR_WORLD -> "Rectangular World";
         };
     }
+    
+    public static WorldMapType stringToEnum(String str)
+    {
+        return switch (str){
+            case "Earth_Globe" ->ROUND_WORLD;
+            case "Flows_and_Drains" -> WATER_WORLD;
+            default -> throw new IllegalStateException("Unexpected value: " + str);
+        };
+
+    }
+
+
 }

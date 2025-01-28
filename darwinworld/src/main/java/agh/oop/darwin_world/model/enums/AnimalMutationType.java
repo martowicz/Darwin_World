@@ -21,6 +21,18 @@ public enum AnimalMutationType
             case LIGHT_CORRECTION_MUTATION -> new LightCorrectionMutation(min,max);
         };
     }
+
+    public static AnimalMutationType stringToEnum(String str)
+    {
+        return switch (str){
+            case "Random Mutation" ->RANDOM_MUTATION;
+            case "Light Correction Mutation" -> LIGHT_CORRECTION_MUTATION;
+            default -> throw new IllegalStateException("Unexpected value: " + str);
+        };
+
+    }
+
+
     @Override
     public String toString() {
     return switch (this){
@@ -28,5 +40,7 @@ public enum AnimalMutationType
         case LIGHT_CORRECTION_MUTATION -> "Light Correction Mutation";
 
     };
+
+
 }
 }
