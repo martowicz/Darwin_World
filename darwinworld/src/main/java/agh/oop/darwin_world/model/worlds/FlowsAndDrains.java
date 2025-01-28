@@ -21,7 +21,7 @@ public class FlowsAndDrains extends AbstractWorldMap {
         this.lakes=new ArrayList<>();
         Lake lake = new Lake(config);
         lakes.add(lake);
-    }
+   }
 
     @Override
     public boolean canMoveTo(Vector2d position) {
@@ -55,7 +55,7 @@ public class FlowsAndDrains extends AbstractWorldMap {
 
     @Override
     public boolean plantCanBePlaced(Vector2d position) {
-        if((lakes != null) && lakes.size()>0) {
+        if((lakes != null) && !lakes.isEmpty()) {
             for (Lake lake : lakes) {
                 if (lake.occupiedByLake(position)) {
                     return false;
@@ -69,10 +69,10 @@ public class FlowsAndDrains extends AbstractWorldMap {
 
     @Override
     public void generateEnvironment (int plantsCount, int day){
-        super.generateEnvironment(plantsCount, day);
         if (day % 5 == 1) {
             Random rand = new Random();
             for (Lake lake : lakes) {
+
                 int s = rand.nextInt(2);
                 if (s == 0) {
                     lake.reduceLake();
@@ -88,19 +88,20 @@ public class FlowsAndDrains extends AbstractWorldMap {
                         }
                     }
                 }
-//                List<Plant> plantsToRemove= new ArrayList<>();
-//                for(Vector2d position : plants.keySet()){
-//                    if (lake.occupiedByLake(position)) {
-//                        plantsToRemove.add((Plant) plants.get(position));
-//                    }
-//                }
-//                for (Plant plant : plantsToRemove) {
-//                    plants.remove(plant);
-//                }
+
+
+                List<Vector2d> plantsToRemovePositions= new ArrayList<>();
+                for(Vector2d position : plants.keySet()){
+                    if (lake.occupiedByLake(position)) {
+                        plantsToRemovePositions.add(position);
+                    }
+                }
+                for (Vector2d position : plantsToRemovePositions) {
+                    plants.remove(position);
+                }
 
             }
         }
-
-
+        super.generateEnvironment(plantsCount, day);
         }
     }

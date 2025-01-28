@@ -23,7 +23,8 @@ public class Plant implements WorldElement
 
     @Override
     public Color getColor() {
-        return Color.GREEN;
+
+        return Color.rgb(83,159,0);
     }
 
     @Override

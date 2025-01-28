@@ -176,7 +176,7 @@ public class SimulationWindowPresenter implements MapChangeListener {
          if (environmentObject != null) {
             cell.setFill(environmentObject.getColor());
         }
-        else{cell.setFill(Color.BLACK);}
+        else{cell.setFill(Color.SANDYBROWN);}
         return cell;
     }
 

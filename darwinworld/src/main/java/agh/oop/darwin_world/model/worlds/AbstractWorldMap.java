@@ -7,12 +7,12 @@ import agh.oop.darwin_world.model.utils.SortedLinkedList;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.utils.MapVisualizer;
 import agh.oop.darwin_world.model.world_elements.Animal;
+import agh.oop.darwin_world.model.world_elements.EquatorPlant;
 import agh.oop.darwin_world.model.world_elements.Plant;
 import agh.oop.darwin_world.model.world_elements.WorldElement;
 import agh.oop.darwin_world.presenter.MapChangeListener;
 import agh.oop.darwin_world.presenter.UserConfigurationRecord;
 
-import java.lang.module.Configuration;
 import java.security.SecureRandom;
 import java.util.*;
 
@@ -226,21 +226,46 @@ public abstract class AbstractWorldMap implements WorldMap
     }
 
     public void generateEnvironment(int plantsCount, int day){
-        SecureRandom rand = new SecureRandom();
+
+        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator();
+        List<Vector2d> underEquatorPositions = randomPositionGenerator.generateAllPositions(underEquatorBoundary);
+        List<Vector2d> equatorPositions = randomPositionGenerator.generateAllPositions(equatorBoundary);
+        List<Vector2d> overEquatorPositions = randomPositionGenerator.generateAllPositions(overEquatorBoundary);
         int i=0;
-        while (i<plantsCount && plants.size()<numberOfFields){
-            Vector2d generatedPosition;
+        SecureRandom rand = new SecureRandom();
+        while (config.plantsGrowingDaily()>i && !underEquatorPositions.isEmpty() && !overEquatorPositions.isEmpty() && !equatorPositions.isEmpty()) {
+            
+            Vector2d positionCandidate = null;
             double v = rand.nextDouble();
-            if(v<0.8){generatedPosition=randomPositionGenerator.generate(equatorBoundary);}
-            else{
-                if(v<0.9){generatedPosition=randomPositionGenerator.generate(overEquatorBoundary);}
-                else{generatedPosition=randomPositionGenerator.generate(underEquatorBoundary);}
+            if(v<0.8 && !equatorPositions.isEmpty()) {
+                positionCandidate = equatorPositions.removeFirst();
+                if(plantCanBePlaced(positionCandidate)){
+                    EquatorPlant equatorPlant = new EquatorPlant(positionCandidate);
+                    plants.put(positionCandidate, equatorPlant);
+                    i++;
+                }
             }
-            if(plantCanBePlaced(generatedPosition)){
-                Plant plant = new Plant(generatedPosition);
-                plants.put(generatedPosition, plant);
-                i++;
+            
+            else if(v<0.9 && !overEquatorPositions.isEmpty()) {
+                positionCandidate = overEquatorPositions.removeFirst();
+                if(plantCanBePlaced(positionCandidate)){
+                    Plant plant = new Plant(positionCandidate);
+                    plants.put(positionCandidate, plant);
+                    i++;
+                }
             }
+            
+            else if(!underEquatorPositions.isEmpty()) {
+                positionCandidate = underEquatorPositions.removeFirst();
+                if(plantCanBePlaced(positionCandidate)){
+                    Plant plant = new Plant(positionCandidate);
+                    plants.put(positionCandidate, plant);
+                    i++;
+                }
+               
+            }
+
+
         }
     }
 

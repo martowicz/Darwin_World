@@ -3,19 +3,29 @@ import agh.oop.darwin_world.model.utils.RandomPositionGenerator;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.presenter.UserConfigurationRecord;
 import javafx.scene.paint.Color;
+import jdk.jshell.spi.ExecutionControl;
+
+import java.lang.module.Configuration;
 
 public class Lake implements WorldElement {
     private int radius=0;
     private Vector2d source_position;
+    UserConfigurationRecord config;
+    private  static final double MAX_LAKE_PROPORTION = 0.25;
+    private  static final double MIN_LAKE_PROPORTION = 0.1;
+
     public Lake(UserConfigurationRecord config) {
+
         RandomPositionGenerator r = new RandomPositionGenerator();
-        this.source_position=r.generate(config.mapBoundary());
+        this.source_position=r.getRandomPosition(config.mapBoundary());
+        this.config=config;
     }
     public void extendLake(){
-        radius+=1;
+        if(radius<MAX_LAKE_PROPORTION*config.mapBoundary().upperRight().getX() && radius<MAX_LAKE_PROPORTION*config.mapBoundary().upperRight().getY())
+        { radius+=1;}
     }
     public void reduceLake(){
-        if(radius>0){
+        if(radius>0 && radius>MIN_LAKE_PROPORTION*config.mapBoundary().upperRight().getX()&& radius>MIN_LAKE_PROPORTION*config.mapBoundary().upperRight().getY()){
             radius-=1;
         }
     }
@@ -32,9 +42,12 @@ public class Lake implements WorldElement {
     @Override
     public Vector2d getPosition() {return source_position;}
 
+
+
+
     @Override
     public Color getColor() {
-        return Color.BLUE;
+        return Color.LIGHTBLUE;
     }
 
 }

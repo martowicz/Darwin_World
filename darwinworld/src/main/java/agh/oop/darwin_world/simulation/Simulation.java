@@ -3,11 +3,9 @@ import agh.oop.darwin_world.model.utils.RandomPositionGenerator;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.world_elements.Animal;
 import agh.oop.darwin_world.model.worlds.AbstractWorldMap;
-import agh.oop.darwin_world.presenter.ConsoleMapDisplay;
 import agh.oop.darwin_world.presenter.UserConfigurationRecord;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Simulation implements Runnable {
 
@@ -116,7 +114,7 @@ public class Simulation implements Runnable {
     }
     private void sleep() {
         try {
-            Thread.sleep(50);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
 
@@ -141,8 +139,10 @@ public class Simulation implements Runnable {
 
     private void placeAnimalsOnTheMap(UserConfigurationRecord config) {
         int i=0;
-        while (i<numberOfAnimals) {
-            Vector2d moveCandidate = randomPositionGenerator.generate(config.mapBoundary());
+        List<Vector2d> moveCandidates = randomPositionGenerator.generateAllPositions(config.mapBoundary());
+        Vector2d moveCandidate = null;
+        while (i<numberOfAnimals && !moveCandidates.isEmpty()) {
+            moveCandidate = moveCandidates.removeFirst();
             if(this.worldMap.canMoveTo(moveCandidate))
             {
                 Animal animal = new Animal(config,moveCandidate);
