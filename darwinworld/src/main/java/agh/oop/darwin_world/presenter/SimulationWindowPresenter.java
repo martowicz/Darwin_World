@@ -21,6 +21,15 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 
 public class SimulationWindowPresenter implements MapChangeListener {
 
@@ -77,6 +86,9 @@ public class SimulationWindowPresenter implements MapChangeListener {
     public Label averageNumberOfChildrenLabel;
     @FXML
     public Label mostPopularGenotypeLabel;
+
+    private boolean log;
+    private String log_path;
 
 
     private static final Color EMPTY_CELL_COLOR = javafx.scene.paint.Color.rgb(69, 38, 38);
@@ -219,6 +231,27 @@ public class SimulationWindowPresenter implements MapChangeListener {
         averageLifeSpanLabel.setText(String.format("%.2f",simulation.averageAgeForDeadAnimals()));
         averageNumberOfChildrenLabel.setText(String.format("%.2f",simulation.averageKidsNumberForAliveAnimals()));
         numberOfEmptyFieldsLabel.setText(String.valueOf(worldMap.getNumberOfEmptyFields()));
+        mostPopularGenotypeLabel.setText(this.simulation.getMostPopularGenotype().toString());
+        if(log){
+            try{
+                List<String> statistics = Stream.of(
+                        simulation.getDay(),
+                        worldMap.getNumberOfAnimals(),
+                        worldMap.getNumberOfPlants(),
+                        worldMap.getNumberOfEmptyFields(),
+                        simulation.averageAgeForDeadAnimals(),
+                        worldMap.averageAnimalEnergy(),
+                        simulation.averageKidsNumberForAliveAnimals(),
+                        simulation.getMostPopularGenotype()
+                ).map(Object::toString).toList();
+                Files.writeString(Path.of(log_path),String.join(",",statistics) + System.lineSeparator(),
+                        StandardOpenOption.APPEND);
+            }
+            catch (IOException e){
+                e.printStackTrace();
+            }
+
+        }
 
     }
 
@@ -250,21 +283,35 @@ public class SimulationWindowPresenter implements MapChangeListener {
     }
 
     public void onPauseStartButtonClicked() {
-            if(simulation.isRunning()){
-                simulation.pauseSimulation();
-                pauseStartButton.setText("Start");
-            }
-            else{
-                simulation.resumeSimulation();
-                pauseStartButton.setText("Pause");
-            }
+        if (simulation.isRunning()) {
+            simulation.pauseSimulation();
+            pauseStartButton.setText("Start");
+        } else {
+            simulation.resumeSimulation();
+            pauseStartButton.setText("Pause");
+        }
+    }
+
+    public void setLogging()  {
+        try{
+            this.log_path="log_%s.csv".formatted(simulation.toString());
+            List<String> headers= List.of("Day","Animals","Plants","Empty_Fields","AvgLife","AvgEnergy","AvgNumberOfChildren","MostPopularGenotype");
+            Files.writeString(Path.of(log_path), String.join(",",headers) + System.lineSeparator(),
+                    StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        }
+        catch (IOException e){
+            e.printStackTrace();
         }
 
+    }
 
 
 
 
-    public void runSimulation(UserConfigurationRecord config, SimulationEngine simulationEngine,Stage newWindowStage) {
+    public void runSimulation(UserConfigurationRecord config, SimulationEngine simulationEngine,Stage newWindowStage, boolean savelog) {
+
+
+        this.log=savelog;
 
         System.out.println("Simulation running...");
         Simulation simulation = new Simulation(config);
@@ -276,5 +323,9 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
         this.newWindowStage=newWindowStage;
         this.worldMap=simulation.getWorldMap();
+
+        if(log){
+            setLogging();
+        }
    }
 }

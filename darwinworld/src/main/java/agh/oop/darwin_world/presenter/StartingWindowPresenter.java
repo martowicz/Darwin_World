@@ -180,7 +180,7 @@ public class StartingWindowPresenter {
         configureStage(newWindowStage, viewRoot);
 
         newWindowStage.show();
-        presenter.runSimulation(config,simulationEngine, newWindowStage);
+        presenter.runSimulation(config,simulationEngine, newWindowStage, saveLogCheck.isSelected());
 
 
     }

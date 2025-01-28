@@ -1,16 +1,18 @@
 package agh.oop.darwin_world.simulation;
+import agh.oop.darwin_world.model.enums.WorldMapType;
 import agh.oop.darwin_world.model.utils.RandomPositionGenerator;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.world_elements.Animal;
 import agh.oop.darwin_world.model.worlds.AbstractWorldMap;
 import agh.oop.darwin_world.presenter.UserConfigurationRecord;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.*;
 
 public class Simulation implements Runnable {
 
     private int numberOfAnimals;
-
+    private UUID id;
+    private WorldMapType worldMapType;
     private int movesCount = 0;
     private int animalsEnergyAtStart;
     private List<Animal> animals = new ArrayList<>();
@@ -26,11 +28,13 @@ public class Simulation implements Runnable {
     {
         this.numberOfAnimals=config.animalsCountAtStart();
         this.worldMap = config.mapType().enumToMap(config);
+        this.worldMapType=config.mapType();
         this.randomPositionGenerator = new RandomPositionGenerator();
         //this.worldMap.addObserver(new ConsoleMapDisplay());
         this.plantsGrowingEveryDay = config.plantsGrowingDaily(); //obserwator w terminalu
         placeAnimalsOnTheMap(config);
         this.animals = this.worldMap.getAnimalsToList();
+        this.id = UUID.randomUUID();
 
     }
 
@@ -199,6 +203,29 @@ public class Simulation implements Runnable {
             sum+=animal.getKids();
         }
         return (double) sum/animals.size();
+    }
+
+    public List<Integer> getMostPopularGenotype(){
+        Map<List<Integer>,Integer> genotypeFrequency = new HashMap<>();
+
+        for(Animal animal : animals){
+            List<Integer> genes = animal.getGenes();
+            genotypeFrequency.put(genes,genotypeFrequency.getOrDefault(genes,0)+1);
+        }
+        int max=0;
+        List<Integer> mostPopularGenotype = new ArrayList<>();
+        for(List<Integer> genes : genotypeFrequency.keySet()){
+            if(genotypeFrequency.get(genes)>max){
+                max = genotypeFrequency.get(genes);
+                mostPopularGenotype = genes;
+            }
+        }
+        return mostPopularGenotype;
+    }
+
+    @Override
+    public String toString() {
+        return worldMapType.toString() + "_" + (id.toString().length() > 6 ? id.toString().substring(0, 6) : id.toString());
     }
 
 

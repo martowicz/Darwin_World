@@ -24,8 +24,8 @@ public enum WorldMapType {
     @Override
     public String toString() {
         return switch (this){
-            case ROUND_WORLD -> "Round World";
-            case WATER_WORLD -> "Water World";
+            case ROUND_WORLD -> "Earth_Globe";
+            case WATER_WORLD -> "Flows_and_Drains";
             case RECTANGULAR_WORLD -> "Rectangular World";
         };
     }
