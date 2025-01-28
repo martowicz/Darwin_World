@@ -6,6 +6,7 @@ import agh.oop.darwin_world.model.utils.SortedLinkedList;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.world_elements.Animal;
 import agh.oop.darwin_world.model.world_elements.Lake;
+import agh.oop.darwin_world.model.world_elements.Plant;
 import agh.oop.darwin_world.model.world_elements.WorldElement;
 import agh.oop.darwin_world.presenter.UserConfigurationRecord;
 
@@ -13,10 +14,11 @@ import java.util.*;
 
 public class FlowsAndDrains extends AbstractWorldMap {
 
-    private List<Lake> lakes = new ArrayList<>();
+    private List<Lake> lakes;
 
     public FlowsAndDrains(UserConfigurationRecord config) {
         super(config);
+        this.lakes=new ArrayList<>();
         Lake lake = new Lake(config);
         lakes.add(lake);
     }
@@ -51,6 +53,18 @@ public class FlowsAndDrains extends AbstractWorldMap {
         return super.returnEnvironmentAt(position);
     }
 
+    @Override
+    public boolean plantCanBePlaced(Vector2d position) {
+        if((lakes != null) && lakes.size()>0) {
+            for (Lake lake : lakes) {
+                if (lake.occupiedByLake(position)) {
+                    return false;
+                }
+            }
+        }
+
+        return super.plantCanBePlaced(position);
+    }
 
 
     @Override
@@ -74,6 +88,15 @@ public class FlowsAndDrains extends AbstractWorldMap {
                         }
                     }
                 }
+//                List<Plant> plantsToRemove= new ArrayList<>();
+//                for(Vector2d position : plants.keySet()){
+//                    if (lake.occupiedByLake(position)) {
+//                        plantsToRemove.add((Plant) plants.get(position));
+//                    }
+//                }
+//                for (Plant plant : plantsToRemove) {
+//                    plants.remove(plant);
+//                }
 
             }
         }

@@ -19,12 +19,12 @@ public class Lake implements WorldElement {
             radius-=1;
         }
     }
-    public boolean occupiedByLake(Vector2d position){
-        return (source_position.getX()-radius<=position.getX() &&
-                source_position.getX()+radius>=position.getX() &&
-                source_position.getY()-radius<=position.getY() &&
-                source_position.getY()+radius>=position.getY());
+    public boolean occupiedByLake(Vector2d position) {
+        double distanceSquared = Math.pow(source_position.getX() - position.getX(), 2) +
+                Math.pow(source_position.getY() - position.getY(), 2);
+        return distanceSquared < Math.pow(radius, 2);
     }
+
     @Override
     public String toString() {
         return "8";
