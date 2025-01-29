@@ -17,12 +17,12 @@
 
                 <HBox alignment="CENTER" prefHeight=" .0" prefWidth="601.0" spacing="5">
                     <Label text="Choose configuration or set a new one: " textAlignment="CENTER" />
-                    <ComboBox fx:id="csvCombo" onAction="#onCsvComboClicked" layoutX="200.0" layoutY="33.0" prefWidth="200.0" />
+                    <ComboBox fx:id="csvCombo" layoutX="200.0" layoutY="33.0" onAction="#onCsvComboClicked" prefWidth="200.0" />
                 </HBox>
                 <HBox alignment="CENTER" prefHeight="26.0" prefWidth="601.0" spacing="5">
                     <Label text="New configuration setup" textAlignment="CENTER">
                    <font>
-                      <Font size="17.0" />
+                      <Font name="ELEGANT TYPEWRITER" size="24.0" />
                    </font></Label>
 
                 </HBox>
@@ -113,9 +113,9 @@
         </VBox>
     </bottom>
    <top>
-      <Label text="Darwin Simulation" BorderPane.alignment="CENTER">
+      <Label text="DARWIN SIMULATION" BorderPane.alignment="CENTER">
          <font>
-            <Font size="25.0" />
+            <Font name="ELEGANT TYPEWRITER" size="42.0" />
          </font>
       </Label>
    </top>

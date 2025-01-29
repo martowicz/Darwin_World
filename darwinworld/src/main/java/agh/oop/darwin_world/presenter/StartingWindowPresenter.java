@@ -5,10 +5,7 @@ import agh.oop.darwin_world.model.enums.WorldMapType;
 import agh.oop.darwin_world.model.utils.InvalidParamenterException;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.worlds.Boundary;
-import agh.oop.darwin_world.simulation.Simulation;
-import agh.oop.darwin_world.simulation.SimulationApp;
 import agh.oop.darwin_world.simulation.SimulationEngine;
-import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -17,8 +14,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -26,7 +21,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -94,7 +88,7 @@ public class StartingWindowPresenter {
     @FXML
     void initialize() {
 
-        loadFromFlie();
+        loadFromFile();
 
         for (WorldMapType typeOfMap : WorldMapType.values()) {
             mapType.getItems().add(typeOfMap);
@@ -317,7 +311,7 @@ public class StartingWindowPresenter {
 
     }
 
-    private void loadFromFlie()
+    private void loadFromFile()
     {
         try {
             assert path != null;

@@ -8,9 +8,9 @@
     <center>
             <HBox alignment="CENTER">
                 <VBox>
-                    <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="18.0" prefWidth="307.0" text="Animal tracking panel">
+                    <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="18.0" prefWidth="307.0" text="ANIMAL TRACKING PANEL">
                <font>
-                  <Font size="15" />
+                  <Font name="ELEGANT TYPEWRITER" size="23.0" />
                </font></Label>
                     <GridPane fx:id="animalTrackingPanel" hgap="20" minWidth="300" vgap="10">
                         <Label text="Genome: " GridPane.columnIndex="1" GridPane.rowIndex="0" />
@@ -46,9 +46,9 @@
                     <GridPane fx:id="mapGrid" alignment="CENTER" gridLinesVisible="true">
                     </GridPane>
             <VBox>
-                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="18.0" prefWidth="307.0" text="Simulation tracking panel">
+                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="18.0" prefWidth="307.0" text="SIMULATION TRACKING">
                     <font>
-                        <Font size="15.0" />
+                        <Font name="ELEGANT TYPEWRITER" size="23.0" />
                     </font></Label>
                 <GridPane fx:id="statsPanel" hgap="20" minWidth="300" vgap="10">
                     <Label text="Current day: " GridPane.columnIndex="1" GridPane.rowIndex="0" />
@@ -89,11 +89,11 @@
 
                 <Label GridPane.columnIndex="2" GridPane.rowIndex="7" />
 
-                <Button text="Speed UP" alignment="CENTER" contentDisplay="CENTER" onAction="#onSpeedUp" prefHeight="28.0" prefWidth="142.0" style="-fx-padding: 5;" />
+                <Button alignment="CENTER" contentDisplay="CENTER" onAction="#onSpeedUp" prefHeight="28.0" prefWidth="142.0" style="-fx-padding: 5;" text="Speed UP" />
 
                 <Label GridPane.columnIndex="2" GridPane.rowIndex="7" />
 
-                <Button text="Speed DOWN" alignment="CENTER" contentDisplay="CENTER" onAction="#onSpeedDown" prefHeight="28.0" prefWidth="142.0" style="-fx-padding: 5;" />
+                <Button alignment="CENTER" contentDisplay="CENTER" onAction="#onSpeedDown" prefHeight="28.0" prefWidth="142.0" style="-fx-padding: 5;" text="Speed DOWN" />
 
             </VBox>
             </HBox>
