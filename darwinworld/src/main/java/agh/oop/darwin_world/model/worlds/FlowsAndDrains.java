@@ -19,8 +19,16 @@ public class FlowsAndDrains extends AbstractWorldMap {
     public FlowsAndDrains(UserConfigurationRecord config) {
         super(config);
         this.lakes=new ArrayList<>();
-        Lake lake = new Lake(config);
-        lakes.add(lake);
+        for(int i=0;i<countNumberOfLakes(config);i++){
+            lakes.add(new Lake(config));
+        }
+
+   }
+
+   private int countNumberOfLakes(UserConfigurationRecord config) {
+        System.out.println(Math.min(config.mapBoundary().upperRight().x(), config.mapBoundary().upperRight().y())/10);
+        return Math.min(config.mapBoundary().upperRight().x(), config.mapBoundary().upperRight().y())/10;
+
    }
 
     @Override

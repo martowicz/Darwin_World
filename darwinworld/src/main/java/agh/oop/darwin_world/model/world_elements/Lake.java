@@ -8,7 +8,7 @@ public class Lake implements WorldElement {
     private int radius=0;
     private final Vector2d source_position;
     UserConfigurationRecord config;
-    private static final double MAX_LAKE_PROPORTION = 0.25;
+    private static final double MAX_LAKE_PROPORTION = 0.2;
     private static final double MIN_LAKE_PROPORTION = 0.1;
 
     public Lake(UserConfigurationRecord config) {
