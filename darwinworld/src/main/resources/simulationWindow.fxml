@@ -32,6 +32,10 @@
                     <GridPane fx:id="mapGrid" alignment="CENTER" gridLinesVisible="true">
                     </GridPane>
             <VBox>
+                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="18.0" prefWidth="307.0" text="Simulation tracking panel">
+                    <font>
+                        <Font size="21.0" />
+                    </font></Label>
                 <GridPane fx:id="statsPanel" hgap="20" minWidth="300" vgap="10">
                     <Label text="Current day: " GridPane.columnIndex="1" GridPane.rowIndex="0" />
                     <Label fx:id="dayLabel" GridPane.columnIndex="2" GridPane.rowIndex="0" />

@@ -186,7 +186,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
     }
 
     public String getDeathDay() {
-        return this.isDead ? String.valueOf(this.dayOfDeath) : "Alive";}
+        return this.isDead ? "Died on day " + String.valueOf(this.dayOfDeath) : "Alive for " + String.valueOf(this.age) + " days";}
 
 
     public void setDyingForOtherCause(){shouldDie=true;}
