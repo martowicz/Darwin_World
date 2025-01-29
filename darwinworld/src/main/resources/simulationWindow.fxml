@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane minHeight="900.0" minWidth="1250.0" style="-fx-padding: 25;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.oop.darwin_world.presenter.SimulationWindowPresenter">
+<BorderPane minHeight="900.0" minWidth="1250.0" style="-fx-padding: 25;" stylesheets="styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.oop.darwin_world.presenter.SimulationWindowPresenter">
     <center>
             <HBox alignment="CENTER">
                 <VBox>

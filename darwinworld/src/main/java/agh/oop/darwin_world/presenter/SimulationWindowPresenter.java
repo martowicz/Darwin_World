@@ -9,10 +9,8 @@ import agh.oop.darwin_world.model.worlds.WorldMap;
 import agh.oop.darwin_world.simulation.Simulation;
 import agh.oop.darwin_world.simulation.SimulationEngine;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -30,8 +28,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static java.lang.Math.min;
-
 
 public class SimulationWindowPresenter implements MapChangeListener {
 
@@ -39,10 +35,8 @@ public class SimulationWindowPresenter implements MapChangeListener {
     public ScrollPane mapScrollPane;
     @FXML
     public GridPane mapGrid;
-
     @FXML
     public Button simulationEnd;
-
     @FXML
     private Label numberOfAnimalsLabel;
     @FXML
@@ -53,11 +47,6 @@ public class SimulationWindowPresenter implements MapChangeListener {
     private Label dayLabel;
     @FXML
     private Button pauseStartButton;
-
-    AbstractWorldMap worldMap;
-    Simulation simulation;
-    SimulationEngine simulationEngine;
-
     @FXML
     public Label genomeTrackingLabel;
     @FXML
@@ -74,10 +63,6 @@ public class SimulationWindowPresenter implements MapChangeListener {
     public Label lifespanTrackingLabel;
     @FXML
     public GridPane animalTrackingPanel;
-
-    private Animal currentAnimalTracked;
-
-
     @FXML
     public GridPane statsPanel;
     @FXML
@@ -89,12 +74,69 @@ public class SimulationWindowPresenter implements MapChangeListener {
     @FXML
     public Label mostPopularGenotypeLabel;
 
+
+    private Animal currentAnimalTracked;
+    AbstractWorldMap worldMap;
+    Simulation simulation;
+    SimulationEngine simulationEngine;
     private boolean log;
     private String log_path;
-
-
     private static final Color EMPTY_CELL_COLOR = javafx.scene.paint.Color.rgb(69, 38, 38);
     Stage newWindowStage;
+
+
+
+    @FXML
+    void initialize()
+    {
+        System.out.println("Simulation Window presenter");
+        pauseStartButton.setText("Pause");
+        simulationEnd.setText("KILL EM ALL!");
+
+    }
+
+    public void onSimulationEndButtonClicked()
+    {
+        simulationEngine.shutdown(simulation);
+        newWindowStage.close();
+    }
+
+
+
+    public void onPauseStartButtonClicked() {
+        if (simulation.isRunning()) {
+            simulation.pauseSimulation();
+            pauseStartButton.setText("Start");
+        } else {
+            simulation.resumeSimulation();
+            pauseStartButton.setText("Pause");
+        }
+    }
+
+    public void runSimulation(UserConfigurationRecord config, SimulationEngine simulationEngine,Stage newWindowStage, boolean savelog) {
+
+
+        this.log=savelog;
+
+        System.out.println("Simulation running...");
+        Simulation simulation = new Simulation(config);
+        this.simulation = simulation;
+        simulation.getWorldMap().addObserver(this);
+        simulationEngine.addToAsyncInThreadPool(simulation);
+
+        this.simulationEngine = simulationEngine;
+
+        this.newWindowStage=newWindowStage;
+        this.worldMap=simulation.getWorldMap();
+
+        if(log){
+            setLogging();
+        }
+    }
+    //--------------------------------------
+    //Map drawing section
+    //--------------------------------------
+
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
@@ -141,7 +183,6 @@ public class SimulationWindowPresenter implements MapChangeListener {
         mapGrid.add(node, column, row);
     }
 
-
     private Node createNodeForElement(Vector2d position, int cellSize) {
         StackPane stackPane = createStackPane(cellSize);
         Rectangle cell = createCell(position, cellSize);
@@ -175,15 +216,12 @@ public class SimulationWindowPresenter implements MapChangeListener {
         return stackPane;
     }
 
-
-
     private StackPane createStackPane(int cellSize) {
         StackPane stackPane = new StackPane();
         stackPane.setMinSize(cellSize, cellSize);
         stackPane.setMaxSize(cellSize, cellSize);
         return stackPane;
     }
-
     private Rectangle createCell(Vector2d position, int cellSize) {
          Rectangle cell = new Rectangle(cellSize, cellSize);
          WorldElement environmentObject = worldMap.returnEnvironmentAt(position);
@@ -200,6 +238,16 @@ public class SimulationWindowPresenter implements MapChangeListener {
         return circle;
     }
 
+
+
+
+
+
+    //--------------------------------------
+    //Animal tracking section
+    //--------------------------------------
+
+
     private void handleAnimalClick(Animal animal) {
         System.out.println(animal.getAnimalOrientation().toString());
         if(currentAnimalTracked == null || animal != currentAnimalTracked){
@@ -215,13 +263,17 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
 
     }
-    public void onSimulationEndButtonClicked()
-    {
-        simulationEngine.shutdown(simulation);
-        newWindowStage.close();
+    public void updateAnimalStats(){
+        if(currentAnimalTracked!=null){
+            genomeTrackingLabel.setText(this.currentAnimalTracked.getGenes().toString());
+            activeGeneTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getActiveGene()));
+            energyTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getEnergy()));
+            plantsEatenTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getPlantsEaten()));
+            kidsTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getKids()));
+            descendantsTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getDescendants()));
+            lifespanTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getDeathDay()));
+        }
     }
-
-
     public void updateSimulationStats() {
         int numberOfAnimals = worldMap.getNumberOfAnimals();
         numberOfAnimalsLabel.setText(String.valueOf(numberOfAnimals));
@@ -255,42 +307,9 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
     }
 
-    public void updateAnimalStats(){
-        if(currentAnimalTracked!=null){
-            genomeTrackingLabel.setText(this.currentAnimalTracked.getGenes().toString());
-            activeGeneTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getActiveGene()));
-            energyTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getEnergy()));
-            plantsEatenTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getPlantsEaten()));
-            kidsTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getKids()));
-            descendantsTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getDescendants()));
-            lifespanTrackingLabel.setText(String.valueOf(this.currentAnimalTracked.getDeathDay()));
-        }
-    }
 
 
 
-
-
-
-
-    @FXML
-    void initialize()
-    {
-        System.out.println("Simulation Window presenter");
-        pauseStartButton.setText("Pause");
-        simulationEnd.setText("KILL EM ALL!");
-
-    }
-
-    public void onPauseStartButtonClicked() {
-        if (simulation.isRunning()) {
-            simulation.pauseSimulation();
-            pauseStartButton.setText("Start");
-        } else {
-            simulation.resumeSimulation();
-            pauseStartButton.setText("Pause");
-        }
-    }
 
     public void setLogging()  {
         try{
@@ -306,27 +325,6 @@ public class SimulationWindowPresenter implements MapChangeListener {
     }
 
 
-
-    public void runSimulation(UserConfigurationRecord config, SimulationEngine simulationEngine,Stage newWindowStage, boolean savelog) {
-
-
-        this.log=savelog;
-
-        System.out.println("Simulation running...");
-        Simulation simulation = new Simulation(config);
-        this.simulation = simulation;
-        simulation.getWorldMap().addObserver(this);
-        simulationEngine.addToAsyncInThreadPool(simulation);
-
-        this.simulationEngine = simulationEngine;
-
-        this.newWindowStage=newWindowStage;
-        this.worldMap=simulation.getWorldMap();
-
-        if(log){
-            setLogging();
-        }
-    }
     public void onSpeedUp() {
         simulation.decreaseSleepTime();
     }

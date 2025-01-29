@@ -1,5 +1,6 @@
 package agh.oop.darwin_world.simulation;
 
+import agh.oop.darwin_world.presenter.SimulationWindowPresenter;
 import agh.oop.darwin_world.presenter.StartingWindowPresenter;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -19,10 +20,14 @@ public class SimulationApp extends Application {
         //odpala okno
         BorderPane viewRoot = fxmlLoader.load();
         configureStage(configStage, viewRoot);
+
         configStage.setOnCloseRequest(event -> {
             System.out.println("Zamykanie aplikacji...");
             System.exit(0); // Zamyka całą aplikację
         });
+        StartingWindowPresenter presenter = fxmlLoader.getController();
+        presenter.setThisStage(configStage);
+
         configStage.show();
     }
 

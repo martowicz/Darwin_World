@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane minHeight="700.0" minWidth="600.0" style="-fx-padding: 25;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.oop.darwin_world.presenter.StartingWindowPresenter">
+<BorderPane minHeight="700.0" minWidth="600.0" style="-fx-padding: 25;" stylesheets="styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.oop.darwin_world.presenter.StartingWindowPresenter">
 
     <center>
         <HBox>
@@ -13,16 +13,23 @@
 
             </VBox>
             <VBox spacing="6">
+                <HBox alignment="CENTER" prefHeight=" .0" prefWidth="601.0" spacing="5">
 
+                    <Label alignment="CENTER" text="DARWIN SIMULATION" BorderPane.alignment="CENTER">
+
+                    </Label>
+                </HBox>
 
                 <HBox alignment="CENTER" prefHeight=" .0" prefWidth="601.0" spacing="5">
-                    <Label text="Choose configuration or set a new one: " textAlignment="CENTER" />
+
+                    <Label text="Choose configuration or set a new one: " textAlignment="CENTER" >
+                  </Label>
                     <ComboBox fx:id="csvCombo" layoutX="200.0" layoutY="33.0" onAction="#onCsvComboClicked" prefWidth="200.0" />
                 </HBox>
                 <HBox alignment="CENTER" prefHeight="26.0" prefWidth="601.0" spacing="5">
                     <Label text="New configuration setup" textAlignment="CENTER">
                    <font>
-                      <Font name="ELEGANT TYPEWRITER" size="24.0" />
+                      <Font name="DejaVu Sans Mono" size="24.0" />
                    </font></Label>
 
                 </HBox>
@@ -101,7 +108,11 @@
             <BorderPane>
                 <left>
                     <Button onAction="#onSaveClicked" text="Save configuration" />
+                    <HBox alignment="BASELINE_CENTER" spacing="20">
+                        <Button onAction="#onSaveClicked" text="Save configuration" />
 
+                        <Button  onAction="#nightModeTicked" text="Change display mode" />
+                    </HBox>
                 </left>
                 <right>
                     <HBox alignment="BASELINE_CENTER" spacing="20">
@@ -113,11 +124,7 @@
         </VBox>
     </bottom>
    <top>
-      <Label text="DARWIN SIMULATION" BorderPane.alignment="CENTER">
-         <font>
-            <Font name="ELEGANT TYPEWRITER" size="42.0" />
-         </font>
-      </Label>
+
    </top>
 
 </BorderPane>

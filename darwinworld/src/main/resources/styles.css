@@ -1,0 +1,192 @@
+/* ====== Główne tło aplikacji ====== */
+.root {
+    -fx-font-family: "Arial";
+    -fx-background-color: #f4f4f4;
+}
+
+/* ====== Główne okno (BorderPane) ====== */
+BorderPane {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #dddddd;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0.5, 0, 2);
+}
+
+/* ====== Układ (VBox, HBox) ====== */
+VBox, HBox {
+    -fx-spacing: 10;
+}
+
+/* ====== Nagłówek (Tytuł aplikacji) ====== */
+.label-header {
+    -fx-font-size: 42px;
+    -fx-font-family: "Elegant Typewriter";
+    -fx-text-fill: #2E7D32;
+}
+
+/* ====== Podtytuły i tytuły sekcji ====== */
+.label-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2E7D32;
+}
+
+/* ====== Zwykłe etykiety (Label) ====== */
+.label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+}
+
+/* ====== Etykiety błędów ====== */
+.label-error {
+    -fx-text-fill: #BB2222;
+    -fx-font-weight: bold;
+}
+
+/* ====== Przycisk (Button) ====== */
+
+
+.button {
+    -fx-background-color: linear-gradient(to bottom, #730ca5, #0055f3);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-border-color: #b8bbcd;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0.3, 0, 1);
+}
+
+/* Efekt hover na przycisku */
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #8d47aa, #548af1);
+}
+
+/* Efekt wciśnięcia przycisku */
+.button:pressed {
+    -fx-background-color: #aa7bbc;
+}
+
+/* ====== ComboBox ====== */
+.combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+}
+
+/* ====== Spinner (pola do wyboru wartości liczbowych) ====== */
+.spinner {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+}
+
+/* ====== CheckBox ====== */
+.check-box {
+    -fx-font-size: 14px;
+}
+
+/* Kolor po zaznaczeniu */
+.check-box:selected {
+    -fx-text-fill: #09067a;
+}
+
+/* ====== Efekt hover na wierszach HBox ====== */
+.hbox:hover {
+    -fx-background-color: rgba(58, 14, 221, 0.5);
+    -fx-border-radius: 5px;
+}
+
+
+/* ====== Tryb Ciemny (Dark Mode - Wszystko Szaro-Czarne) ====== */
+.dark-mode {
+    -fx-background-color: #2d2d30; /* Ciemne tło */
+    -fx-text-fill: rgba(255, 255, 255, 0.8); /* Biały tekst z lekką przezroczystością */
+}
+
+/* ====== Tryb ciemny dla etykiet (Label) ====== */
+.dark-mode .label {
+    -fx-text-fill: rgba(255, 255, 255, 0.8);
+}
+
+/* ====== Tryb ciemny dla nagłówków (Label Header) ====== */
+.dark-mode .label-header {
+    -fx-text-fill: rgba(255, 255, 255, 0.85);
+}
+
+/* ====== Tryb ciemny dla przycisków (Button) ====== */
+.dark-mode .button {
+    -fx-background-color: #3a3a3d; /* Ciemnoszary */
+    -fx-text-fill: rgba(255, 255, 255, 0.85);;
+    -fx-border-color: #888888; /* Jasnoszary obramowanie */
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+/* Efekt hover na przyciskach */
+.dark-mode .button:hover {
+    -fx-background-color: #4a4a4d; /* Trochę jaśniejszy szary */
+}
+
+/* ====== Tryb ciemny dla ComboBox ====== */
+.dark-mode .combo-box {
+    -fx-background-color: #3a3a3d;  /* Tło ComboBox */
+    -fx-text-fill: rgba(255, 255, 255, 0.85);; /* Tekst ComboBox */
+    -fx-border-color: #888888;
+}
+
+/* Tekst w rozwijanej liście ComboBox */
+.dark-mode .combo-box .list-cell {
+    -fx-background-color: #3a3a3d; /* Tło listy */
+    -fx-text-fill: rgba(255, 255, 255, 0.85);; /* Tekst w elementach listy */
+}
+
+/* Hover dla elementów w ComboBox */
+.dark-mode .combo-box .list-cell:hover {
+    -fx-background-color: #4a4a4d;
+}
+
+/* Aktywny element w ComboBox */
+.dark-mode .combo-box .list-cell:selected {
+    -fx-background-color: #5a5a5d;
+    -fx-text-fill: rgba(255, 255, 255, 0.85);;
+}
+
+/* ====== Tryb ciemny dla Spinner ====== */
+.dark-mode .spinner {
+    -fx-background-color: #3a3a3d; /* Szare wnętrze */
+    -fx-text-fill: rgba(255, 255, 255, 0.85);;
+    -fx-border-color: #888888;
+}
+
+/* Poprawka dla wnętrza Spinner */
+.dark-mode .spinner .text-field {
+    -fx-background-color: #3a3a3d;
+    -fx-text-fill: rgba(255, 255, 255, 0.85);;
+    -fx-border-color: transparent;
+}
+
+/* ====== Tryb ciemny dla CheckBox ====== */
+.dark-mode .check-box {
+    -fx-text-fill: rgba(255, 255, 255, 0.85);;
+}
+
+/* ====== Tryb ciemny dla HBox (Efekt hover na wierszach) ====== */
+.dark-mode .hbox:hover {
+    -fx-background-color: #444448; /* Trochę jaśniejszy szary */
+}
+
+/* ====== Tryb ciemny dla głównego BorderPane ====== */
+.dark-mode BorderPane {
+    -fx-background-color: #2e2e30;
+    -fx-border-color: #888888;
+}
+
+/* ====== Tryb ciemny dla błędów (Label Error) ====== */
+.dark-mode .label-error {
+    -fx-text-fill: #ff6666; /* Czerwony kolor błędów */
+}

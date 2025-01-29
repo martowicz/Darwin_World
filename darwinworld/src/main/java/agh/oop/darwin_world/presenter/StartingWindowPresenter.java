@@ -6,6 +6,7 @@ import agh.oop.darwin_world.model.utils.InvalidParamenterException;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.worlds.Boundary;
 import agh.oop.darwin_world.simulation.SimulationEngine;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -21,6 +22,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -66,9 +68,10 @@ public class StartingWindowPresenter {
     public Label errorLabel;
     @FXML
     public CheckBox saveLogCheck;
+   
 
-    private static final URL path =  StartingWindowPresenter.class.getClassLoader().getResource("configurations.csv");
-
+    //private static final Path CONFIG_PATH = Paths.get(System.getProperty("user.home"), "configurations.csv");
+    private static final Path CONFIG_PATH = Paths.get("darwinworld/src/main/configurations.csv");
     int mapWidth;
     int mapHeight;
     int animalCount;
@@ -83,13 +86,14 @@ public class StartingWindowPresenter {
     int maxMutations;
     int plantsAtStart;
     int plantsPerDay;
-    SimulationEngine simulationEngine = new SimulationEngine();
 
+    boolean nightMode=true;
+    SimulationEngine simulationEngine = new SimulationEngine();
+    Stage stage;
     @FXML
     void initialize() {
 
         loadFromFile();
-
         for (WorldMapType typeOfMap : WorldMapType.values()) {
             mapType.getItems().add(typeOfMap);
         }
@@ -119,59 +123,20 @@ public class StartingWindowPresenter {
 
     }
 
+    public void setThisStage(Stage stage) {
+
+        this.stage = stage;
+        stage.getScene().getRoot().getStyleClass().add("dark-mode");
+
+    }
     private void setSpinnerDefaults(Spinner<Integer> spinner, int min, int max, int initialValue) {
         spinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max, initialValue));
     }
 
-    @FXML
-    private void  onCsvComboClicked()
-    {
-        String configName = csvCombo.getValue();
-        String[] params;
 
-        try {
-            assert path != null;
-            try (Scanner scanner = new Scanner(Path.of(path.toURI()))) {
-
-                    String line = scanner.nextLine();
-                    params = line.split(";");
-
-                while (scanner.hasNextLine() && !params[0].equals(configName)) {
-                     line = scanner.nextLine();
-                     params = line.split(";");
-                }
-
-
-
-                //ear
-                //mut
-
-
-                mapType.setValue(WorldMapType.stringToEnum(params[1]));
-                mutationType.setValue(AnimalMutationType.stringToEnum(params[2]));
-                setSpinnerDefaults(widthSpinner, 1, 100,Integer.parseInt(params[3]));
-                setSpinnerDefaults(heightSpinner, 1, 100, Integer.parseInt(params[4]));
-                setSpinnerDefaults(animalCountSpinner, 1, 100, Integer.parseInt(params[5]));
-                setSpinnerDefaults(startingEnergySpinner, 1, 100, Integer.parseInt(params[6]));
-                setSpinnerDefaults(reproductionEnergySpinner, 1, 100, Integer.parseInt(params[7]));
-                setSpinnerDefaults(childEnergySpinner, 1, 100, Integer.parseInt(params[8]));
-                setSpinnerDefaults(energyFromPlantSpinner, 1, 100, Integer.parseInt(params[9]));
-                setSpinnerDefaults(genomeLengthSpinner, 1, 100, Integer.parseInt(params[10]));
-                setSpinnerDefaults(minMutationsSpinner, 0, 50, Integer.parseInt(params[11]));
-                setSpinnerDefaults(maxMutationsSpinner, 0, 50, Integer.parseInt(params[12]));
-                setSpinnerDefaults(plantsAtStartSpinner, 1, 100, Integer.parseInt(params[13]));
-                setSpinnerDefaults(plantsPerDaySpinner, 1, 50, Integer.parseInt(params[14]));
-
-
-
-
-
-                System.out.println(Arrays.toString(params));
-            }
-        } catch (IOException | URISyntaxException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-    }
+    //--------------------------------------
+    //New simulation start section
+    //--------------------------------------
 
     @FXML
     private void onSimulationStartClicked() throws IOException {
@@ -205,6 +170,9 @@ public class StartingWindowPresenter {
             SimulationWindowPresenter presenter = fxmlLoader.getController();
             configureStage(newWindowStage, viewRoot);
 
+            if(nightMode)
+                newWindowStage.getScene().getRoot().getStyleClass().add("dark-mode");
+
             newWindowStage.show();
             presenter.runSimulation(config,simulationEngine, newWindowStage, saveLogCheck.isSelected());
 
@@ -218,13 +186,6 @@ public class StartingWindowPresenter {
 
     }
 
-
-
-
-
-
-
-
     private void configureStage(Stage primaryStage, BorderPane viewRoot) {
         var scene = new Scene(viewRoot);
         primaryStage.setScene(scene);
@@ -233,6 +194,54 @@ public class StartingWindowPresenter {
         primaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
     }
 
+
+
+
+
+
+    //--------------------------------------
+    //User saved configuration section
+    //--------------------------------------
+
+
+    @FXML
+    private void  onCsvComboClicked()
+    {
+        String configName = csvCombo.getValue();
+        String[] params;
+
+        try {
+            Scanner scanner = new Scanner(CONFIG_PATH);
+            String line = scanner.nextLine();
+            params = line.split(";");
+            while (scanner.hasNextLine() && !params[0].equals(configName)) {
+                line = scanner.nextLine();
+                params = line.split(";");
+            }
+
+            mapType.setValue(WorldMapType.stringToEnum(params[1]));
+            mutationType.setValue(AnimalMutationType.stringToEnum(params[2]));
+            setSpinnerDefaults(widthSpinner, 1, 100,Integer.parseInt(params[3]));
+            setSpinnerDefaults(heightSpinner, 1, 100, Integer.parseInt(params[4]));
+            setSpinnerDefaults(animalCountSpinner, 1, 100, Integer.parseInt(params[5]));
+            setSpinnerDefaults(startingEnergySpinner, 1, 100, Integer.parseInt(params[6]));
+            setSpinnerDefaults(reproductionEnergySpinner, 1, 100, Integer.parseInt(params[7]));
+            setSpinnerDefaults(childEnergySpinner, 1, 100, Integer.parseInt(params[8]));
+            setSpinnerDefaults(energyFromPlantSpinner, 1, 100, Integer.parseInt(params[9]));
+            setSpinnerDefaults(genomeLengthSpinner, 1, 100, Integer.parseInt(params[10]));
+            setSpinnerDefaults(minMutationsSpinner, 0, 50, Integer.parseInt(params[11]));
+            setSpinnerDefaults(maxMutationsSpinner, 0, 50, Integer.parseInt(params[12]));
+            setSpinnerDefaults(plantsAtStartSpinner, 1, 100, Integer.parseInt(params[13]));
+            setSpinnerDefaults(plantsPerDaySpinner, 1, 50, Integer.parseInt(params[14]));
+
+            System.out.println(Arrays.toString(params));
+        }
+
+
+        catch (IOException e)  {
+            throw new RuntimeException(e.getMessage());
+
+        }}
 
     @FXML
     private void onSaveClicked() {
@@ -311,35 +320,14 @@ public class StartingWindowPresenter {
 
     }
 
-    private void loadFromFile()
-    {
-        try {
-            assert path != null;
-            try (Scanner scanner = new Scanner(Path.of(path.toURI()))) {
-                while (scanner.hasNextLine()) {
-                    String line = scanner.nextLine();
-                    String[] params = line.split(";");
-                    csvCombo.getItems().add(params[0]);
-                }
-            }
-        } catch (IOException | URISyntaxException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-
-    }
-
 
     private void writeCsvToFile(String name) {
         WorldMapType selectedMapType = mapType.getValue();
         AnimalMutationType selectedMutationType = mutationType.getValue();
-        //fgh
-
         mapWidth = widthSpinner.getValue();
         mapHeight = heightSpinner.getValue();
         animalCount = animalCountSpinner.getValue();
         saveLog = saveLogCheck.isSelected();
-
-        // Collect other parameters
         startingEnergy = startingEnergySpinner.getValue();
         reproductionEnergy = reproductionEnergySpinner.getValue();
         childEnergy = childEnergySpinner.getValue();
@@ -370,11 +358,42 @@ public class StartingWindowPresenter {
                 plantsPerDay;
 
         try {
-            assert path != null;
-            Files.writeString(Path.of(path.toURI()), csvData + System.lineSeparator(), CREATE, APPEND);
-        } catch (IOException | URISyntaxException e) {
+            Files.writeString(CONFIG_PATH, csvData + System.lineSeparator(), CREATE, APPEND);
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
+    private void loadFromFile()
+    {
+        try {
+            Scanner scanner = new Scanner(CONFIG_PATH);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] params = line.split(";");
+                csvCombo.getItems().add(params[0]);
+            }
+        }
+        catch (IOException e) {
+
+            throw new RuntimeException(e.getMessage());
+        }
+
+    }
+
+
+
+    public void nightModeTicked() {
+        if (!nightMode ) {
+            stage.getScene().getRoot().getStyleClass().add("dark-mode");
+            nightMode = true;
+        } else {
+            stage.getScene().getRoot().getStyleClass().remove("dark-mode");
+            nightMode = false;
+        }
+
+    }
+
 
 }

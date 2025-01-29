@@ -16,5 +16,5 @@ public record UserConfigurationRecord (Boundary mapBoundary,
                                       int minMutations,
                                       int maxMutations,
                                       int genomLength,
-                                      AnimalMutationType mutationType) {
-}
+                                      AnimalMutationType mutationType)
+{ }
