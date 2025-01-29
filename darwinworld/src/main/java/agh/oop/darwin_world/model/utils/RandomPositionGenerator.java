@@ -9,10 +9,10 @@ public class RandomPositionGenerator {
 
     public List<Vector2d> generateAllPositions(Boundary boundary) {
         // Pobranie zakresów dla osi x i y
-        int xMin = boundary.lowerLeft().getX();
-        int xMax = boundary.upperRight().getX();
-        int yMin = boundary.lowerLeft().getY();
-        int yMax = boundary.upperRight().getY();
+        int xMin = boundary.lowerLeft().x();
+        int xMax = boundary.upperRight().x();
+        int yMin = boundary.lowerLeft().y();
+        int yMax = boundary.upperRight().y();
 
         List<Vector2d> positions = new ArrayList<>();
         for (int x = xMin; x <= xMax; x++) {
@@ -25,17 +25,12 @@ public class RandomPositionGenerator {
     }
     public Vector2d getRandomPosition(Boundary boundary) {
         // Pobranie zakresów dla osi x i y
-        int xMin = boundary.lowerLeft().getX();
-        int xMax = boundary.upperRight().getX();
-        int yMin = boundary.lowerLeft().getY();
-        int yMax = boundary.upperRight().getY();
+        int xMin = boundary.lowerLeft().x();
+        int xMax = boundary.upperRight().x();
+        int yMin = boundary.lowerLeft().y();
+        int yMax = boundary.upperRight().y();
         SecureRandom rand = new SecureRandom();
         return new Vector2d(rand.nextInt( xMax-xMin) + xMin, rand.nextInt(yMax-yMin) + yMin);
-
-
-
-
-
     }
 
 }

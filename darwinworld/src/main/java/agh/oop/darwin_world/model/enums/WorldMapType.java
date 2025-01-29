@@ -9,8 +9,6 @@ public enum WorldMapType {
     ROUND_WORLD,
     WATER_WORLD;
 
-
-    //czy private
     public AbstractWorldMap enumToMap(UserConfigurationRecord config)
     {
         return switch (this){
@@ -34,8 +32,5 @@ public enum WorldMapType {
             case "Flows_and_Drains" -> WATER_WORLD;
             default -> throw new IllegalStateException("Unexpected value: " + str);
         };
-
     }
-
-
 }

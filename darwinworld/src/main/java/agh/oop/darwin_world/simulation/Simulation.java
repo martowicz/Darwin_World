@@ -24,6 +24,7 @@ public class Simulation implements Runnable {
     volatile private boolean running=true;
     private final Object lock = new Object();
     volatile private boolean ended = false;
+    int sleepTime = 200;
     public Simulation(UserConfigurationRecord config)
     {
         this.numberOfAnimals=config.animalsCountAtStart();
@@ -67,7 +68,6 @@ public class Simulation implements Runnable {
             animals = worldMap.getAnimalsToList();
 
             worldMap.notifyObservers("dni:"+days);
-            sleep();
 
             //2-Skręt i przemieszczenie każdego zwierzaka.
             //--
@@ -93,7 +93,7 @@ public class Simulation implements Runnable {
 
             //4-Rozmnażanie się najedzonych zwierzaków znajdujących się na tym samym polu.
             //--
-            System.out.println(days);
+            //System.out.println(days);
             worldMap.reproduce();
             //--
 
@@ -118,12 +118,26 @@ public class Simulation implements Runnable {
     }
     private void sleep() {
         try {
-            Thread.sleep(100);
+            Thread.sleep(sleepTime);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
 
         }
     }
+
+    public void increaseSleepTime() {
+        if (sleepTime < 2000)
+            sleepTime += 100;
+    }
+
+    public void decreaseSleepTime() {
+        if (sleepTime > 100)
+            sleepTime -= 100;
+    }
+
+
+
+
     public void end() {
         ended = true;
     }

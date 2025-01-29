@@ -3,16 +3,13 @@ import agh.oop.darwin_world.model.utils.RandomPositionGenerator;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.presenter.UserConfigurationRecord;
 import javafx.scene.paint.Color;
-import jdk.jshell.spi.ExecutionControl;
-
-import java.lang.module.Configuration;
 
 public class Lake implements WorldElement {
     private int radius=0;
-    private Vector2d source_position;
+    private final Vector2d source_position;
     UserConfigurationRecord config;
-    private  static final double MAX_LAKE_PROPORTION = 0.25;
-    private  static final double MIN_LAKE_PROPORTION = 0.1;
+    private static final double MAX_LAKE_PROPORTION = 0.25;
+    private static final double MIN_LAKE_PROPORTION = 0.1;
 
     public Lake(UserConfigurationRecord config) {
 
@@ -21,17 +18,17 @@ public class Lake implements WorldElement {
         this.config=config;
     }
     public void extendLake(){
-        if(radius<MAX_LAKE_PROPORTION*config.mapBoundary().upperRight().getX() && radius<MAX_LAKE_PROPORTION*config.mapBoundary().upperRight().getY())
+        if(radius<MAX_LAKE_PROPORTION*config.mapBoundary().upperRight().x() && radius<MAX_LAKE_PROPORTION*config.mapBoundary().upperRight().y())
         { radius+=1;}
     }
     public void reduceLake(){
-        if(radius>0 && radius>MIN_LAKE_PROPORTION*config.mapBoundary().upperRight().getX()&& radius>MIN_LAKE_PROPORTION*config.mapBoundary().upperRight().getY()){
+        if(radius>0 && radius>MIN_LAKE_PROPORTION*config.mapBoundary().upperRight().x()&& radius>MIN_LAKE_PROPORTION*config.mapBoundary().upperRight().y()){
             radius-=1;
         }
     }
     public boolean occupiedByLake(Vector2d position) {
-        double distanceSquared = Math.pow(source_position.getX() - position.getX(), 2) +
-                Math.pow(source_position.getY() - position.getY(), 2);
+        double distanceSquared = Math.pow(source_position.x() - position.x(), 2) +
+                Math.pow(source_position.y() - position.y(), 2);
         return distanceSquared < Math.pow(radius, 2);
     }
 
@@ -41,9 +38,6 @@ public class Lake implements WorldElement {
     }
     @Override
     public Vector2d getPosition() {return source_position;}
-
-
-
 
     @Override
     public Color getColor() {

@@ -3,11 +3,6 @@ package agh.oop.darwin_world.model.enums;
 import agh.oop.darwin_world.model.mutation.AbstractMutation;
 import agh.oop.darwin_world.model.mutation.LightCorrectionMutation;
 import agh.oop.darwin_world.model.mutation.RandomMutation;
-import agh.oop.darwin_world.model.worlds.AbstractWorldMap;
-import agh.oop.darwin_world.model.worlds.Boundary;
-import agh.oop.darwin_world.model.worlds.RectangularMap;
-
-import java.util.AbstractMap;
 
 public enum AnimalMutationType
 {
@@ -29,18 +24,13 @@ public enum AnimalMutationType
             case "Light Correction Mutation" -> LIGHT_CORRECTION_MUTATION;
             default -> throw new IllegalStateException("Unexpected value: " + str);
         };
-
     }
-
 
     @Override
     public String toString() {
     return switch (this){
         case RANDOM_MUTATION -> "Random Mutation";
         case LIGHT_CORRECTION_MUTATION -> "Light Correction Mutation";
-
-    };
-
-
-}
+        };
+    }
 }

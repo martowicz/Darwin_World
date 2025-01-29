@@ -1,6 +1,5 @@
 package agh.oop.darwin_world.model.worlds;
 
-
 import agh.oop.darwin_world.model.enums.MapDirection;
 import agh.oop.darwin_world.model.utils.RandomPositionGenerator;
 import agh.oop.darwin_world.model.utils.SortedLinkedList;
@@ -12,7 +11,6 @@ import agh.oop.darwin_world.model.world_elements.Plant;
 import agh.oop.darwin_world.model.world_elements.WorldElement;
 import agh.oop.darwin_world.presenter.MapChangeListener;
 import agh.oop.darwin_world.presenter.UserConfigurationRecord;
-
 import java.security.SecureRandom;
 import java.util.*;
 
@@ -21,66 +19,53 @@ public abstract class AbstractWorldMap implements WorldMap
     protected Map<Vector2d, SortedLinkedList<Animal>> animalsAtPositions = new HashMap<>();
     protected Map<Vector2d, WorldElement> plants = new HashMap<>();
     protected final MapVisualizer visualizer;
-
     protected final Boundary boundary;
     protected final Boundary equatorBoundary;
     protected final Boundary underEquatorBoundary;
     protected final Boundary overEquatorBoundary;
     protected final int numberOfFields;
-
     protected final int energyFromOnePlant;
     protected final int startingPlantsCount;
     protected final UserConfigurationRecord config;
     protected final UUID id;
     protected final List<MapChangeListener> observers = new ArrayList<>();
-    protected final RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator();;
-
 
     protected AbstractWorldMap(UserConfigurationRecord config) {
         this.visualizer = new MapVisualizer(this);
         this.boundary = config.mapBoundary();
-        this.numberOfFields = (boundary.upperRight().getY() - boundary.lowerLeft().getY()+1)*(boundary.upperRight().getX() - boundary.lowerLeft().getX()+1);
+        this.numberOfFields = (boundary.upperRight().y() - boundary.lowerLeft().y()+1)*(boundary.upperRight().x() - boundary.lowerLeft().x()+1);
         this.config = config;
         this.id = UUID.randomUUID();
-        int equatorYmin = (int) (0.4*(boundary.upperRight().getY()-boundary.lowerLeft().getY()));
-        int equatorYmax = (int) (0.6*(boundary.upperRight().getY()-boundary.lowerLeft().getY()));
-        this.equatorBoundary = new Boundary(new Vector2d(boundary.lowerLeft().getX(),equatorYmin), new Vector2d(boundary.upperRight().getX(),equatorYmax));
-        this.overEquatorBoundary = new Boundary(boundary.lowerLeft(), new Vector2d(boundary.upperRight().getX(),equatorYmin-1));
-        this.underEquatorBoundary = new Boundary(new Vector2d(boundary.lowerLeft().getX(),equatorYmax+1),boundary.upperRight());
+        int equatorYmin = (int) (0.4*(boundary.upperRight().y()-boundary.lowerLeft().y()));
+        int equatorYmax = (int) (0.6*(boundary.upperRight().y()-boundary.lowerLeft().y()));
+        this.equatorBoundary = new Boundary(new Vector2d(boundary.lowerLeft().x(),equatorYmin), new Vector2d(boundary.upperRight().x(),equatorYmax));
+        this.overEquatorBoundary = new Boundary(boundary.lowerLeft(), new Vector2d(boundary.upperRight().x(),equatorYmin-1));
+        this.underEquatorBoundary = new Boundary(new Vector2d(boundary.lowerLeft().x(),equatorYmax+1),boundary.upperRight());
         this.energyFromOnePlant = config.energyFromPlant();
         this.startingPlantsCount = config.startingPlantNumber();
         generateEnvironment(startingPlantsCount,0);
-
     }
 
     @Override
     public void reproduce() {
-
-
         for (Vector2d position : animalsAtPositions.keySet()) {
             SortedLinkedList<Animal> animalsInPosition = animalsAtPositions.get(position);
-            if(animalsInPosition.canIntercourse()){
+            if(animalsInPosition.canIntercourse()) {
                 Animal firstAnimal = animalsInPosition.getHead();
                 Animal secondAnimal = animalsInPosition.getSecondElement();
-                if (secondAnimal.getEnergy()>=config.animalsEnergyToCopulate()){
-
-                    Animal kid = new Animal(firstAnimal,secondAnimal,config);
-                    Vector2d kidPosition = new Vector2d(firstAnimal.getPosition().getX(),firstAnimal.getPosition().getY());
-                    addAnimal(kidPosition,kid);
+                if (secondAnimal.getEnergy() >= config.animalsEnergyToCopulate()) {
+                    Animal kid = new Animal(firstAnimal, secondAnimal, config);
+                    Vector2d kidPosition = new Vector2d(firstAnimal.getPosition().x(), firstAnimal.getPosition().y());
+                    addAnimal(kidPosition, kid);
                     firstAnimal.addKid(kid);
                     secondAnimal.addKid(kid);
                     firstAnimal.subtractEnergy(config.animalsEnergySpentOnCopulation());
                     secondAnimal.subtractEnergy(config.animalsEnergySpentOnCopulation());
-                    System.out.println("New kid on " + kidPosition);
+                   // System.out.println("New kid on " + kidPosition);
                 }
-
             }
-
         }
-
-
     }
-
 
     //sprawdza jedynie czy zwierze nie wychodzi poza mapę
     @Override
@@ -90,13 +75,11 @@ public abstract class AbstractWorldMap implements WorldMap
     }
 
     @Override
-    public void place (Animal animal)// throws IncorrectPositionException
+    public void place (Animal animal)
     {
         Vector2d position = animal.getPosition();
         if (canMoveTo(animal.getPosition())) {
             addAnimal(position, animal);
-            //notifyObservers("placed at " + position);
-        } else {// throw new IncorrectPositionException(position);}
         }
     }
 
@@ -138,35 +121,26 @@ public abstract class AbstractWorldMap implements WorldMap
             removeAnimal(oldCoordinates, animal);
             addAnimal(newCoordinates, animal);
             animal.setAnimalPosition(newCoordinates);
-            //notifyObservers("Move from " + oldCoordinates + " to " + newCoordinates);
         }
-        else if(newCoordinates.getY()>boundary.upperRight().getY() || newCoordinates.getY()<boundary.lowerLeft().getY()) {
+        else if(newCoordinates.y()>boundary.upperRight().y() || newCoordinates.y()<boundary.lowerLeft().y()) {
             MapDirection currentOrientation = animal.getAnimalOrientation();
             animal.setAnimalOrientation(currentOrientation.reverse());
-            //notifyObservers("Reversed");
-
         }
-        else if(newCoordinates.getX()<boundary.lowerLeft().getX()) {
-            Vector2d newPosition = new Vector2d(boundary.upperRight().getX(), newCoordinates.getY());
+        else if(newCoordinates.x()<boundary.lowerLeft().x()) {
+            Vector2d newPosition = new Vector2d(boundary.upperRight().x(), newCoordinates.y());
             if(canMoveTo(newPosition)) {
                 animal.setAnimalPosition(newPosition);
                 removeAnimal(oldCoordinates, animal);
                 addAnimal(newPosition, animal);
             }
-
-            //notifyObservers("Move from " + oldCoordinates + " to " + newPosition);
-
         }
         else{
-            Vector2d newPosition = new Vector2d(boundary.lowerLeft().getX(), newCoordinates.getY());
+            Vector2d newPosition = new Vector2d(boundary.lowerLeft().x(), newCoordinates.y());
             if(canMoveTo(newPosition)) {
                 animal.setAnimalPosition(newPosition);
                 removeAnimal(oldCoordinates, animal);
                 addAnimal(newPosition, animal);
             }
-
-            //notifyObservers("Move from " + oldCoordinates + " to " + newPosition);
-
         }
     }
 
@@ -182,7 +156,6 @@ public abstract class AbstractWorldMap implements WorldMap
             }
         }
     }
-
 
 
     public List<Animal> getAnimalsToList(){
@@ -202,7 +175,6 @@ public abstract class AbstractWorldMap implements WorldMap
                 SortedLinkedList<Animal> animalsInPosition = animalsAtPositions.get(position);
                 Animal animal = animalsInPosition.getHead();
                 animal.eat(energyFromOnePlant);
-                //notifyObservers("Plant eaten on " + position);
                 plants.remove(position);
             }
         }
@@ -214,9 +186,7 @@ public abstract class AbstractWorldMap implements WorldMap
             for(Animal animal : animalsInPosition){
                 animal.dayPasses();
             }
-
         }
-
     }
 
 
@@ -330,7 +300,6 @@ public abstract class AbstractWorldMap implements WorldMap
     }
 
     //Używane aby komunikować się z ux np w teminalu bądź javafx
-
     public void addObserver(MapChangeListener observer) {
         observers.add(observer);
     }
@@ -367,8 +336,8 @@ public abstract class AbstractWorldMap implements WorldMap
 
     public int getNumberOfEmptyFields(){
         int emptyFields = 0;
-        for(int x=boundary.lowerLeft().getX();x<=boundary.upperRight().getX();x++){
-            for(int y=boundary.lowerLeft().getY();y<=boundary.upperRight().getY();y++){
+        for(int x = boundary.lowerLeft().x(); x<=boundary.upperRight().x(); x++){
+            for(int y = boundary.lowerLeft().y(); y<=boundary.upperRight().y(); y++){
                 if(returnObjectAt(new Vector2d(x,y))==null){
                     emptyFields++;
                 }
@@ -376,8 +345,4 @@ public abstract class AbstractWorldMap implements WorldMap
         }
         return emptyFields;
     }
-
-
-
-
 }

@@ -13,6 +13,4 @@ public class RandomMutation extends AbstractMutation{
         Random rand = new Random();
         return rand.nextInt(8);
     }
-
-
 }
