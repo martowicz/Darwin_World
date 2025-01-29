@@ -15,8 +15,4 @@ public class Earth extends AbstractWorldMap{
         return String.format("%s %s",MAP_NAME,id.toString());
 
     }
-
-
-
-
 }

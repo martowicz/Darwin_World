@@ -2,6 +2,7 @@ package agh.oop.darwin_world.presenter;
 
 import agh.oop.darwin_world.model.enums.AnimalMutationType;
 import agh.oop.darwin_world.model.enums.WorldMapType;
+import agh.oop.darwin_world.model.utils.InvalidParamenterException;
 import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.model.worlds.Boundary;
 import agh.oop.darwin_world.simulation.Simulation;
@@ -21,8 +22,11 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -69,7 +73,7 @@ public class StartingWindowPresenter {
     @FXML
     public CheckBox saveLogCheck;
 
-    private static final String CONFIGURATIONS_PATH = "src/main/resources/configurations.csv";
+    private static final URL path =  StartingWindowPresenter.class.getClassLoader().getResource("configurations.csv");
 
     int mapWidth;
     int mapHeight;
@@ -118,6 +122,7 @@ public class StartingWindowPresenter {
             csvCombo.setValue(csvCombo.getItems().getFirst());
         }
         onCsvComboClicked();
+
     }
 
     private void setSpinnerDefaults(Spinner<Integer> spinner, int min, int max, int initialValue) {
@@ -130,67 +135,80 @@ public class StartingWindowPresenter {
         String configName = csvCombo.getValue();
         String[] params;
 
-        try (Scanner scanner = new Scanner(Path.of(CONFIGURATIONS_PATH))) {
+        try {
+            assert path != null;
+            try (Scanner scanner = new Scanner(Path.of(path.toURI()))) {
 
-                String line = scanner.nextLine();
-                params = line.split(";");
+                    String line = scanner.nextLine();
+                    params = line.split(";");
 
-            while (scanner.hasNextLine() && !params[0].equals(configName)) {
-                 line = scanner.nextLine();
-                 params = line.split(";");
+                while (scanner.hasNextLine() && !params[0].equals(configName)) {
+                     line = scanner.nextLine();
+                     params = line.split(";");
+                }
+
+
+
+                //ear
+                //mut
+
+
+                mapType.setValue(WorldMapType.stringToEnum(params[1]));
+                mutationType.setValue(AnimalMutationType.stringToEnum(params[2]));
+                setSpinnerDefaults(widthSpinner, 1, 100,Integer.parseInt(params[3]));
+                setSpinnerDefaults(heightSpinner, 1, 100, Integer.parseInt(params[4]));
+                setSpinnerDefaults(animalCountSpinner, 1, 100, Integer.parseInt(params[5]));
+                setSpinnerDefaults(startingEnergySpinner, 1, 100, Integer.parseInt(params[6]));
+                setSpinnerDefaults(reproductionEnergySpinner, 1, 100, Integer.parseInt(params[7]));
+                setSpinnerDefaults(childEnergySpinner, 1, 100, Integer.parseInt(params[8]));
+                setSpinnerDefaults(energyFromPlantSpinner, 1, 100, Integer.parseInt(params[9]));
+                setSpinnerDefaults(genomeLengthSpinner, 1, 100, Integer.parseInt(params[10]));
+                setSpinnerDefaults(minMutationsSpinner, 0, 50, Integer.parseInt(params[11]));
+                setSpinnerDefaults(maxMutationsSpinner, 0, 50, Integer.parseInt(params[12]));
+                setSpinnerDefaults(plantsAtStartSpinner, 1, 100, Integer.parseInt(params[13]));
+                setSpinnerDefaults(plantsPerDaySpinner, 1, 50, Integer.parseInt(params[14]));
+
+
+
+
+
+                System.out.println(Arrays.toString(params));
             }
-
-
-            //ear
-            //mut
-
-
-            mapType.setValue(WorldMapType.stringToEnum(params[1]));
-            mutationType.setValue(AnimalMutationType.stringToEnum(params[2]));
-            setSpinnerDefaults(widthSpinner, 1, 100,Integer.parseInt(params[3]));
-            setSpinnerDefaults(heightSpinner, 1, 100, Integer.parseInt(params[4]));
-            setSpinnerDefaults(animalCountSpinner, 1, 100, Integer.parseInt(params[5]));
-            setSpinnerDefaults(startingEnergySpinner, 1, 100, Integer.parseInt(params[6]));
-            setSpinnerDefaults(reproductionEnergySpinner, 1, 100, Integer.parseInt(params[7]));
-            setSpinnerDefaults(childEnergySpinner, 1, 100, Integer.parseInt(params[8]));
-            setSpinnerDefaults(energyFromPlantSpinner, 1, 100, Integer.parseInt(params[9]));
-            setSpinnerDefaults(genomeLengthSpinner, 1, 100, Integer.parseInt(params[10]));
-            setSpinnerDefaults(minMutationsSpinner, 0, 50, Integer.parseInt(params[11]));
-            setSpinnerDefaults(maxMutationsSpinner, 0, 50, Integer.parseInt(params[12]));
-            setSpinnerDefaults(plantsAtStartSpinner, 1, 100, Integer.parseInt(params[13]));
-            setSpinnerDefaults(plantsPerDaySpinner, 1, 50, Integer.parseInt(params[14]));
-
-
-
-
-
-            System.out.println(Arrays.toString(params));
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
     @FXML
     private void onSimulationStartClicked() throws IOException {
+
+
+
+            UserConfigurationRecord config = new UserConfigurationRecord(
+                    new Boundary(new Vector2d(0, 0), new Vector2d(widthSpinner.getValue(), heightSpinner.getValue())),
+                    mapType.getValue(),
+                    plantsAtStartSpinner.getValue(),
+                    energyFromPlantSpinner.getValue(),
+                    plantsPerDaySpinner.getValue(),
+                    animalCountSpinner.getValue(),
+                    startingEnergySpinner.getValue(),
+                    reproductionEnergySpinner.getValue(),
+                    childEnergySpinner.getValue(),
+                    minMutationsSpinner.getValue(),
+                    maxMutationsSpinner.getValue(),
+                    genomeLengthSpinner.getValue(),
+                    mutationType.getValue()
+            );
+
+
+            try{
+        ConfigValidator.validate(config);}
+        catch (InvalidParamenterException e) {
+
+            errorLabel.setText("Błąd parametru: " + e.getMessage());
+        }
+        errorLabel.setText("");
         System.out.println("Simulation started!");
-
-        UserConfigurationRecord config = new UserConfigurationRecord(
-                new Boundary(new Vector2d(0,0),new Vector2d(widthSpinner.getValue(),heightSpinner.getValue())),
-                mapType.getValue(),
-                plantsAtStartSpinner.getValue(),
-                energyFromPlantSpinner.getValue(),
-                plantsPerDaySpinner.getValue(),
-                animalCountSpinner.getValue(),
-                startingEnergySpinner.getValue(),
-                reproductionEnergySpinner.getValue(),
-                childEnergySpinner.getValue(),
-                minMutationsSpinner.getValue(),
-                maxMutationsSpinner.getValue(),
-                genomeLengthSpinner.getValue(),
-                mutationType.getValue()
-        );
-
-        //errorLabel.setText("");
 
 
         FXMLLoader fxmlLoader = new FXMLLoader();
@@ -286,16 +304,6 @@ public class StartingWindowPresenter {
             dialog.show();
 
 
-//
-//
-//
-//
-//
-
-
-
-
-
         } catch (Exception e) {
             errorLabel.setText("Error saving configuration!");
         }
@@ -305,13 +313,16 @@ public class StartingWindowPresenter {
 
     private void loadFromFlie()
     {
-        try (Scanner scanner = new Scanner(Path.of(CONFIGURATIONS_PATH))) {
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                String[] params = line.split(";");
-                csvCombo.getItems().add(params[0]);
+        try {
+            assert path != null;
+            try (Scanner scanner = new Scanner(Path.of(path.toURI()))) {
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine();
+                    String[] params = line.split(";");
+                    csvCombo.getItems().add(params[0]);
+                }
             }
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e.getMessage());
         }
 
@@ -342,17 +353,6 @@ public class StartingWindowPresenter {
         csvCombo.getItems().add(name);
         csvCombo.getSelectionModel().select(name);
 
-//
-//        for (Control control : paramControls) {
-//            if (control instanceof ComboBox) {
-//                ComboBox<String> combo = (ComboBox<String>) control;
-//                configurations.put(name, combo.getValue());
-//            } else if (control instanceof Spinner) {
-//                Spinner<Integer> spinner = (Spinner<Integer>) control;
-//                configurations.put(name, spinner.getValue().toString());
-//            }
-//        }
-
         String csvData = name + ";" +
                 selectedMapType + ";" +
                 selectedMutationType+ ";" +
@@ -370,8 +370,9 @@ public class StartingWindowPresenter {
                 plantsPerDay;
 
         try {
-            Files.writeString(Path.of(CONFIGURATIONS_PATH), csvData + System.lineSeparator(), CREATE, APPEND);
-        } catch (IOException e) {
+            assert path != null;
+            Files.writeString(Path.of(path.toURI()), csvData + System.lineSeparator(), CREATE, APPEND);
+        } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }

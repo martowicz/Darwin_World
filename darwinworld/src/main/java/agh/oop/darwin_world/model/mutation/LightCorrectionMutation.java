@@ -1,6 +1,5 @@
 package agh.oop.darwin_world.model.mutation;
 
-import java.util.List;
 import java.util.Random;
 
 public class LightCorrectionMutation extends AbstractMutation{

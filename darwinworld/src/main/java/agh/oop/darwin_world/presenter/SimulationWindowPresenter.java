@@ -9,8 +9,10 @@ import agh.oop.darwin_world.model.worlds.WorldMap;
 import agh.oop.darwin_world.simulation.Simulation;
 import agh.oop.darwin_world.simulation.SimulationEngine;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -25,10 +27,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.lang.Math.min;
 
 
 public class SimulationWindowPresenter implements MapChangeListener {
@@ -103,7 +105,7 @@ public class SimulationWindowPresenter implements MapChangeListener {
     }
 
     private void clearGrid() {
-        mapGrid.getChildren().retainAll(mapGrid.getChildren().get(0));
+        mapGrid.getChildren().retainAll(mapGrid.getChildren().getFirst());
         mapGrid.getColumnConstraints().clear();
         mapGrid.getRowConstraints().clear();
     }
@@ -116,26 +118,26 @@ public class SimulationWindowPresenter implements MapChangeListener {
     }
 
     private int calculateGridSize(Boundary boundary) {
-        int mapWidth = boundary.upperRight().getX() - boundary.lowerLeft().getX() + 1;
-        int mapHeight = boundary.upperRight().getY() - boundary.lowerLeft().getY() + 1;
+        int mapWidth = boundary.upperRight().x() - boundary.lowerLeft().x() + 1;
+        int mapHeight = boundary.upperRight().y() - boundary.lowerLeft().y() + 1;
 
         int maxGridSize = Math.max(mapWidth, mapHeight);
-        int cellSize = 800 / maxGridSize;
 
-        return cellSize;
+        return (int) (newWindowStage.getWidth()*0.5/ maxGridSize);
     }
 
     private void drawGrid(Boundary boundary, int cellSize) {
-        for (int i = boundary.lowerLeft().getY(); i <= boundary.upperRight().getY(); i++) {
-            for (int j = boundary.lowerLeft().getX(); j <= boundary.upperRight().getX(); j++) {
+        for (int i = boundary.lowerLeft().y(); i <= boundary.upperRight().y(); i++) {
+            for (int j = boundary.lowerLeft().x(); j <= boundary.upperRight().x(); j++) {
                 Vector2d position = new Vector2d(j, i);
-                drawCell(position, j - boundary.lowerLeft().getX() + 1, boundary.upperRight().getY() - i + 1, cellSize);
+                drawCell(position, j - boundary.lowerLeft().x() + 1, boundary.upperRight().y() - i + 1, cellSize);
             }
         }
     }
 
     private void drawCell(Vector2d position, int column, int row, int cellSize) {
         Node node = createNodeForElement(position, cellSize);
+        mapGrid.setPadding(new javafx.geometry.Insets(1, 8, 1, 1)); // 15px z każdej strony
         mapGrid.add(node, column, row);
     }
 
@@ -159,7 +161,7 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
             }
             if(currentAnimalTracked!=null && currentAnimalTracked.getPosition().equals(position)){
-                circle.setStroke(Color.YELLOW);
+                circle.setStroke(Color.DARKGOLDENROD);
                 circle.setStrokeWidth(6);
             }
             stackPane.getChildren().add(circle);
@@ -217,8 +219,6 @@ public class SimulationWindowPresenter implements MapChangeListener {
     {
         simulationEngine.shutdown(simulation);
         newWindowStage.close();
-
-
     }
 
 
@@ -307,7 +307,6 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
 
 
-
     public void runSimulation(UserConfigurationRecord config, SimulationEngine simulationEngine,Stage newWindowStage, boolean savelog) {
 
 
@@ -327,5 +326,12 @@ public class SimulationWindowPresenter implements MapChangeListener {
         if(log){
             setLogging();
         }
-   }
+    }
+    public void onSpeedUp() {
+        simulation.decreaseSleepTime();
+    }
+
+    public void onSpeedDown() {
+        simulation.increaseSleepTime();
+    }
 }

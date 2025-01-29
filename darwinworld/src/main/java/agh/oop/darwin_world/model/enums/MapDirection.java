@@ -7,10 +7,7 @@ import java.util.Random;
 public enum MapDirection {
     N, NE, E, SE, S, SW, W, NW;
 
-
-
     private final static MapDirection[] values = values();
-
 
     public MapDirection rotate(int rotation){
         return values[(rotation + this.ordinal()) % values.length];
@@ -32,14 +29,14 @@ public enum MapDirection {
     @Override
     public String toString() {
         return switch (this){
-            case N -> "\u2191";
-            case E -> "\u2192";
-            case S -> "\u2193";
-            case W -> "\u2190";
-            case NE -> "\u2197";
-            case SW -> "\u2199";
-            case NW -> "\u2196";
-            case SE -> "\u2198";
+            case N -> "↑";
+            case E -> "→";
+            case S -> "↓";
+            case W -> "←";
+            case NE -> "↗";
+            case SW -> "↙";
+            case NW -> "↖";
+            case SE -> "↘";
         };
     }
 
@@ -57,9 +54,7 @@ public enum MapDirection {
     }
 
 
-    public static MapDirection getRandomPosition(){
+    public static MapDirection getRandomPosition() {
         return values[new Random().nextInt(8)];
-
     }
-
 }

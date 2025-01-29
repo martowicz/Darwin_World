@@ -7,17 +7,22 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class SimulationApp extends Application {
 
     @Override
-    public void start(Stage configStage) throws Exception {
+    public void start(Stage configStage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(getClass().getClassLoader().getResource("startingWindow.fxml"));
 
         //odpala okno
         BorderPane viewRoot = fxmlLoader.load();
         configureStage(configStage, viewRoot);
-
+        configStage.setOnCloseRequest(event -> {
+            System.out.println("Zamykanie aplikacji...");
+            System.exit(0); // Zamyka całą aplikację
+        });
         configStage.show();
     }
 

@@ -28,12 +28,9 @@ public class Plant implements WorldElement
     }
 
     @Override
-    public String toString()
-    {
-
+    public String toString() {
         return PLANT_SYMBOL;
     }
-
 
     @Override
     public int hashCode() {

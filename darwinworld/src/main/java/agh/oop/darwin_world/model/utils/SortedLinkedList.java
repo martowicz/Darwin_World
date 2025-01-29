@@ -1,7 +1,6 @@
 package agh.oop.darwin_world.model.utils;
 
 import java.util.Iterator;
-import java.util.function.Consumer;
 
 public class SortedLinkedList<T extends Comparable<T>> implements Iterable<T> {
     Node<T> head;

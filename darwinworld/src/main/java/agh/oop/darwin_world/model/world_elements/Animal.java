@@ -13,18 +13,15 @@ public class Animal implements WorldElement, Comparable<Animal> {
     private Vector2d animalPosition;
     private int iterator=0;
     private int age=0;
-    private  List<Animal> kids = new ArrayList<>();
+    private final List<Animal> kids = new ArrayList<>();
     private int energy;
     private int plantsEaten=0;
     private int dayOfDeath;
     int genomeLength;
     private boolean isDead=false;
-    private List<Integer> genes = new ArrayList<>();
-    private AbstractMutation mutation;
+    private final List<Integer> genes = new ArrayList<>();
+    private final AbstractMutation mutation;
     private boolean shouldDie=false;
-
-
-
 
 
     // First constructor - animal without parents
@@ -55,7 +52,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
         this.animalOrientation= MapDirection.getRandomPosition();
 
         //przemyśleć to bo w teorii np ojciec się rusza to syn też bo to byłoby to samo miejsce w pamięci
-        this.animalPosition = new Vector2d(parent1.animalPosition.getX(), parent1.animalPosition.getY());
+        this.animalPosition = new Vector2d(parent1.animalPosition.x(), parent1.animalPosition.y());
         this.genomeLength = config.genomLength();
         this.energy = 2*config.animalsEnergySpentOnCopulation();
         Random r = new Random();
@@ -80,42 +77,39 @@ public class Animal implements WorldElement, Comparable<Animal> {
         int parent2energy=parent2.energy;
         Random rand = new Random();
         int side = rand.nextInt(2); //0 - lewa strona 1-prawa strona
-        double percentageofparent1 = (double) (parent1energy) / (parent1energy + parent2energy);
-        double percentageofparent2 = 1 - percentageofparent1;
+        double percentageOfParent1 = (double) (parent1energy) / (parent1energy + parent2energy);
+        double percentageOfParent2 = 1 - percentageOfParent1;
 
         if (side == 0) {
-            if (percentageofparent2 > percentageofparent1) {
-                int divider = (int) (percentageofparent2 * parent2genes.size());
+            if (percentageOfParent2 > percentageOfParent1) {
+                int divider = (int) (percentageOfParent2 * parent2genes.size());
                 for (int i = 0; i < divider; i++) {genes.add(parent2genes.get(i));}
                 for (int i = divider; i < parent1genes.size(); i++) {genes.add(parent1genes.get(i));}
             } else {
-                int divider = (int) (percentageofparent2 * parent1genes.size());
+                int divider = (int) (percentageOfParent2 * parent1genes.size());
                 for (int i = 0; i < divider; i++) {genes.add(parent1genes.get(i));}
                 for (int i = divider; i < parent1genes.size(); i++) {genes.add(parent2genes.get(i));}
             }
         } else {
             //bierzemy silniejszego z prawej
-            if (percentageofparent2 > percentageofparent1) {
-                int divider = (int) (percentageofparent2 * parent2genes.size());
+            if (!(percentageOfParent2 > percentageOfParent1)) {
+                int divider = (int) (percentageOfParent2 * parent1genes.size());
                 for (int i = 0; i < divider; i++) {
-                    genes.add(parent1genes.get(i));
+                    genes.add(parent2genes.get(i));
                 }
                 for (int i = divider; i < parent1genes.size(); i++) {
-                    genes.add(parent2genes.get(i));
+                    genes.add(parent1genes.get(i));
                 }
             } else {
-                int divider = (int) (percentageofparent2 * parent1genes.size());
+                int divider = (int) (percentageOfParent2 * parent2genes.size());
                 for (int i = 0; i < divider; i++) {
-                    genes.add(parent2genes.get(i));
+                    genes.add(parent1genes.get(i));
                 }
                 for (int i = divider; i < parent1genes.size(); i++) {
-                    genes.add(parent1genes.get(i));
+                    genes.add(parent2genes.get(i));
                 }
             }
         }
-
-
-
     }
 
     public void setAnimalPosition(Vector2d position){
@@ -126,8 +120,6 @@ public class Animal implements WorldElement, Comparable<Animal> {
         this.animalOrientation = orientation;
     }
 
-    public void setEnergy(int energy){this.energy = energy;}
-
     @Override
     public String toString() {
 
@@ -137,6 +129,22 @@ public class Animal implements WorldElement, Comparable<Animal> {
     @Override
     public Vector2d getPosition() {
         return animalPosition;
+    }
+
+
+
+    public void rotate(){
+        iterator++;
+        iterator=iterator % genomeLength;
+
+        int rotation = genes.get(iterator);
+
+        animalOrientation = animalOrientation.rotate(rotation);
+
+    }
+    public MapDirection getAnimalOrientation()
+    {
+        return animalOrientation;
     }
 
     @Override
@@ -181,32 +189,6 @@ public class Animal implements WorldElement, Comparable<Animal> {
         return count;
     }
 
-    public int getAge(){
-        return age;
-    }
-
-    public String getDeathDay() {
-        return this.isDead ? "Died on day " + String.valueOf(this.dayOfDeath) : "Alive for " + String.valueOf(this.age) + " days";}
-
-
-    public void setDyingForOtherCause(){shouldDie=true;}
-
-    public boolean diesForOtherCause(){return shouldDie;}
-
-    public void rotate(){
-        iterator++;
-        iterator=iterator % genomeLength;
-
-        int rotation = genes.get(iterator);
-
-        animalOrientation = animalOrientation.rotate(rotation);
-
-    }
-
-    public List<Integer> getListOfGenes(){
-        return genes;
-    }
-
     public void dayPasses(){
         this.age++;
         this.energy--;
@@ -218,8 +200,6 @@ public class Animal implements WorldElement, Comparable<Animal> {
     }
 
 
-
-
     public void addKid(Animal kid){
         kids.add(kid);
     }
@@ -228,14 +208,28 @@ public class Animal implements WorldElement, Comparable<Animal> {
         this.plantsEaten++;
     }
 
+    public int getAge(){
+        return age;
+    }
+
+    public String getDeathDay() {
+        return this.isDead ? "Died on day " + this.dayOfDeath : "Alive for " + this.age + " days";}
+
+
+    public void setDyingForOtherCause(){shouldDie=true;}
+
+    public boolean diesForOtherCause(){return shouldDie;}
+
+
     public int getEnergy(){
         return energy;
     }
 
-    public MapDirection getAnimalOrientation()
+    public void subtractEnergy(int energyToReproduce)
     {
-        return animalOrientation;
+        energy-=energyToReproduce;
     }
+
 
 
 
@@ -274,10 +268,4 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
         }
     }
-
-    public void subtractEnergy(int energyToReproduce)
-    {
-        energy-=energyToReproduce;
-    }
-
 }

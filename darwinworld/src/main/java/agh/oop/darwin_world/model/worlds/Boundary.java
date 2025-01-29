@@ -8,7 +8,4 @@ public record Boundary(Vector2d lowerLeft, Vector2d upperRight) {
     public String toString() {
         return lowerLeft.toString() + " --> " + upperRight.toString();
     }
-
-
-
 }
