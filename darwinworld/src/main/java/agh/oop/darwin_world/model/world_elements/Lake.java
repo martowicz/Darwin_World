@@ -42,6 +42,8 @@ public class Lake implements WorldElement {
     @Override
     public Vector2d getPosition() {return source_position;}
 
+    public int getRadius() {return radius;}
+
 
 
 
