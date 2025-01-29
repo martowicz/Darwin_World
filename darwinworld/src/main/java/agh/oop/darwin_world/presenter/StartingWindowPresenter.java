@@ -69,7 +69,7 @@ public class StartingWindowPresenter {
     @FXML
     public CheckBox saveLogCheck;
 
-    private static final String CONFIGURATIONS_PATH = "configurations.csv";
+    private static final String CONFIGURATIONS_PATH = "src/main/resources/configurations.csv";
 
     int mapWidth;
     int mapHeight;
@@ -88,17 +88,16 @@ public class StartingWindowPresenter {
     SimulationEngine simulationEngine = new SimulationEngine();
 
     @FXML
-    void initialize()
-    {
+    void initialize() {
 
         loadFromFlie();
 
-        for(WorldMapType typeOfMap : WorldMapType.values()) {
+        for (WorldMapType typeOfMap : WorldMapType.values()) {
             mapType.getItems().add(typeOfMap);
-            }
-        for(AnimalMutationType typeOfMutation : AnimalMutationType.values()) {
+        }
+        for (AnimalMutationType typeOfMutation : AnimalMutationType.values()) {
             mutationType.getItems().add(typeOfMutation);
-            }
+        }
         // Set default values for spinners
         setSpinnerDefaults(widthSpinner, 1, 100, 10);
         setSpinnerDefaults(heightSpinner, 1, 100, 10);
@@ -115,7 +114,7 @@ public class StartingWindowPresenter {
         mapType.setValue(WorldMapType.ROUND_WORLD);
         mutationType.setValue(AnimalMutationType.RANDOM_MUTATION);
 
-        if(csvCombo.getItems() != null) {
+        if (csvCombo.getItems() != null) {
             csvCombo.setValue(csvCombo.getItems().getFirst());
         }
         onCsvComboClicked();

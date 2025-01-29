@@ -5,9 +5,7 @@ import agh.oop.darwin_world.model.utils.Vector2d;
 import agh.oop.darwin_world.presenter.UserConfigurationRecord;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Animal implements WorldElement, Comparable<Animal> {
 
@@ -170,9 +168,17 @@ public class Animal implements WorldElement, Comparable<Animal> {
     }
 
     public int getDescendants() {
-        return kids.size() + kids.stream()
-                .mapToInt(Animal::getDescendants)
-                .sum();
+        int count = 0;
+        Queue<Animal> queue = new LinkedList<>();
+        queue.add(this);
+
+        while (!queue.isEmpty()) {
+            Animal current = queue.poll();
+            count += current.kids.size();
+            queue.addAll(current.kids);
+        }
+
+        return count;
     }
 
     public int getAge(){
