@@ -102,7 +102,7 @@ public class StartingWindowPresenter {
         for (AnimalMutationType typeOfMutation : AnimalMutationType.values()) {
             mutationType.getItems().add(typeOfMutation);
         }
-        // Set default values for spinners
+        //Set default values for spinners
         setSpinnerDefaults(widthSpinner, 1, 100, 10);
         setSpinnerDefaults(heightSpinner, 1, 100, 10);
         setSpinnerDefaults(animalCountSpinner, 1, 100, 10);
@@ -181,50 +181,56 @@ public class StartingWindowPresenter {
 
     @FXML
     private void onSimulationStartClicked() throws IOException {
+        UserConfigurationRecord config = new UserConfigurationRecord(
+                new Boundary(new Vector2d(0, 0), new Vector2d(widthSpinner.getValue(), heightSpinner.getValue())),
+                mapType.getValue(),
+                plantsAtStartSpinner.getValue(),
+                energyFromPlantSpinner.getValue(),
+                plantsPerDaySpinner.getValue(),
+                animalCountSpinner.getValue(),
+                startingEnergySpinner.getValue(),
+                reproductionEnergySpinner.getValue(),
+                childEnergySpinner.getValue(),
+                minMutationsSpinner.getValue(),
+                maxMutationsSpinner.getValue(),
+                genomeLengthSpinner.getValue(),
+                mutationType.getValue()
+        );
 
 
+        try{
 
-            UserConfigurationRecord config = new UserConfigurationRecord(
-                    new Boundary(new Vector2d(0, 0), new Vector2d(widthSpinner.getValue(), heightSpinner.getValue())),
-                    mapType.getValue(),
-                    plantsAtStartSpinner.getValue(),
-                    energyFromPlantSpinner.getValue(),
-                    plantsPerDaySpinner.getValue(),
-                    animalCountSpinner.getValue(),
-                    startingEnergySpinner.getValue(),
-                    reproductionEnergySpinner.getValue(),
-                    childEnergySpinner.getValue(),
-                    minMutationsSpinner.getValue(),
-                    maxMutationsSpinner.getValue(),
-                    genomeLengthSpinner.getValue(),
-                    mutationType.getValue()
-            );
+            ConfigValidator.validate(config);
+            errorLabel.setText("");
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getClassLoader().getResource("simulationWindow.fxml"));
 
+            BorderPane viewRoot = fxmlLoader.load();
+            Stage newWindowStage = new Stage();
 
-            try{
-        ConfigValidator.validate(config);}
-        catch (InvalidParamenterException e) {
+            SimulationWindowPresenter presenter = fxmlLoader.getController();
+            configureStage(newWindowStage, viewRoot);
 
-            errorLabel.setText("Błąd parametru: " + e.getMessage());
+            newWindowStage.show();
+            presenter.runSimulation(config,simulationEngine, newWindowStage, saveLogCheck.isSelected());
+
         }
-        errorLabel.setText("");
+        catch (InvalidParamenterException e) {
+            errorLabel.setText(e.getMessage());
+        }
+
         System.out.println("Simulation started!");
 
 
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getClassLoader().getResource("simulationWindow.fxml"));
-
-        BorderPane viewRoot = fxmlLoader.load();
-        Stage newWindowStage = new Stage();
-
-        SimulationWindowPresenter presenter = fxmlLoader.getController();
-        configureStage(newWindowStage, viewRoot);
-
-        newWindowStage.show();
-        presenter.runSimulation(config,simulationEngine, newWindowStage, saveLogCheck.isSelected());
-
-
     }
+
+
+
+
+
+
+
+
     private void configureStage(Stage primaryStage, BorderPane viewRoot) {
         var scene = new Scene(viewRoot);
         primaryStage.setScene(scene);
