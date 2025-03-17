@@ -1,6 +1,6 @@
-# Darwin_World
+# Darwin World
 
-Darwin_World is a simulation written in Java with a user interface built using JavaFX. The project represents an ecosystem where animals struggle for survival by eating plants, reproducing, and adapting through genotype mutations.
+Darwin World is a simulation written in Java with a user interface built using JavaFX. The project represents an ecosystem where animals struggle for survival by eating plants, reproducing, and adapting through genotype mutations.
 
 ## Simulation Overview
 The simulation models the evolution of an animal population in an environment where they must find food and cope with limited resources. Animals move around the map in search of food and survival opportunities. Different map versions can be selected, affecting movement and gameplay dynamics. Additionally, the application allows users to select a specific animal to track and monitor its statistics in real time.
@@ -46,8 +46,6 @@ This project was created by:
 ## License
 This project is released under the MIT License. See the `LICENSE` file for details.
 
----
-Feel free to report issues and submit pull requests! 🦎🌿
 
 
 
